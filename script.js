@@ -8,7 +8,9 @@
    SETTINGS
    ========================================= */
 
-const WHATSAPP_NUMBER = "01092542461";
+const WHATSAPP_NUMBER =
+    "201092542461";
+
 
 const API_URL =
     "https://script.google.com/macros/s/AKfycbwobwaeysf_tEYipYYm1b_bJxJFpQeOpWXM_pp4DNLTjYu5zsOxrgTV_ZbV9snLs7lw/exec";
@@ -22,29 +24,61 @@ const products = [
 
     {
         id: 1,
-        name: "Velvet Blossom",
-        category: "Body Splash",
-        price: 350,
-        status: "available",
-        driveKey: "bodySplash"
+
+        name:
+            "Velvet Blossom",
+
+        category:
+            "Body Splash",
+
+        price:
+            350,
+
+        status:
+            "available",
+
+        driveKey:
+            "bodySplash"
     },
+
 
     {
         id: 2,
-        name: "Rose Kiss",
-        category: "Lip Gloss",
-        price: 250,
-        status: "available",
-        driveKey: "lipGloss"
+
+        name:
+            "Rose Kiss",
+
+        category:
+            "Lip Gloss",
+
+        price:
+            250,
+
+        status:
+            "available",
+
+        driveKey:
+            "lipGloss"
     },
+
 
     {
         id: 3,
-        name: "Velvet Drive",
-        category: "Car Air Freshener",
-        price: 200,
-        status: "available",
-        driveKey: "carAirFreshener"
+
+        name:
+            "Velvet Drive",
+
+        category:
+            "Car Air Freshener",
+
+        price:
+            200,
+
+        status:
+            "available",
+
+        driveKey:
+            "carAirFreshener"
     }
 
 ];
@@ -55,11 +89,17 @@ const products = [
    ========================================= */
 
 const comingSoon = [
+
     "Body Care",
+
     "Perfumes",
+
     "Skincare",
+
     "Hair Care",
+
     "Gift Sets"
+
 ];
 
 
@@ -78,13 +118,16 @@ let productImages = {};
 
 
 /* =========================================
-   LOAD IMAGES FROM GOOGLE DRIVE
+   LOAD GOOGLE DRIVE IMAGES
    ========================================= */
 
 function loadProductImages() {
 
     const script =
-        document.createElement("script");
+        document.createElement(
+            "script"
+        );
+
 
     const callbackName =
         "rebelVelvetCallback_" +
@@ -103,9 +146,15 @@ function loadProductImages() {
                 productImages =
                     data.products;
 
+
+                updateHeroImages();
+
+
                 displayProducts();
 
-            } else {
+            }
+
+            else {
 
                 displayProducts();
 
@@ -132,7 +181,9 @@ function loadProductImages() {
                 "Unable to load product images."
             );
 
+
             displayProducts();
+
 
             delete window[callbackName];
 
@@ -141,7 +192,9 @@ function loadProductImages() {
         };
 
 
-    document.body.appendChild(script);
+    document.body.appendChild(
+        script
+    );
 
 }
 
@@ -150,11 +203,15 @@ function loadProductImages() {
    GET PRODUCT IMAGES
    ========================================= */
 
-function getProductImages(product) {
+function getProductImages(
+    product
+) {
 
     if (
         !productImages ||
-        !productImages[product.driveKey]
+        !productImages[
+            product.driveKey
+        ]
     ) {
 
         return [];
@@ -170,13 +227,17 @@ function getProductImages(product) {
 
 
 /* =========================================
-   GET MAIN IMAGE
+   GET MAIN PRODUCT IMAGE
    ========================================= */
 
-function getMainImage(product) {
+function getMainImage(
+    product
+) {
 
     const images =
-        getProductImages(product);
+        getProductImages(
+            product
+        );
 
 
     if (
@@ -188,7 +249,90 @@ function getMainImage(product) {
     }
 
 
-    return "https://placehold.co/700x850/f1dfd8/6d1f2b?text=Rebel+Velvet";
+    return (
+        "https://placehold.co/" +
+        "700x850/" +
+        "f1dfd8/" +
+        "6d1f2b" +
+        "?text=Rebel+Velvet"
+    );
+
+}
+
+
+/* =========================================
+   UPDATE HERO IMAGES
+   ========================================= */
+
+function updateHeroImages() {
+
+    const bodySplash =
+        getProductImages(
+            products[0]
+        )[0];
+
+
+    const lipGloss =
+        getProductImages(
+            products[1]
+        )[0];
+
+
+    const carFreshener =
+        getProductImages(
+            products[2]
+        )[0];
+
+
+    const bodyElement =
+        document.getElementById(
+            "hero-body-splash"
+        );
+
+
+    const lipElement =
+        document.getElementById(
+            "hero-lip-gloss"
+        );
+
+
+    const carElement =
+        document.getElementById(
+            "hero-car-freshener"
+        );
+
+
+    if (
+        bodyElement &&
+        bodySplash
+    ) {
+
+        bodyElement.src =
+            bodySplash.url;
+
+    }
+
+
+    if (
+        lipElement &&
+        lipGloss
+    ) {
+
+        lipElement.src =
+            lipGloss.url;
+
+    }
+
+
+    if (
+        carElement &&
+        carFreshener
+    ) {
+
+        carElement.src =
+            carFreshener.url;
+
+    }
 
 }
 
@@ -205,17 +349,24 @@ function displayProducts() {
         );
 
 
-    if (!container) return;
+    if (!container) {
+
+        return;
+
+    }
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
     products.forEach(
         function(product) {
 
             const card =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             card.className =
@@ -223,7 +374,9 @@ function displayProducts() {
 
 
             const image =
-                getMainImage(product);
+                getMainImage(
+                    product
+                );
 
 
             card.innerHTML = `
@@ -238,33 +391,50 @@ function displayProducts() {
                     "
                 >
 
+
                 <div class="product-info">
 
+
                     <div class="product-category">
+
                         ${product.category}
+
                     </div>
+
 
                     <h3 class="product-name">
+
                         ${product.name}
+
                     </h3>
 
+
                     <div class="product-price">
-                        ${product.price.toLocaleString()} EGP
+
+                        ${product.price.toLocaleString()}
+                        EGP
+
                     </div>
+
 
                     <button
                         class="add-to-cart"
                         onclick="addToCart(${product.id})"
                     >
+
                         ADD TO BAG
+
                     </button>
+
 
                 </div>
 
             `;
 
 
-            container.appendChild(card);
+            container.appendChild(
+                card
+            );
 
         }
     );
@@ -276,20 +446,28 @@ function displayProducts() {
    ADD TO CART
    ========================================= */
 
-function addToCart(productId) {
+function addToCart(
+    productId
+) {
 
     const product =
         products.find(
-            item => item.id === productId
+            item =>
+                item.id === productId
         );
 
 
-    if (!product) return;
+    if (!product) {
+
+        return;
+
+    }
 
 
     const existing =
         cart.find(
-            item => item.id === productId
+            item =>
+                item.id === productId
         );
 
 
@@ -297,21 +475,31 @@ function addToCart(productId) {
 
         existing.quantity++;
 
-    } else {
+    }
+
+    else {
 
         cart.push({
 
-            id: product.id,
+            id:
+                product.id,
 
-            name: product.name,
+            name:
+                product.name,
 
-            category: product.category,
+            category:
+                product.category,
 
-            price: product.price,
+            price:
+                product.price,
 
-            image: getMainImage(product),
+            image:
+                getMainImage(
+                    product
+                ),
 
-            quantity: 1
+            quantity:
+                1
 
         });
 
@@ -330,14 +518,17 @@ function addToCart(productId) {
 
 
 /* =========================================
-   REMOVE PRODUCT
+   REMOVE FROM CART
    ========================================= */
 
-function removeFromCart(productId) {
+function removeFromCart(
+    productId
+) {
 
     cart =
         cart.filter(
-            item => item.id !== productId
+            item =>
+                item.id !== productId
         );
 
 
@@ -366,15 +557,24 @@ function changeQuantity(
         );
 
 
-    if (!item) return;
+    if (!item) {
+
+        return;
+
+    }
 
 
-    item.quantity += change;
+    item.quantity +=
+        change;
 
 
-    if (item.quantity <= 0) {
+    if (
+        item.quantity <= 0
+    ) {
 
-        removeFromCart(productId);
+        removeFromCart(
+            productId
+        );
 
         return;
 
@@ -397,8 +597,13 @@ function changeQuantity(
 function saveCart() {
 
     localStorage.setItem(
+
         "rebelVelvetCart",
-        JSON.stringify(cart)
+
+        JSON.stringify(
+            cart
+        )
+
     );
 
 }
@@ -421,9 +626,13 @@ function loadCart() {
         try {
 
             cart =
-                JSON.parse(saved);
+                JSON.parse(
+                    saved
+                );
 
-        } catch {
+        }
+
+        catch {
 
             cart = [];
 
@@ -449,15 +658,24 @@ function updateCartCount() {
         );
 
 
-    if (!count) return;
+    if (!count) {
+
+        return;
+
+    }
 
 
     const total =
         cart.reduce(
-            function(sum, item) {
+            function(
+                sum,
+                item
+            ) {
 
-                return sum +
-                    item.quantity;
+                return (
+                    sum +
+                    item.quantity
+                );
 
             },
             0
@@ -481,6 +699,7 @@ function renderCart() {
             "cart-items"
         );
 
+
     const totalElement =
         document.getElementById(
             "cart-total"
@@ -490,13 +709,20 @@ function renderCart() {
     if (
         !container ||
         !totalElement
-    ) return;
+    ) {
+
+        return;
+
+    }
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
 
         container.innerHTML = `
 
@@ -508,7 +734,9 @@ function renderCart() {
                     font-size:13px;
                 "
             >
+
                 Your bag is empty.
+
             </div>
 
         `;
@@ -551,15 +779,24 @@ function renderCart() {
                     alt="${item.name}"
                 >
 
+
                 <div class="cart-item-info">
 
+
                     <h4>
+
                         ${item.name}
+
                     </h4>
 
+
                     <p>
-                        ${item.price.toLocaleString()} EGP
+
+                        ${item.price.toLocaleString()}
+                        EGP
+
                     </p>
+
 
                     <div
                         style="
@@ -570,13 +807,16 @@ function renderCart() {
                         "
                     >
 
+
                         <button
+
                             onclick="
                                 changeQuantity(
                                     ${item.id},
                                     -1
                                 )
                             "
+
                             style="
                                 border:1px solid #b98272;
                                 background:none;
@@ -585,20 +825,28 @@ function renderCart() {
                                 cursor:pointer;
                             "
                         >
+
                             −
+
                         </button>
 
+
                         <span>
+
                             ${item.quantity}
+
                         </span>
 
+
                         <button
+
                             onclick="
                                 changeQuantity(
                                     ${item.id},
                                     1
                                 )
                             "
+
                             style="
                                 border:1px solid #b98272;
                                 background:none;
@@ -607,28 +855,39 @@ function renderCart() {
                                 cursor:pointer;
                             "
                         >
+
                             +
+
                         </button>
+
 
                     </div>
 
+
                 </div>
 
+
                 <button
+
                     class="remove-item"
+
                     onclick="
                         removeFromCart(
                             ${item.id}
                         )
                     "
                 >
+
                     ×
+
                 </button>
 
             `;
 
 
-            container.appendChild(element);
+            container.appendChild(
+                element
+            );
 
         }
     );
@@ -653,10 +912,15 @@ function openCart() {
         );
 
 
-    if (!overlay) return;
+    if (!overlay) {
+
+        return;
+
+    }
 
 
     renderCart();
+
 
     overlay.classList.add(
         "active"
@@ -677,7 +941,11 @@ function closeCart() {
         );
 
 
-    if (!overlay) return;
+    if (!overlay) {
+
+        return;
+
+    }
 
 
     overlay.classList.remove(
@@ -693,7 +961,9 @@ function closeCart() {
 
 function checkout() {
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
 
         alert(
             "Your bag is empty."
@@ -706,6 +976,7 @@ function checkout() {
 
     let message =
         "Hello Rebel Velvet!%0A%0A";
+
 
     message +=
         "I would like to place an order:%0A%0A";
@@ -722,16 +993,24 @@ function checkout() {
                 item.quantity;
 
 
-            total += itemTotal;
+            total +=
+                itemTotal;
 
 
             message +=
+
                 "• " +
+
                 item.name +
+
                 " × " +
+
                 item.quantity +
+
                 " = " +
+
                 itemTotal +
+
                 " EGP%0A";
 
         }
@@ -739,25 +1018,34 @@ function checkout() {
 
 
     message +=
+
         "%0ATotal: " +
+
         total +
+
         " EGP%0A%0A";
 
 
     message +=
         "Name:%0A";
 
+
     message +=
         "Phone:%0A";
+
 
     message +=
         "Address:%0A";
 
 
     const url =
+
         "https://wa.me/" +
+
         WHATSAPP_NUMBER +
+
         "?text=" +
+
         message;
 
 
@@ -783,7 +1071,11 @@ document.addEventListener(
             );
 
 
-        if (!overlay) return;
+        if (!overlay) {
+
+            return;
+
+        }
 
 
         if (
