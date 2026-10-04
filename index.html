@@ -1,43 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rebel Velvet | Beauty Beyond Rules</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <title>
+        Rebel Velvet | Beauty Beyond Rules
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- Navigation -->
+
+    <!-- =========================================
+         NAVIGATION
+         ========================================= -->
+
     <header>
+
         <nav class="navbar">
 
-            <a href="#" class="logo">
+            <a
+                href="#home"
+                class="logo"
+            >
                 REBEL VELVET
             </a>
 
+
             <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#shop">Shop</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
+
+                <a href="#home">
+                    Home
+                </a>
+
+                <a href="#shop">
+                    Shop
+                </a>
+
+                <a href="#about">
+                    About
+                </a>
+
+                <a href="#contact">
+                    Contact
+                </a>
+
             </div>
 
-            <button class="cart-button" onclick="openCart()">
-                Cart <span id="cart-count">0</span>
+
+            <button
+                class="cart-button"
+                onclick="openCart()"
+            >
+
+                Cart
+
+                <span id="cart-count">
+                    0
+                </span>
+
             </button>
 
         </nav>
+
     </header>
 
 
-    <!-- Hero -->
+
     <main>
 
-        <section id="home" class="hero">
+
+        <!-- =========================================
+             HERO
+             ========================================= -->
+
+        <section
+            id="home"
+            class="hero"
+        >
 
             <div class="hero-content">
 
@@ -45,59 +99,188 @@
                     REBEL VELVET
                 </p>
 
+
                 <h1>
-                    Beauty<br>
-                    Beyond Rules.
+
+                    Beauty
+
+                    <br>
+
+                    <span>
+                        Beyond Rules.
+                    </span>
+
                 </h1>
 
+
                 <p class="hero-text">
-                    Discover your signature glow with our feminine
-                    collection of body splashes and lip glosses.
+
+                    Discover your signature glow with our
+                    feminine collection of body splashes,
+                    lip glosses and everyday essentials.
+
                 </p>
 
-                <a href="#shop" class="hero-button">
+
+                <a
+                    href="#shop"
+                    class="hero-button"
+                >
                     SHOP NOW
                 </a>
 
             </div>
 
+
+
+            <!-- HERO PRODUCTS -->
+
+            <div class="hero-visual">
+
+                <div
+                    class="hero-orbit hero-orbit-one"
+                ></div>
+
+
+                <div
+                    class="hero-orbit hero-orbit-two"
+                ></div>
+
+
+
+                <!-- Body Splash -->
+
+                <div
+                    class="hero-product hero-product-left"
+                >
+
+                    <img
+                        id="hero-body-splash"
+                        alt="Rebel Velvet Body Splash"
+                    >
+
+                </div>
+
+
+
+                <!-- Lip Gloss -->
+
+                <div
+                    class="hero-product hero-product-main"
+                >
+
+                    <img
+                        id="hero-lip-gloss"
+                        alt="Rebel Velvet Lip Gloss"
+                    >
+
+                </div>
+
+
+
+                <!-- Car Air Freshener -->
+
+                <div
+                    class="hero-product hero-product-right"
+                >
+
+                    <img
+                        id="hero-car-freshener"
+                        alt="Rebel Velvet Car Air Freshener"
+                    >
+
+                </div>
+
+            </div>
+
         </section>
 
 
-        <!-- Categories -->
+
+        <!-- =========================================
+             CATEGORIES
+             ========================================= -->
+
         <section class="categories">
 
-            <div class="category-card">
-                <span>✦</span>
-                <h3>Body Splash</h3>
-                <p>Fresh. Feminine. Unforgettable.</p>
-            </div>
 
             <div class="category-card">
-                <span>♡</span>
-                <h3>Lip Gloss</h3>
-                <p>Shine your way.</p>
+
+                <span>
+                    ✦
+                </span>
+
+                <h3>
+                    Body Splash
+                </h3>
+
+                <p>
+                    Fresh. Feminine. Unforgettable.
+                </p>
+
             </div>
 
+
+
             <div class="category-card">
-                <span>✧</span>
-                <h3>New Arrivals</h3>
-                <p>Something beautiful is coming.</p>
+
+                <span>
+                    ♡
+                </span>
+
+                <h3>
+                    Lip Gloss
+                </h3>
+
+                <p>
+                    Shine your way.
+                </p>
+
             </div>
+
+
+
+            <div class="category-card">
+
+                <span>
+                    ✧
+                </span>
+
+                <h3>
+                    New Arrivals
+                </h3>
+
+                <p>
+                    Something beautiful is coming.
+                </p>
+
+            </div>
+
 
         </section>
 
 
-        <!-- Shop -->
-        <section id="shop" class="shop-section">
+
+        <!-- =========================================
+             SHOP
+             ========================================= -->
+
+        <section
+            id="shop"
+            class="shop-section"
+        >
 
             <div class="section-heading">
 
-                <p>OUR COLLECTION</p>
+                <p>
+                    OUR COLLECTION
+                </p>
+
 
                 <h2>
                     Find Your Favorite
                 </h2>
+
 
                 <span>
                     Beauty made to become part of your everyday ritual.
@@ -105,29 +288,54 @@
 
             </div>
 
-            <div id="products" class="products-grid">
-                <!-- Products will be added by JavaScript -->
+
+            <div
+                id="products"
+                class="products-grid"
+            >
+
+                <!-- Products loaded by JavaScript -->
+
             </div>
 
         </section>
 
 
-        <!-- About -->
-        <section id="about" class="about-section">
+
+        <!-- =========================================
+             ABOUT
+             ========================================= -->
+
+        <section
+            id="about"
+            class="about-section"
+        >
 
             <div class="about-content">
 
-                <p>ABOUT REBEL VELVET</p>
+                <p>
+                    ABOUT REBEL VELVET
+                </p>
+
 
                 <h2>
-                    Softness with<br>
+
+                    Softness with
+
+                    <br>
+
                     a little rebellion.
+
                 </h2>
 
+
                 <p>
-                    Rebel Velvet is a feminine beauty brand created for
-                    girls who love to express themselves, feel confident,
-                    and leave their own signature wherever they go.
+
+                    Rebel Velvet is a feminine beauty brand
+                    created for girls who love to express
+                    themselves, feel confident, and leave
+                    their own signature wherever they go.
+
                 </p>
 
             </div>
@@ -135,20 +343,35 @@
         </section>
 
 
-        <!-- Contact -->
-        <section id="contact" class="contact-section">
 
-            <p>STAY IN THE LOOP</p>
+        <!-- =========================================
+             CONTACT
+             ========================================= -->
+
+        <section
+            id="contact"
+            class="contact-section"
+        >
+
+            <p>
+                STAY IN THE LOOP
+            </p>
+
 
             <h2>
                 Follow the Rebel.
             </h2>
 
+
             <p>
                 Discover new products, offers and beauty inspiration.
             </p>
 
-            <a href="#" class="instagram-button">
+
+            <a
+                href="#"
+                class="instagram-button"
+            >
                 Instagram
             </a>
 
@@ -157,24 +380,45 @@
     </main>
 
 
-    <!-- Cart -->
-    <div id="cart-overlay" class="cart-overlay">
+
+    <!-- =========================================
+         CART
+         ========================================= -->
+
+    <div
+        id="cart-overlay"
+        class="cart-overlay"
+    >
 
         <div class="cart">
 
-            <button class="close-cart" onclick="closeCart()">
+
+            <button
+                class="close-cart"
+                onclick="closeCart()"
+            >
                 ×
             </button>
 
-            <h2>Your Cart</h2>
+
+            <h2>
+                Your Cart
+            </h2>
+
 
             <div id="cart-items">
+
                 <!-- Cart items -->
+
             </div>
+
 
             <div class="cart-total">
 
-                <span>Total</span>
+                <span>
+                    Total
+                </span>
+
 
                 <strong id="cart-total">
                     0 EGP
@@ -182,8 +426,14 @@
 
             </div>
 
-            <button class="checkout-button" onclick="checkout()">
+
+            <button
+                class="checkout-button"
+                onclick="checkout()"
+            >
+
                 ORDER ON WHATSAPP
+
             </button>
 
         </div>
@@ -191,16 +441,22 @@
     </div>
 
 
-    <!-- Footer -->
+
+    <!-- =========================================
+         FOOTER
+         ========================================= -->
+
     <footer>
 
         <div class="footer-logo">
             REBEL VELVET
         </div>
 
+
         <p>
             Beauty Beyond Rules.
         </p>
+
 
         <span>
             © 2026 Rebel Velvet. All rights reserved.
@@ -209,7 +465,9 @@
     </footer>
 
 
+
     <script src="script.js"></script>
 
 </body>
+
 </html>
