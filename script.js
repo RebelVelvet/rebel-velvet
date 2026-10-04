@@ -9,8 +9,7 @@ const WHATSAPP_NUMBER =
 
 
 const API_URL =
-    "https://script.google.com/macros/s/AKfycbwobwaeysf_tEYipYYm1b_bJxJFpQeOpWXM_pp4DNLTjYu5zsOxrgTV_ZbV9snLs7lw/exec";
-
+    "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec";
 
 /*************************************************
  * DATA
