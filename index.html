@@ -2,316 +2,481 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rebel Velvet | Beauty Beyond Rules</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="style.css?v=6">
+    <title>
+        Rebel Velvet | Beauty Beyond Rules
+    </title>
+
+    <!-- REBEL VELVET LOGO -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="logo.png"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        href="logo.png"
+    >
+
+    <meta
+        name="theme-color"
+        content="#6d1f2b"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=7"
+    >
+
 </head>
+
 
 <body>
 
+
 <header>
+
     <nav class="navbar">
 
-        <a href="#home" class="logo">
+        <a
+            href="#home"
+            class="logo"
+        >
             REBEL VELVET
         </a>
 
+
         <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#shop">Shop</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#shop">
+                Shop
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
         </div>
 
-        <button class="cart-button" onclick="openCart()">
+
+        <button
+            class="cart-button"
+            onclick="openCart()"
+        >
+
             Cart
-            <span id="cart-count">0</span>
+
+            <span id="cart-count">
+                0
+            </span>
+
         </button>
 
     </nav>
+
 </header>
+
 
 
 <main>
 
-    <!-- =========================================
-         HERO
-    ========================================== -->
 
-    <section id="home" class="hero">
+<!-- =========================================
+     HERO
+========================================= -->
 
-        <div class="hero-content">
-
-            <p class="eyebrow">
-                REBEL VELVET
-            </p>
-
-            <h1>
-                Beauty<br>
-                <span>Beyond Rules.</span>
-            </h1>
-
-            <p class="hero-text">
-                Discover your signature glow with our feminine collection of body splashes,
-                lip glosses and everyday essentials.
-            </p>
-
-            <a href="#shop" class="hero-button">
-                SHOP NOW
-            </a>
-
-        </div>
+<section
+    id="home"
+    class="hero"
+>
 
 
-        <!-- SINGLE HERO SLIDER -->
-
-        <div class="hero-visual">
-
-            <div class="hero-orbit orbit-one"></div>
-            <div class="hero-orbit orbit-two"></div>
-
-            <div class="hero-main" data-slide="01">
-
-                <img
-                    id="hero-slider-image"
-                    src=""
-                    alt="Rebel Velvet Product"
-                >
-
-                <div class="hero-slider-overlay"></div>
-
-                <div class="hero-slide-number">
-                    <span id="hero-slide-current">01</span>
-
-                    <span class="hero-slide-line"></span>
-
-                    <span id="hero-slide-total">01</span>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
+    <div class="hero-content">
 
 
-    <!-- =========================================
-         CATEGORIES
-    ========================================== -->
-
-    <section class="categories">
-
-        <button
-            class="category-card"
-            onclick="filterProducts('Body Splash')"
-        >
-            <span>✦</span>
-
-            <h3>
-                Body Splash
-            </h3>
-
-            <p>
-                Fresh. Feminine. Unforgettable.
-            </p>
-        </button>
+        <p class="eyebrow">
+            REBEL VELVET
+        </p>
 
 
-        <button
-            class="category-card"
-            onclick="filterProducts('Lip Gloss')"
-        >
-            <span>♡</span>
+        <h1>
 
-            <h3>
-                Lip Gloss
-            </h3>
-
-            <p>
-                Shine your way.
-            </p>
-        </button>
-
-
-        <button
-            class="category-card"
-            onclick="filterProducts('Car Air Freshener')"
-        >
-            <span>✧</span>
-
-            <h3>
-                Car Air Freshener
-            </h3>
-
-            <p>
-                Beauty for your drive.
-            </p>
-        </button>
-
-    </section>
-
-
-    <!-- =========================================
-         SHOP
-    ========================================== -->
-
-    <section id="shop" class="shop-section">
-
-        <div class="section-heading">
-
-            <p>
-                OUR COLLECTION
-            </p>
-
-            <h2 id="shop-title">
-                Find Your Favorite
-            </h2>
+            Beauty<br>
 
             <span>
-                Beauty made to become part of your everyday ritual.
+                Beyond Rules.
             </span>
 
-        </div>
+        </h1>
 
 
-        <div class="filter-bar">
+        <p class="hero-text">
 
-            <button
-                id="filter-all"
-                class="filter-button active"
-                onclick="filterProducts('all')"
-            >
-                ALL PRODUCTS
-            </button>
+            Discover your signature glow with our feminine
+            collection of body splashes, lip glosses and
+            everyday essentials.
 
-            <button
-                class="filter-button"
-                onclick="filterProducts('Body Splash')"
-            >
-                BODY SPLASH
-            </button>
+        </p>
 
-            <button
-                class="filter-button"
-                onclick="filterProducts('Lip Gloss')"
-            >
-                LIP GLOSS
-            </button>
 
-            <button
-                class="filter-button"
-                onclick="filterProducts('Car Air Freshener')"
-            >
-                CAR AIR FRESHENER
-            </button>
+        <a
+            href="#shop"
+            class="hero-button"
+        >
+            SHOP NOW
+        </a>
 
-        </div>
+
+    </div>
+
+
+
+    <!-- SINGLE PRODUCT SLIDER -->
+
+    <div class="hero-visual">
+
+
+        <div class="hero-orbit orbit-one"></div>
+
+        <div class="hero-orbit orbit-two"></div>
 
 
         <div
-            id="products"
-            class="products-grid"
-        ></div>
-
-    </section>
+            class="hero-main"
+            data-slide="01"
+        >
 
 
-    <!-- =========================================
-         ABOUT
-    ========================================== -->
+            <img
+                id="hero-slider-image"
+                src=""
+                alt="Rebel Velvet Product"
+            >
 
-    <section id="about" class="about-section">
 
-        <div class="about-content">
+            <div class="hero-slider-overlay"></div>
 
-            <p>
-                ABOUT REBEL VELVET
-            </p>
 
-            <h2>
-                Softness with<br>
-                a little rebellion.
-            </h2>
+            <div class="hero-slide-number">
 
-            <p>
-                Rebel Velvet is a feminine beauty brand created for girls who love
-                to express themselves, feel confident, and leave their own signature
-                wherever they go.
-            </p>
+                <span id="hero-slide-current">
+                    01
+                </span>
+
+                <span class="hero-slide-line"></span>
+
+                <span id="hero-slide-total">
+                    01
+                </span>
+
+            </div>
+
 
         </div>
 
-    </section>
+
+    </div>
 
 
-    <!-- =========================================
-         CONTACT
-    ========================================== -->
+</section>
 
-    <section id="contact" class="contact-section">
+
+
+<!-- =========================================
+     CATEGORIES
+========================================= -->
+
+<section class="categories">
+
+
+    <button
+        class="category-card"
+        onclick="filterProducts('Body Splash')"
+    >
+
+        <span>
+            ✦
+        </span>
+
+        <h3>
+            Body Splash
+        </h3>
 
         <p>
-            STAY IN THE LOOP
+            Fresh. Feminine. Unforgettable.
         </p>
 
-        <h2>
-            Follow the Rebel.
+    </button>
+
+
+
+    <button
+        class="category-card"
+        onclick="filterProducts('Lip Gloss')"
+    >
+
+        <span>
+            ♡
+        </span>
+
+        <h3>
+            Lip Gloss
+        </h3>
+
+        <p>
+            Shine your way.
+        </p>
+
+    </button>
+
+
+
+    <button
+        class="category-card"
+        onclick="filterProducts('Car Air Freshener')"
+    >
+
+        <span>
+            ✧
+        </span>
+
+        <h3>
+            Car Air Freshener
+        </h3>
+
+        <p>
+            Beauty for your drive.
+        </p>
+
+    </button>
+
+
+</section>
+
+
+
+<!-- =========================================
+     SHOP
+========================================= -->
+
+<section
+    id="shop"
+    class="shop-section"
+>
+
+
+    <div class="section-heading">
+
+
+        <p>
+            OUR COLLECTION
+        </p>
+
+
+        <h2 id="shop-title">
+            Find Your Favorite
         </h2>
 
+
+        <span>
+            Beauty made to become part of your everyday ritual.
+        </span>
+
+
+    </div>
+
+
+
+    <div class="filter-bar">
+
+
+        <button
+            id="filter-all"
+            class="filter-button active"
+            onclick="filterProducts('all')"
+        >
+            ALL PRODUCTS
+        </button>
+
+
+        <button
+            class="filter-button"
+            onclick="filterProducts('Body Splash')"
+        >
+            BODY SPLASH
+        </button>
+
+
+        <button
+            class="filter-button"
+            onclick="filterProducts('Lip Gloss')"
+        >
+            LIP GLOSS
+        </button>
+
+
+        <button
+            class="filter-button"
+            onclick="filterProducts('Car Air Freshener')"
+        >
+            CAR AIR FRESHENER
+        </button>
+
+
+    </div>
+
+
+
+    <div
+        id="products"
+        class="products-grid"
+    ></div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     ABOUT
+========================================= -->
+
+<section
+    id="about"
+    class="about-section"
+>
+
+
+    <div class="about-content">
+
+
         <p>
-            Discover new products, offers and beauty inspiration.
+            ABOUT REBEL VELVET
         </p>
 
 
-        <div class="contact-buttons">
+        <h2>
 
-            <a
-                href="#"
-                class="instagram-button"
-                target="_blank"
-                rel="noopener"
-            >
-                Instagram
-            </a>
+            Softness with<br>
+
+            a little rebellion.
+
+        </h2>
 
 
-            <a
-                href="tel:+201092542461"
-                class="phone-button"
-            >
-                +20 109 254 2461
-            </a>
+        <p>
+
+            Rebel Velvet is a feminine beauty brand created
+            for girls who love to express themselves, feel
+            confident, and leave their own signature wherever
+            they go.
+
+        </p>
 
 
-            <a
-                href="https://wa.me/201092542461"
-                class="whatsapp-button"
-                target="_blank"
-                rel="noopener"
-            >
-                WhatsApp
-            </a>
+    </div>
 
-        </div>
 
-    </section>
+</section>
+
+
+
+<!-- =========================================
+     CONTACT
+========================================= -->
+
+<section
+    id="contact"
+    class="contact-section"
+>
+
+
+    <p>
+        STAY IN THE LOOP
+    </p>
+
+
+    <h2>
+        Follow the Rebel.
+    </h2>
+
+
+    <p>
+        Discover new products, offers and beauty inspiration.
+    </p>
+
+
+    <div class="contact-buttons">
+
+
+        <!-- ضع رابط Instagram الحقيقي مكان # -->
+
+        <a
+            href="#"
+            class="instagram-button"
+            target="_blank"
+            rel="noopener"
+        >
+            Instagram
+        </a>
+
+
+        <a
+            href="tel:+201092542461"
+            class="phone-button"
+        >
+            +20 109 254 2461
+        </a>
+
+
+        <a
+            href="https://wa.me/201092542461"
+            class="whatsapp-button"
+            target="_blank"
+            rel="noopener"
+        >
+            WhatsApp
+        </a>
+
+
+    </div>
+
+
+</section>
+
 
 </main>
 
 
+
 <!-- =========================================
      CART
-========================================== -->
+========================================= -->
 
 <div
     id="cart-overlay"
     class="cart-overlay"
 >
 
+
     <div class="cart">
+
 
         <button
             class="close-cart"
@@ -320,9 +485,11 @@
             ×
         </button>
 
+
         <h2>
             Your Cart
         </h2>
+
 
         <div id="cart-items"></div>
 
@@ -355,9 +522,12 @@
             ORDER ON WHATSAPP
         </button>
 
+
     </div>
 
+
 </div>
+
 
 
 <!-- =========================================
@@ -366,22 +536,29 @@
 
 <footer>
 
+
     <div class="footer-logo">
         REBEL VELVET
     </div>
+
 
     <p>
         Beauty Beyond Rules.
     </p>
 
+
     <span>
         © 2026 Rebel Velvet. All rights reserved.
     </span>
 
+
 </footer>
 
 
-<script src="script.js?v=6"></script>
+
+<script src="script.js?v=7"></script>
+
 
 </body>
+
 </html>
