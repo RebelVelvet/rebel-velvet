@@ -1,9 +1,13 @@
 /*************************************************
  * REBEL VELVET
  * SHOP + FILTER + CART + GOOGLE SHEET PRICES
- * + MOBILE HERO PRODUCT SLIDER
+ * + UNIVERSAL HERO PRODUCT SLIDER
  *************************************************/
 
+
+/* =========================================
+   CONFIG
+========================================= */
 
 const WHATSAPP_NUMBER =
     "201092542461";
@@ -13,9 +17,9 @@ const API_URL =
     "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec";
 
 
-/*************************************************
- * DATA
- *************************************************/
+/* =========================================
+   DATA
+========================================= */
 
 let products = [];
 
@@ -26,9 +30,9 @@ let cart = [];
 let currentFilter = "all";
 
 
-/*************************************************
- * HERO SLIDER DATA
- *************************************************/
+/* =========================================
+   HERO SLIDER
+========================================= */
 
 let heroSliderImages = [];
 
@@ -36,10 +40,12 @@ let heroSliderIndex = 0;
 
 let heroSliderTimer = null;
 
+let heroSliderTransitionTimer = null;
 
-/*************************************************
- * LOAD WEBSITE DATA
- *************************************************/
+
+/* =========================================
+   LOAD WEBSITE DATA
+========================================= */
 
 function loadWebsiteData() {
 
@@ -84,6 +90,8 @@ function loadWebsiteData() {
 
                 products = [];
 
+                updateHeroImages();
+
                 displayProducts();
 
             }
@@ -105,6 +113,8 @@ function loadWebsiteData() {
 
 
             products = [];
+
+            updateHeroImages();
 
             displayProducts();
 
@@ -131,14 +141,18 @@ function loadWebsiteData() {
 }
 
 
-/*************************************************
- * HERO IMAGES
- *************************************************/
+/* =========================================
+   BUILD HERO IMAGE LIST
+========================================= */
 
 function updateHeroImages() {
 
     heroSliderImages = [];
 
+
+    /*
+     * 1. Get images from catalog
+     */
 
     products.forEach(
         function(product) {
@@ -158,12 +172,9 @@ function updateHeroImages() {
     );
 
 
-    heroSliderImages =
-        [...new Set(heroSliderImages)];
-
-
     /*
-     * Fallback to Drive images
+     * 2. If catalog has no images,
+     *    get images directly from Drive data
      */
 
     if (
@@ -198,37 +209,20 @@ function updateHeroImages() {
                 }
             );
 
-
-        heroSliderImages =
-            [...new Set(heroSliderImages)];
-
     }
 
 
     /*
-     * Desktop hero images
+     * Remove duplicate images
      */
 
-    setHeroImage(
-        "hero-body-splash",
-        "bodySplash"
-    );
-
-
-    setHeroImage(
-        "hero-lip-gloss",
-        "lipGloss"
-    );
-
-
-    setHeroImage(
-        "hero-car-freshener",
-        "carAirFreshener"
-    );
+    heroSliderImages =
+        [...new Set(heroSliderImages)]
+            .filter(Boolean);
 
 
     /*
-     * Start mobile slider
+     * Start slider
      */
 
     startHeroSlider();
@@ -236,55 +230,27 @@ function updateHeroImages() {
 }
 
 
-/*************************************************
- * SET HERO IMAGE
- *************************************************/
-
-function setHeroImage(
-    elementId,
-    driveKey
-) {
-
-    const element =
-        document.getElementById(
-            elementId
-        );
-
-
-    if (!element) {
-
-        return;
-
-    }
-
-
-    const images =
-        productImages[
-            driveKey
-        ] || [];
-
-
-    if (
-        images.length > 0
-    ) {
-
-        element.src =
-            images[0].url;
-
-    }
-
-}
-
-
-/*************************************************
- * MOBILE HERO SLIDER
- *************************************************/
+/* =========================================
+   START HERO SLIDER
+========================================= */
 
 function startHeroSlider() {
 
     const sliderImage =
         document.getElementById(
-            "hero-lip-gloss"
+            "hero-slider-image"
+        );
+
+
+    const sliderCurrent =
+        document.getElementById(
+            "hero-slide-current"
+        );
+
+
+    const sliderTotal =
+        document.getElementById(
+            "hero-slide-total"
         );
 
 
@@ -295,23 +261,12 @@ function startHeroSlider() {
 
 
     if (!sliderImage) {
-
         return;
-
-    }
-
-
-    if (
-        heroSliderImages.length === 0
-    ) {
-
-        return;
-
     }
 
 
     /*
-     * Stop old timer
+     * Stop previous timers
      */
 
     if (heroSliderTimer) {
@@ -320,15 +275,75 @@ function startHeroSlider() {
             heroSliderTimer
         );
 
+        heroSliderTimer = null;
     }
 
+
+    if (heroSliderTransitionTimer) {
+
+        clearTimeout(
+            heroSliderTransitionTimer
+        );
+
+        heroSliderTransitionTimer = null;
+    }
+
+
+    /*
+     * No images
+     */
+
+    if (
+        heroSliderImages.length === 0
+    ) {
+
+        sliderImage.removeAttribute(
+            "src"
+        );
+
+        if (sliderCurrent) {
+            sliderCurrent.textContent = "01";
+        }
+
+        if (sliderTotal) {
+            sliderTotal.textContent = "01";
+        }
+
+        return;
+    }
+
+
+    /*
+     * Reset index
+     */
 
     heroSliderIndex = 0;
 
 
     /*
+     * Total slides
+     */
+
+    const totalSlides =
+        heroSliderImages.length;
+
+
+    if (sliderTotal) {
+
+        sliderTotal.textContent =
+            String(totalSlides)
+                .padStart(2, "0");
+    }
+
+
+    /*
      * First image
      */
+
+    sliderImage.classList.remove(
+        "slider-fade"
+    );
+
 
     sliderImage.src =
         heroSliderImages[
@@ -340,13 +355,32 @@ function startHeroSlider() {
      * Slide number
      */
 
+    updateHeroSlideNumber();
+
+
+    /*
+     * Store data-slide
+     */
+
     if (sliderFrame) {
 
         sliderFrame.dataset.slide =
             String(
                 heroSliderIndex + 1
             ).padStart(2, "0");
+    }
 
+
+    /*
+     * Only run interval if there
+     * is more than one image
+     */
+
+    if (
+        heroSliderImages.length <= 1
+    ) {
+
+        return;
     }
 
 
@@ -367,15 +401,15 @@ function startHeroSlider() {
 }
 
 
-/*************************************************
- * CHANGE HERO SLIDE
- *************************************************/
+/* =========================================
+   CHANGE HERO SLIDE
+========================================= */
 
 function changeHeroSlide() {
 
     const sliderImage =
         document.getElementById(
-            "hero-lip-gloss"
+            "hero-slider-image"
         );
 
 
@@ -386,9 +420,7 @@ function changeHeroSlide() {
 
 
     if (!sliderImage) {
-
         return;
-
     }
 
 
@@ -397,7 +429,18 @@ function changeHeroSlide() {
     ) {
 
         return;
+    }
 
+
+    /*
+     * Prevent multiple transitions
+     */
+
+    if (heroSliderTransitionTimer) {
+
+        clearTimeout(
+            heroSliderTransitionTimer
+        );
     }
 
 
@@ -410,82 +453,125 @@ function changeHeroSlide() {
     );
 
 
-    setTimeout(
-        function() {
+    heroSliderTransitionTimer =
+        setTimeout(
+            function() {
 
-            heroSliderIndex++;
+                /*
+                 * Next image
+                 */
 
-
-            if (
-                heroSliderIndex >=
-                heroSliderImages.length
-            ) {
-
-                heroSliderIndex = 0;
-
-            }
+                heroSliderIndex++;
 
 
-            /*
-             * Set new image
-             */
+                if (
+                    heroSliderIndex >=
+                    heroSliderImages.length
+                ) {
 
-            sliderImage.onload =
-                function() {
+                    heroSliderIndex = 0;
 
-                    sliderImage.classList.remove(
-                        "slider-fade"
-                    );
-
-                };
+                }
 
 
-            sliderImage.src =
-                heroSliderImages[
-                    heroSliderIndex
-                ];
+                /*
+                 * Update slide number
+                 */
+
+                updateHeroSlideNumber();
 
 
-            /*
-             * Update number
-             */
+                /*
+                 * Update frame number
+                 */
 
-            if (sliderFrame) {
+                if (sliderFrame) {
 
-                sliderFrame.dataset.slide =
-                    String(
-                        heroSliderIndex + 1
-                    ).padStart(2, "0");
-
-            }
-
-
-            /*
-             * Cached-image fallback
-             */
-
-            setTimeout(
-                function() {
-
-                    sliderImage.classList.remove(
-                        "slider-fade"
-                    );
-
-                },
-                150
-            );
+                    sliderFrame.dataset.slide =
+                        String(
+                            heroSliderIndex + 1
+                        ).padStart(2, "0");
+                }
 
 
-        },
-        650
-    );
+                /*
+                 * Remove old load handler
+                 */
+
+                sliderImage.onload = null;
+
+
+                /*
+                 * Load new image
+                 */
+
+                sliderImage.onload =
+                    function() {
+
+                        sliderImage.classList.remove(
+                            "slider-fade"
+                        );
+
+                    };
+
+
+                sliderImage.src =
+                    heroSliderImages[
+                        heroSliderIndex
+                    ];
+
+
+                /*
+                 * Cached image fallback
+                 */
+
+                setTimeout(
+                    function() {
+
+                        sliderImage.classList.remove(
+                            "slider-fade"
+                        );
+
+                    },
+                    250
+                );
+
+
+            },
+            700
+        );
 
 }
 
 
-/*************************************************
- * DISPLAY PRODUCTS
- *************************************************/
+/* =========================================
+   UPDATE HERO SLIDE NUMBER
+========================================= */
+
+function updateHeroSlideNumber() {
+
+    const current =
+        document.getElementById(
+            "hero-slide-current"
+        );
+
+
+    if (!current) {
+        return;
+    }
+
+
+    current.textContent =
+        String(
+            heroSliderIndex + 1
+        ).padStart(2, "0");
+
+}
+
+
+/* =========================================
+   DISPLAY PRODUCTS
+========================================= */
 
 function displayProducts() {
 
@@ -496,9 +582,7 @@ function displayProducts() {
 
 
     if (!container) {
-
         return;
-
     }
 
 
@@ -509,9 +593,12 @@ function displayProducts() {
         products;
 
 
+    /*
+     * Apply category filter
+     */
+
     if (
-        currentFilter !==
-        "all"
+        currentFilter !== "all"
     ) {
 
         filteredProducts =
@@ -528,6 +615,10 @@ function displayProducts() {
 
     }
 
+
+    /*
+     * No products
+     */
 
     if (
         filteredProducts.length === 0
@@ -554,9 +645,12 @@ function displayProducts() {
         `;
 
         return;
-
     }
 
+
+    /*
+     * Create product cards
+     */
 
     filteredProducts.forEach(
         function(product) {
@@ -577,7 +671,7 @@ function displayProducts() {
 
                     <img
                         class="product-image"
-                        src="${product.image}"
+                        src="${escapeAttribute(product.image)}"
                         alt="${escapeHtml(product.name)}"
                         loading="lazy"
                         onerror="
@@ -628,9 +722,9 @@ function displayProducts() {
 }
 
 
-/*************************************************
- * FILTER PRODUCTS
- *************************************************/
+/* =========================================
+   FILTER PRODUCTS
+========================================= */
 
 function filterProducts(
     category
@@ -672,9 +766,9 @@ function filterProducts(
 }
 
 
-/*************************************************
- * UPDATE FILTER BUTTONS
- *************************************************/
+/* =========================================
+   UPDATE FILTER BUTTONS
+========================================= */
 
 function updateFilterButtons() {
 
@@ -705,10 +799,8 @@ function updateFilterButtons() {
 
 
             if (
-                currentFilter ===
-                "all" &&
-                text ===
-                "all products"
+                currentFilter === "all" &&
+                text === "all products"
             ) {
 
                 button.classList.add(
@@ -719,11 +811,9 @@ function updateFilterButtons() {
 
 
             if (
-                currentFilter !==
-                "all" &&
+                currentFilter !== "all" &&
                 text ===
-                currentFilter
-                    .toLowerCase()
+                currentFilter.toLowerCase()
             ) {
 
                 button.classList.add(
@@ -738,9 +828,9 @@ function updateFilterButtons() {
 }
 
 
-/*************************************************
- * UPDATE SHOP TITLE
- *************************************************/
+/* =========================================
+   UPDATE SHOP TITLE
+========================================= */
 
 function updateShopTitle() {
 
@@ -751,15 +841,12 @@ function updateShopTitle() {
 
 
     if (!title) {
-
         return;
-
     }
 
 
     if (
-        currentFilter ===
-        "all"
+        currentFilter === "all"
     ) {
 
         title.textContent =
@@ -776,9 +863,9 @@ function updateShopTitle() {
 }
 
 
-/*************************************************
- * ADD TO CART
- *************************************************/
+/* =========================================
+   ADD TO CART
+========================================= */
 
 function addToCart(
     productId
@@ -798,9 +885,7 @@ function addToCart(
 
 
     if (!product) {
-
         return;
-
     }
 
 
@@ -861,9 +946,9 @@ function addToCart(
 }
 
 
-/*************************************************
- * REMOVE ITEM
- *************************************************/
+/* =========================================
+   REMOVE ITEM
+========================================= */
 
 function removeFromCart(
     productId
@@ -891,9 +976,9 @@ function removeFromCart(
 }
 
 
-/*************************************************
- * CHANGE QUANTITY
- *************************************************/
+/* =========================================
+   CHANGE QUANTITY
+========================================= */
 
 function changeQuantity(
     productId,
@@ -914,9 +999,7 @@ function changeQuantity(
 
 
     if (!item) {
-
         return;
-
     }
 
 
@@ -946,9 +1029,9 @@ function changeQuantity(
 }
 
 
-/*************************************************
- * SAVE CART
- *************************************************/
+/* =========================================
+   SAVE CART
+========================================= */
 
 function saveCart() {
 
@@ -960,9 +1043,9 @@ function saveCart() {
 }
 
 
-/*************************************************
- * LOAD CART
- *************************************************/
+/* =========================================
+   LOAD CART
+========================================= */
 
 function loadCart() {
 
@@ -997,9 +1080,9 @@ function loadCart() {
 }
 
 
-/*************************************************
- * CART COUNT
- *************************************************/
+/* =========================================
+   CART COUNT
+========================================= */
 
 function updateCartCount() {
 
@@ -1010,15 +1093,13 @@ function updateCartCount() {
 
 
     if (!count) {
-
         return;
-
     }
 
 
     const total =
         cart.reduce(
-            function(sum,item) {
+            function(sum, item) {
 
                 return (
                     sum +
@@ -1036,9 +1117,9 @@ function updateCartCount() {
 }
 
 
-/*************************************************
- * RENDER CART
- *************************************************/
+/* =========================================
+   RENDER CART
+========================================= */
 
 function renderCart() {
 
@@ -1067,6 +1148,10 @@ function renderCart() {
     container.innerHTML =
         "";
 
+
+    /*
+     * Empty cart
+     */
 
     if (
         cart.length === 0
@@ -1101,6 +1186,10 @@ function renderCart() {
     let total = 0;
 
 
+    /*
+     * Cart items
+     */
+
     cart.forEach(
         function(item) {
 
@@ -1126,7 +1215,7 @@ function renderCart() {
             element.innerHTML = `
 
                 <img
-                    src="${item.image}"
+                    src="${escapeAttribute(item.image)}"
                     alt="${escapeHtml(item.name)}"
                 >
 
@@ -1195,9 +1284,9 @@ function renderCart() {
 }
 
 
-/*************************************************
- * CONTINUE SHOPPING
- *************************************************/
+/* =========================================
+   CONTINUE SHOPPING
+========================================= */
 
 function continueShopping() {
 
@@ -1240,9 +1329,9 @@ function continueShopping() {
 }
 
 
-/*************************************************
- * OPEN CART
- *************************************************/
+/* =========================================
+   OPEN CART
+========================================= */
 
 function openCart() {
 
@@ -1253,9 +1342,7 @@ function openCart() {
 
 
     if (!overlay) {
-
         return;
-
     }
 
 
@@ -1274,9 +1361,9 @@ function openCart() {
 }
 
 
-/*************************************************
- * CLOSE CART
- *************************************************/
+/* =========================================
+   CLOSE CART
+========================================= */
 
 function closeCart() {
 
@@ -1287,9 +1374,7 @@ function closeCart() {
 
 
     if (!overlay) {
-
         return;
-
     }
 
 
@@ -1305,9 +1390,9 @@ function closeCart() {
 }
 
 
-/*************************************************
- * WHATSAPP CHECKOUT
- *************************************************/
+/* =========================================
+   WHATSAPP CHECKOUT
+========================================= */
 
 function checkout() {
 
@@ -1369,8 +1454,10 @@ function checkout() {
     message +=
         "Name:%0A";
 
+
     message +=
         "Phone:%0A";
+
 
     message +=
         "Address:%0A";
@@ -1391,31 +1478,36 @@ function checkout() {
 }
 
 
-/*************************************************
- * ESCAPE HTML
- *************************************************/
+/* =========================================
+   ESCAPE HTML
+========================================= */
 
 function escapeHtml(
     value
 ) {
 
     return String(value)
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
@@ -1424,19 +1516,21 @@ function escapeHtml(
 }
 
 
-/*************************************************
- * ESCAPE ATTRIBUTE
- *************************************************/
+/* =========================================
+   ESCAPE ATTRIBUTE
+========================================= */
 
 function escapeAttribute(
     value
 ) {
 
     return String(value)
+
         .replace(
             /\\/g,
             "\\\\"
         )
+
         .replace(
             /'/g,
             "\\'"
@@ -1445,9 +1539,9 @@ function escapeAttribute(
 }
 
 
-/*************************************************
- * CLOSE CART OUTSIDE
- *************************************************/
+/* =========================================
+   CLOSE CART OUTSIDE
+========================================= */
 
 document.addEventListener(
     "click",
@@ -1460,9 +1554,7 @@ document.addEventListener(
 
 
         if (!overlay) {
-
             return;
-
         }
 
 
@@ -1479,9 +1571,9 @@ document.addEventListener(
 );
 
 
-/*************************************************
- * START
- *************************************************/
+/* =========================================
+   START
+========================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
