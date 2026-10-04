@@ -1,12 +1,8 @@
-/* =========================================
-   REBEL VELVET
-   PRODUCT + CART SYSTEM
-   ========================================= */
+/*************************************************
+ * REBEL VELVET
+ * SHOP + FILTER + CART + GOOGLE SHEET PRICES
+ *************************************************/
 
-
-/* =========================================
-   SETTINGS
-   ========================================= */
 
 const WHATSAPP_NUMBER =
     "201092542461";
@@ -16,117 +12,27 @@ const API_URL =
     "https://script.google.com/macros/s/AKfycbwobwaeysf_tEYipYYm1b_bJxJFpQeOpWXM_pp4DNLTjYu5zsOxrgTV_ZbV9snLs7lw/exec";
 
 
-/* =========================================
-   PRODUCTS
-   ========================================= */
+/*************************************************
+ * DATA
+ *************************************************/
 
-const products = [
-
-    {
-        id: 1,
-
-        name:
-            "Velvet Blossom",
-
-        category:
-            "Body Splash",
-
-        price:
-            350,
-
-        status:
-            "available",
-
-        driveKey:
-            "bodySplash"
-    },
-
-
-    {
-        id: 2,
-
-        name:
-            "Rose Kiss",
-
-        category:
-            "Lip Gloss",
-
-        price:
-            250,
-
-        status:
-            "available",
-
-        driveKey:
-            "lipGloss"
-    },
-
-
-    {
-        id: 3,
-
-        name:
-            "Velvet Drive",
-
-        category:
-            "Car Air Freshener",
-
-        price:
-            200,
-
-        status:
-            "available",
-
-        driveKey:
-            "carAirFreshener"
-    }
-
-];
-
-
-/* =========================================
-   COMING SOON
-   ========================================= */
-
-const comingSoon = [
-
-    "Body Care",
-
-    "Perfumes",
-
-    "Skincare",
-
-    "Hair Care",
-
-    "Gift Sets"
-
-];
-
-
-/* =========================================
-   CART
-   ========================================= */
-
-let cart = [];
-
-
-/* =========================================
-   PRODUCT IMAGES
-   ========================================= */
+let products = [];
 
 let productImages = {};
 
+let cart = [];
 
-/* =========================================
-   LOAD GOOGLE DRIVE IMAGES
-   ========================================= */
+let currentFilter = "all";
 
-function loadProductImages() {
+
+/*************************************************
+ * LOAD WEBSITE DATA
+ *************************************************/
+
+function loadWebsiteData() {
 
     const script =
-        document.createElement(
-            "script"
-        );
+        document.createElement("script");
 
 
     const callbackName =
@@ -137,18 +43,26 @@ function loadProductImages() {
     window[callbackName] =
         function(data) {
 
+            console.log(
+                "Rebel Velvet API:",
+                data
+            );
+
+
             if (
                 data &&
-                data.success &&
-                data.products
+                data.success
             ) {
 
                 productImages =
-                    data.products;
+                    data.products || {};
+
+
+                products =
+                    data.catalog || [];
 
 
                 updateHeroImages();
-
 
                 displayProducts();
 
@@ -156,9 +70,31 @@ function loadProductImages() {
 
             else {
 
+                products = [];
+
                 displayProducts();
 
             }
+
+
+            delete window[callbackName];
+
+            script.remove();
+
+        };
+
+
+    script.onerror =
+        function() {
+
+            console.error(
+                "Unable to load products."
+            );
+
+
+            products = [];
+
+            displayProducts();
 
 
             delete window[callbackName];
@@ -171,25 +107,9 @@ function loadProductImages() {
     script.src =
         API_URL +
         "?callback=" +
-        callbackName;
-
-
-    script.onerror =
-        function() {
-
-            console.error(
-                "Unable to load product images."
-            );
-
-
-            displayProducts();
-
-
-            delete window[callbackName];
-
-            script.remove();
-
-        };
+        callbackName +
+        "&t=" +
+        Date.now();
 
 
     document.body.appendChild(
@@ -199,147 +119,76 @@ function loadProductImages() {
 }
 
 
-/* =========================================
-   GET PRODUCT IMAGES
-   ========================================= */
+/*************************************************
+ * HERO IMAGES
+ *************************************************/
 
-function getProductImages(
-    product
-) {
-
-    if (
-        !productImages ||
-        !productImages[
-            product.driveKey
-        ]
-    ) {
-
-        return [];
-
-    }
+function updateHeroImages() {
 
 
-    return productImages[
-        product.driveKey
-    ];
+    setHeroImage(
+        "hero-body-splash",
+        "bodySplash"
+    );
+
+
+    setHeroImage(
+        "hero-lip-gloss",
+        "lipGloss"
+    );
+
+
+    setHeroImage(
+        "hero-car-freshener",
+        "carAirFreshener"
+    );
 
 }
 
 
-/* =========================================
-   GET MAIN PRODUCT IMAGE
-   ========================================= */
+/*************************************************
+ * SET HERO IMAGE
+ *************************************************/
 
-function getMainImage(
-    product
+function setHeroImage(
+    elementId,
+    driveKey
 ) {
 
-    const images =
-        getProductImages(
-            product
+    const element =
+        document.getElementById(
+            elementId
         );
+
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    const images =
+        productImages[
+            driveKey
+        ] || [];
 
 
     if (
         images.length > 0
     ) {
 
-        return images[0].url;
-
-    }
-
-
-    return (
-        "https://placehold.co/" +
-        "700x850/" +
-        "f1dfd8/" +
-        "6d1f2b" +
-        "?text=Rebel+Velvet"
-    );
-
-}
-
-
-/* =========================================
-   UPDATE HERO IMAGES
-   ========================================= */
-
-function updateHeroImages() {
-
-    const bodySplash =
-        getProductImages(
-            products[0]
-        )[0];
-
-
-    const lipGloss =
-        getProductImages(
-            products[1]
-        )[0];
-
-
-    const carFreshener =
-        getProductImages(
-            products[2]
-        )[0];
-
-
-    const bodyElement =
-        document.getElementById(
-            "hero-body-splash"
-        );
-
-
-    const lipElement =
-        document.getElementById(
-            "hero-lip-gloss"
-        );
-
-
-    const carElement =
-        document.getElementById(
-            "hero-car-freshener"
-        );
-
-
-    if (
-        bodyElement &&
-        bodySplash
-    ) {
-
-        bodyElement.src =
-            bodySplash.url;
-
-    }
-
-
-    if (
-        lipElement &&
-        lipGloss
-    ) {
-
-        lipElement.src =
-            lipGloss.url;
-
-    }
-
-
-    if (
-        carElement &&
-        carFreshener
-    ) {
-
-        carElement.src =
-            carFreshener.url;
+        element.src =
+            images[0].url;
 
     }
 
 }
 
 
-/* =========================================
-   DISPLAY PRODUCTS
-   ========================================= */
+/*************************************************
+ * DISPLAY PRODUCTS
+ *************************************************/
 
 function displayProducts() {
 
@@ -356,16 +205,68 @@ function displayProducts() {
     }
 
 
-    container.innerHTML =
-        "";
+    container.innerHTML = "";
 
 
-    products.forEach(
+    let filteredProducts =
+        products;
+
+
+    if (
+        currentFilter !==
+        "all"
+    ) {
+
+        filteredProducts =
+            products.filter(
+                function(product) {
+
+                    return (
+                        product.category ===
+                        currentFilter
+                    );
+
+                }
+            );
+
+    }
+
+
+    if (
+        filteredProducts.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="no-products">
+
+                <span>
+                    ✦
+                </span>
+
+                <h3>
+                    Coming Soon
+                </h3>
+
+                <p>
+                    Beautiful new products are on their way.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    filteredProducts.forEach(
         function(product) {
 
             const card =
                 document.createElement(
-                    "div"
+                    "article"
                 );
 
 
@@ -373,59 +274,47 @@ function displayProducts() {
                 "product-card";
 
 
-            const image =
-                getMainImage(
-                    product
-                );
-
-
             card.innerHTML = `
 
-                <img
-                    class="product-image"
-                    src="${image}"
-                    alt="${product.name}"
-                    loading="lazy"
-                    onerror="
-                        this.src='https://placehold.co/700x850/f1dfd8/6d1f2b?text=Rebel+Velvet'
-                    "
-                >
+                <div class="product-image-wrap">
+
+                    <img
+                        class="product-image"
+                        src="${product.image}"
+                        alt="${escapeHtml(product.name)}"
+                        loading="lazy"
+                        onerror="
+                            this.src='https://placehold.co/700x850/f1dfd8/6d1f2b?text=Rebel+Velvet'
+                        "
+                    >
+
+                </div>
 
 
                 <div class="product-info">
 
-
                     <div class="product-category">
-
-                        ${product.category}
-
+                        ${escapeHtml(product.category)}
                     </div>
 
 
                     <h3 class="product-name">
-
-                        ${product.name}
-
+                        ${escapeHtml(product.name)}
                     </h3>
 
 
                     <div class="product-price">
-
-                        ${product.price.toLocaleString()}
+                        ${Number(product.price).toLocaleString()}
                         EGP
-
                     </div>
 
 
                     <button
                         class="add-to-cart"
-                        onclick="addToCart(${product.id})"
+                        onclick="addToCart('${escapeAttribute(product.id)}')"
                     >
-
                         ADD TO BAG
-
                     </button>
-
 
                 </div>
 
@@ -442,9 +331,159 @@ function displayProducts() {
 }
 
 
-/* =========================================
-   ADD TO CART
-   ========================================= */
+/*************************************************
+ * FILTER PRODUCTS
+ *************************************************/
+
+function filterProducts(
+    category
+) {
+
+    currentFilter =
+        category;
+
+
+    updateFilterButtons();
+
+
+    updateShopTitle();
+
+
+    displayProducts();
+
+
+    const shop =
+        document.getElementById(
+            "shop"
+        );
+
+
+    if (shop) {
+
+        setTimeout(
+            function() {
+
+                shop.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            },
+            50
+        );
+
+    }
+
+}
+
+
+/*************************************************
+ * UPDATE FILTER BUTTONS
+ *************************************************/
+
+function updateFilterButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".filter-button"
+        );
+
+
+    buttons.forEach(
+        function(button) {
+
+            button.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+
+    buttons.forEach(
+        function(button) {
+
+            const text =
+                button.textContent
+                    .trim()
+                    .toLowerCase();
+
+
+            if (
+                currentFilter ===
+                "all" &&
+                text ===
+                "all products"
+            ) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            if (
+                currentFilter !==
+                "all" &&
+                text ===
+                currentFilter
+                    .toLowerCase()
+            ) {
+
+                button.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/*************************************************
+ * UPDATE SHOP TITLE
+ *************************************************/
+
+function updateShopTitle() {
+
+    const title =
+        document.getElementById(
+            "shop-title"
+        );
+
+
+    if (!title) {
+
+        return;
+
+    }
+
+
+    if (
+        currentFilter ===
+        "all"
+    ) {
+
+        title.textContent =
+            "Find Your Favorite";
+
+        return;
+
+    }
+
+
+    title.textContent =
+        currentFilter;
+
+}
+
+
+/*************************************************
+ * ADD TO CART
+ *************************************************/
 
 function addToCart(
     productId
@@ -452,8 +491,14 @@ function addToCart(
 
     const product =
         products.find(
-            item =>
-                item.id === productId
+            function(item) {
+
+                return (
+                    String(item.id) ===
+                    String(productId)
+                );
+
+            }
         );
 
 
@@ -466,8 +511,14 @@ function addToCart(
 
     const existing =
         cart.find(
-            item =>
-                item.id === productId
+            function(item) {
+
+                return (
+                    String(item.id) ===
+                    String(productId)
+                );
+
+            }
         );
 
 
@@ -491,12 +542,10 @@ function addToCart(
                 product.category,
 
             price:
-                product.price,
+                Number(product.price),
 
             image:
-                getMainImage(
-                    product
-                ),
+                product.image,
 
             quantity:
                 1
@@ -517,9 +566,9 @@ function addToCart(
 }
 
 
-/* =========================================
-   REMOVE FROM CART
-   ========================================= */
+/*************************************************
+ * REMOVE ITEM
+ *************************************************/
 
 function removeFromCart(
     productId
@@ -527,8 +576,14 @@ function removeFromCart(
 
     cart =
         cart.filter(
-            item =>
-                item.id !== productId
+            function(item) {
+
+                return (
+                    String(item.id) !==
+                    String(productId)
+                );
+
+            }
         );
 
 
@@ -541,9 +596,9 @@ function removeFromCart(
 }
 
 
-/* =========================================
-   CHANGE QUANTITY
-   ========================================= */
+/*************************************************
+ * CHANGE QUANTITY
+ *************************************************/
 
 function changeQuantity(
     productId,
@@ -552,8 +607,14 @@ function changeQuantity(
 
     const item =
         cart.find(
-            product =>
-                product.id === productId
+            function(product) {
+
+                return (
+                    String(product.id) ===
+                    String(productId)
+                );
+
+            }
         );
 
 
@@ -590,28 +651,23 @@ function changeQuantity(
 }
 
 
-/* =========================================
-   SAVE CART
-   ========================================= */
+/*************************************************
+ * SAVE CART
+ *************************************************/
 
 function saveCart() {
 
     localStorage.setItem(
-
         "rebelVelvetCart",
-
-        JSON.stringify(
-            cart
-        )
-
+        JSON.stringify(cart)
     );
 
 }
 
 
-/* =========================================
-   LOAD CART
-   ========================================= */
+/*************************************************
+ * LOAD CART
+ *************************************************/
 
 function loadCart() {
 
@@ -646,9 +702,9 @@ function loadCart() {
 }
 
 
-/* =========================================
-   CART COUNT
-   ========================================= */
+/*************************************************
+ * CART COUNT
+ *************************************************/
 
 function updateCartCount() {
 
@@ -667,10 +723,7 @@ function updateCartCount() {
 
     const total =
         cart.reduce(
-            function(
-                sum,
-                item
-            ) {
+            function(sum, item) {
 
                 return (
                     sum +
@@ -688,9 +741,9 @@ function updateCartCount() {
 }
 
 
-/* =========================================
-   RENDER CART
-   ========================================= */
+/*************************************************
+ * RENDER CART
+ *************************************************/
 
 function renderCart() {
 
@@ -726,16 +779,15 @@ function renderCart() {
 
         container.innerHTML = `
 
-            <div
-                style="
-                    text-align:center;
-                    padding:50px 10px;
-                    color:#806a69;
-                    font-size:13px;
-                "
-            >
+            <div class="empty-cart">
 
-                Your bag is empty.
+                <span>
+                    ♡
+                </span>
+
+                <p>
+                    Your bag is empty.
+                </p>
 
             </div>
 
@@ -757,9 +809,13 @@ function renderCart() {
     cart.forEach(
         function(item) {
 
-            total +=
-                item.price *
+            const itemTotal =
+                Number(item.price) *
                 item.quantity;
+
+
+            total +=
+                itemTotal;
 
 
             const element =
@@ -776,110 +832,54 @@ function renderCart() {
 
                 <img
                     src="${item.image}"
-                    alt="${item.name}"
+                    alt="${escapeHtml(item.name)}"
                 >
 
 
                 <div class="cart-item-info">
 
+                    <div class="cart-category">
+                        ${escapeHtml(item.category)}
+                    </div>
 
                     <h4>
-
-                        ${item.name}
-
+                        ${escapeHtml(item.name)}
                     </h4>
 
-
                     <p>
-
-                        ${item.price.toLocaleString()}
+                        ${Number(item.price).toLocaleString()}
                         EGP
-
                     </p>
 
 
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:10px;
-                            margin-top:8px;
-                        "
-                    >
-
+                    <div class="quantity-control">
 
                         <button
-
-                            onclick="
-                                changeQuantity(
-                                    ${item.id},
-                                    -1
-                                )
-                            "
-
-                            style="
-                                border:1px solid #b98272;
-                                background:none;
-                                width:25px;
-                                height:25px;
-                                cursor:pointer;
-                            "
+                            onclick="changeQuantity('${escapeAttribute(item.id)}', -1)"
                         >
-
                             −
-
                         </button>
-
 
                         <span>
-
                             ${item.quantity}
-
                         </span>
 
-
                         <button
-
-                            onclick="
-                                changeQuantity(
-                                    ${item.id},
-                                    1
-                                )
-                            "
-
-                            style="
-                                border:1px solid #b98272;
-                                background:none;
-                                width:25px;
-                                height:25px;
-                                cursor:pointer;
-                            "
+                            onclick="changeQuantity('${escapeAttribute(item.id)}', 1)"
                         >
-
                             +
-
                         </button>
 
-
                     </div>
-
 
                 </div>
 
 
                 <button
-
                     class="remove-item"
-
-                    onclick="
-                        removeFromCart(
-                            ${item.id}
-                        )
-                    "
+                    onclick="removeFromCart('${escapeAttribute(item.id)}')"
                 >
-
                     ×
-
                 </button>
 
             `;
@@ -900,9 +900,54 @@ function renderCart() {
 }
 
 
-/* =========================================
-   OPEN CART
-   ========================================= */
+/*************************************************
+ * CONTINUE SHOPPING
+ *************************************************/
+
+function continueShopping() {
+
+    closeCart();
+
+
+    currentFilter =
+        "all";
+
+
+    updateFilterButtons();
+
+    updateShopTitle();
+
+    displayProducts();
+
+
+    setTimeout(
+        function() {
+
+            const shop =
+                document.getElementById(
+                    "shop"
+                );
+
+
+            if (shop) {
+
+                shop.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
+        },
+        200
+    );
+
+}
+
+
+/*************************************************
+ * OPEN CART
+ *************************************************/
 
 function openCart() {
 
@@ -926,12 +971,17 @@ function openCart() {
         "active"
     );
 
+
+    document.body.classList.add(
+        "cart-open"
+    );
+
 }
 
 
-/* =========================================
-   CLOSE CART
-   ========================================= */
+/*************************************************
+ * CLOSE CART
+ *************************************************/
 
 function closeCart() {
 
@@ -952,12 +1002,17 @@ function closeCart() {
         "active"
     );
 
+
+    document.body.classList.remove(
+        "cart-open"
+    );
+
 }
 
 
-/* =========================================
-   WHATSAPP CHECKOUT
-   ========================================= */
+/*************************************************
+ * WHATSAPP CHECKOUT
+ *************************************************/
 
 function checkout() {
 
@@ -989,7 +1044,7 @@ function checkout() {
         function(item) {
 
             const itemTotal =
-                item.price *
+                Number(item.price) *
                 item.quantity;
 
 
@@ -998,19 +1053,12 @@ function checkout() {
 
 
             message +=
-
                 "• " +
-
                 item.name +
-
                 " × " +
-
                 item.quantity +
-
                 " = " +
-
                 itemTotal +
-
                 " EGP%0A";
 
         }
@@ -1018,11 +1066,8 @@ function checkout() {
 
 
     message +=
-
         "%0ATotal: " +
-
         total +
-
         " EGP%0A%0A";
 
 
@@ -1039,13 +1084,9 @@ function checkout() {
 
 
     const url =
-
         "https://wa.me/" +
-
         WHATSAPP_NUMBER +
-
         "?text=" +
-
         message;
 
 
@@ -1057,9 +1098,63 @@ function checkout() {
 }
 
 
-/* =========================================
-   CLOSE CART OUTSIDE
-   ========================================= */
+/*************************************************
+ * ESCAPE HTML
+ *************************************************/
+
+function escapeHtml(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/*************************************************
+ * ESCAPE ATTRIBUTE
+ *************************************************/
+
+function escapeAttribute(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        );
+
+}
+
+
+/*************************************************
+ * CLOSE CART BY CLICKING OUTSIDE
+ *************************************************/
 
 document.addEventListener(
     "click",
@@ -1079,7 +1174,8 @@ document.addEventListener(
 
 
         if (
-            event.target === overlay
+            event.target ===
+            overlay
         ) {
 
             closeCart();
@@ -1090,9 +1186,9 @@ document.addEventListener(
 );
 
 
-/* =========================================
-   START WEBSITE
-   ========================================= */
+/*************************************************
+ * START
+ *************************************************/
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -1102,7 +1198,7 @@ document.addEventListener(
 
         renderCart();
 
-        loadProductImages();
+        loadWebsiteData();
 
     }
 );
