@@ -1,7 +1,8 @@
 /*************************************************
  * REBEL VELVET
- * SHOP + FILTER + CART + GOOGLE SHEET PRICES
- * + UNIVERSAL HERO PRODUCT SLIDER
+ * SHOP + FILTER + CART
+ * GOOGLE SHEET PRODUCTS
+ * UNIVERSAL HERO SLIDER
  *************************************************/
 
 
@@ -61,6 +62,7 @@ function loadWebsiteData() {
     window[callbackName] =
         function(data) {
 
+
             console.log(
                 "Rebel Velvet API:",
                 data
@@ -107,6 +109,7 @@ function loadWebsiteData() {
     script.onerror =
         function() {
 
+
             console.error(
                 "Unable to load products."
             );
@@ -142,7 +145,7 @@ function loadWebsiteData() {
 
 
 /* =========================================
-   BUILD HERO IMAGE LIST
+   HERO IMAGES
 ========================================= */
 
 function updateHeroImages() {
@@ -151,7 +154,7 @@ function updateHeroImages() {
 
 
     /*
-     * First: catalog images
+     * Use catalog images first
      */
 
     products.forEach(
@@ -173,7 +176,7 @@ function updateHeroImages() {
 
 
     /*
-     * Fallback: Google Drive images
+     * Fallback to Google Drive
      */
 
     if (
@@ -212,17 +215,14 @@ function updateHeroImages() {
 
 
     /*
-     * Remove duplicates
+     * Remove duplicate images
      */
 
     heroSliderImages =
-        [...new Set(heroSliderImages)]
-            .filter(Boolean);
+        [...new Set(
+            heroSliderImages
+        )].filter(Boolean);
 
-
-    /*
-     * Start slider
-     */
 
     startHeroSlider();
 
@@ -238,12 +238,6 @@ function startHeroSlider() {
     const sliderImage =
         document.getElementById(
             "hero-slider-image"
-        );
-
-
-    const sliderCurrent =
-        document.getElementById(
-            "hero-slide-current"
         );
 
 
@@ -264,10 +258,6 @@ function startHeroSlider() {
     }
 
 
-    /*
-     * Stop previous timers
-     */
-
     if (heroSliderTimer) {
 
         clearInterval(
@@ -275,6 +265,7 @@ function startHeroSlider() {
         );
 
         heroSliderTimer = null;
+
     }
 
 
@@ -285,6 +276,7 @@ function startHeroSlider() {
         );
 
         heroSliderTransitionTimer = null;
+
     }
 
 
@@ -300,10 +292,18 @@ function startHeroSlider() {
             "src"
         );
 
-        if (sliderCurrent) {
 
-            sliderCurrent.textContent =
+        const current =
+            document.getElementById(
+                "hero-slide-current"
+            );
+
+
+        if (current) {
+
+            current.textContent =
                 "01";
+
         }
 
 
@@ -311,23 +311,17 @@ function startHeroSlider() {
 
             sliderTotal.textContent =
                 "01";
+
         }
 
 
         return;
+
     }
 
 
-    /*
-     * Start from first image
-     */
-
     heroSliderIndex = 0;
 
-
-    /*
-     * Total images
-     */
 
     const totalSlides =
         heroSliderImages.length;
@@ -338,12 +332,9 @@ function startHeroSlider() {
         sliderTotal.textContent =
             String(totalSlides)
                 .padStart(2, "0");
+
     }
 
-
-    /*
-     * First image
-     */
 
     sliderImage.classList.remove(
         "slider-fade"
@@ -351,62 +342,41 @@ function startHeroSlider() {
 
 
     sliderImage.src =
-        heroSliderImages[
-            heroSliderIndex
-        ];
+        heroSliderImages[0];
 
-
-    /*
-     * Current number
-     */
 
     updateHeroSlideNumber();
 
 
-    /*
-     * Frame number
-     */
-
     if (sliderFrame) {
 
         sliderFrame.dataset.slide =
-            String(
-                heroSliderIndex + 1
-            ).padStart(2, "0");
+            "01";
+
     }
 
 
     /*
-     * One image = no timer
+     * Start automatic slider
      */
 
     if (
-        heroSliderImages.length <= 1
+        heroSliderImages.length > 1
     ) {
 
-        return;
+        heroSliderTimer =
+            setInterval(
+                changeHeroSlide,
+                3000
+            );
+
     }
-
-
-    /*
-     * Change every 3 seconds
-     */
-
-    heroSliderTimer =
-        setInterval(
-            function() {
-
-                changeHeroSlide();
-
-            },
-            3000
-        );
 
 }
 
 
 /* =========================================
-   CHANGE HERO SLIDE
+   CHANGE SLIDE
 ========================================= */
 
 function changeHeroSlide() {
@@ -431,14 +401,9 @@ function changeHeroSlide() {
     if (
         heroSliderImages.length <= 1
     ) {
-
         return;
     }
 
-
-    /*
-     * Fade out
-     */
 
     sliderImage.classList.add(
         "slider-fade"
@@ -449,9 +414,6 @@ function changeHeroSlide() {
         setTimeout(
             function() {
 
-                /*
-                 * Next image
-                 */
 
                 heroSliderIndex++;
 
@@ -466,16 +428,8 @@ function changeHeroSlide() {
                 }
 
 
-                /*
-                 * Update counter
-                 */
-
                 updateHeroSlideNumber();
 
-
-                /*
-                 * Update frame
-                 */
 
                 if (sliderFrame) {
 
@@ -483,12 +437,9 @@ function changeHeroSlide() {
                         String(
                             heroSliderIndex + 1
                         ).padStart(2, "0");
+
                 }
 
-
-                /*
-                 * Load image
-                 */
 
                 sliderImage.onload =
                     function() {
@@ -507,7 +458,7 @@ function changeHeroSlide() {
 
 
                 /*
-                 * Fallback for cached images
+                 * Cached image fallback
                  */
 
                 setTimeout(
@@ -530,7 +481,7 @@ function changeHeroSlide() {
 
 
 /* =========================================
-   UPDATE HERO COUNTER
+   SLIDE NUMBER
 ========================================= */
 
 function updateHeroSlideNumber() {
@@ -620,11 +571,13 @@ function displayProducts() {
         `;
 
         return;
+
     }
 
 
     filteredProducts.forEach(
         function(product) {
+
 
             const card =
                 document.createElement(
@@ -659,14 +612,17 @@ function displayProducts() {
                         ${escapeHtml(product.category)}
                     </div>
 
+
                     <h3 class="product-name">
                         ${escapeHtml(product.name)}
                     </h3>
+
 
                     <div class="product-price">
                         ${Number(product.price).toLocaleString()}
                         EGP
                     </div>
+
 
                     <button
                         class="add-to-cart"
@@ -691,7 +647,7 @@ function displayProducts() {
 
 
 /* =========================================
-   FILTER PRODUCTS
+   FILTER
 ========================================= */
 
 function filterProducts(
@@ -735,7 +691,7 @@ function filterProducts(
 
 
 /* =========================================
-   UPDATE FILTER BUTTONS
+   FILTER BUTTONS
 ========================================= */
 
 function updateFilterButtons() {
@@ -797,7 +753,7 @@ function updateFilterButtons() {
 
 
 /* =========================================
-   UPDATE SHOP TITLE
+   SHOP TITLE
 ========================================= */
 
 function updateShopTitle() {
@@ -821,6 +777,7 @@ function updateShopTitle() {
             "Find Your Favorite";
 
         return;
+
     }
 
 
@@ -914,7 +871,7 @@ function addToCart(
 
 
 /* =========================================
-   REMOVE ITEM
+   REMOVE
 ========================================= */
 
 function removeFromCart(
@@ -944,7 +901,7 @@ function removeFromCart(
 
 
 /* =========================================
-   CHANGE QUANTITY
+   QUANTITY
 ========================================= */
 
 function changeQuantity(
@@ -983,6 +940,7 @@ function changeQuantity(
         );
 
         return;
+
     }
 
 
@@ -1026,9 +984,7 @@ function loadCart() {
         try {
 
             cart =
-                JSON.parse(
-                    saved
-                );
+                JSON.parse(saved);
 
         }
 
@@ -1107,6 +1063,7 @@ function renderCart() {
     ) {
 
         return;
+
     }
 
 
@@ -1121,7 +1078,9 @@ function renderCart() {
 
             <div class="empty-cart">
 
-                <span>♡</span>
+                <span>
+                    ♡
+                </span>
 
                 <p>
                     Your bag is empty.
@@ -1137,6 +1096,7 @@ function renderCart() {
 
 
         return;
+
     }
 
 
@@ -1145,6 +1105,7 @@ function renderCart() {
 
     cart.forEach(
         function(item) {
+
 
             const itemTotal =
                 Number(item.price) *
@@ -1172,22 +1133,28 @@ function renderCart() {
                     alt="${escapeHtml(item.name)}"
                 >
 
+
                 <div class="cart-item-info">
+
 
                     <div class="cart-category">
                         ${escapeHtml(item.category)}
                     </div>
 
+
                     <h4>
                         ${escapeHtml(item.name)}
                     </h4>
+
 
                     <p>
                         ${Number(item.price).toLocaleString()}
                         EGP
                     </p>
 
+
                     <div class="quantity-control">
+
 
                         <button
                             onclick="changeQuantity('${escapeAttribute(item.id)}', -1)"
@@ -1195,9 +1162,11 @@ function renderCart() {
                             −
                         </button>
 
+
                         <span>
                             ${item.quantity}
                         </span>
+
 
                         <button
                             onclick="changeQuantity('${escapeAttribute(item.id)}', 1)"
@@ -1205,9 +1174,12 @@ function renderCart() {
                             +
                         </button>
 
+
                     </div>
 
+
                 </div>
+
 
                 <button
                     class="remove-item"
@@ -1355,6 +1327,7 @@ function checkout() {
         );
 
         return;
+
     }
 
 
@@ -1371,6 +1344,7 @@ function checkout() {
 
     cart.forEach(
         function(item) {
+
 
             const itemTotal =
                 Number(item.price) *
@@ -1403,8 +1377,10 @@ function checkout() {
     message +=
         "Name:%0A";
 
+
     message +=
         "Phone:%0A";
+
 
     message +=
         "Address:%0A";
@@ -1487,12 +1463,13 @@ function escapeAttribute(
 
 
 /* =========================================
-   CLOSE CART OUTSIDE
+   CLOSE CART BY OUTSIDE CLICK
 ========================================= */
 
 document.addEventListener(
     "click",
     function(event) {
+
 
         const overlay =
             document.getElementById(
@@ -1519,7 +1496,7 @@ document.addEventListener(
 
 
 /* =========================================
-   START
+   INITIALIZE
 ========================================= */
 
 document.addEventListener(
