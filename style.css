@@ -14,6 +14,7 @@
 
     --burgundy: #6d1f2b;
     --burgundy-dark: #4a1720;
+    --burgundy-light: #8d4652;
 
     --rose: #b98272;
     --rose-light: #d9afa2;
@@ -21,11 +22,10 @@
     --gold: #b58a72;
 
     --black: #211719;
-
     --white: #ffffff;
 
     --border:
-        rgba(74,23,32,.14);
+        rgba(74, 23, 32, 0.14);
 
     --serif:
         "Cormorant Garamond",
@@ -87,9 +87,11 @@ body.cart-open {
 
 a {
 
-    color: inherit;
+    color:
+        inherit;
 
-    text-decoration: none;
+    text-decoration:
+        none;
 
 }
 
@@ -111,12 +113,17 @@ header {
     position:
         absolute;
 
-    top: 0;
-    left: 0;
+    top:
+        0;
 
-    width: 100%;
+    left:
+        0;
 
-    z-index: 100;
+    width:
+        100%;
+
+    z-index:
+        100;
 
 }
 
@@ -145,7 +152,7 @@ header {
         space-between;
 
     background:
-        rgba(248,241,237,.92);
+        rgba(248, 241, 237, 0.92);
 
     backdrop-filter:
         blur(14px);
@@ -155,7 +162,7 @@ header {
 
     border-bottom:
         1px solid
-        rgba(74,23,32,.10);
+        rgba(74, 23, 32, 0.10);
 
 }
 
@@ -222,14 +229,52 @@ header {
 
 .nav-links a {
 
+    position:
+        relative;
+
     font-size:
         13px;
 
     font-weight:
         500;
 
+    color:
+        var(--black);
+
     transition:
-        .3s ease;
+        0.3s ease;
+
+}
+
+
+.nav-links a::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    left:
+        50%;
+
+    bottom:
+        -7px;
+
+    width:
+        0;
+
+    height:
+        1px;
+
+    background:
+        var(--burgundy);
+
+    transform:
+        translateX(-50%);
+
+    transition:
+        0.3s ease;
 
 }
 
@@ -242,9 +287,18 @@ header {
 }
 
 
+.nav-links a:hover::after {
+
+    width:
+        100%;
+
+}
+
+
 .cart-button {
 
-    border: none;
+    border:
+        none;
 
     background:
         transparent;
@@ -252,11 +306,14 @@ header {
     cursor:
         pointer;
 
-    color:
-        var(--burgundy);
-
     font-size:
         13px;
+
+    font-weight:
+        500;
+
+    color:
+        var(--burgundy);
 
 }
 
@@ -266,10 +323,10 @@ header {
     display:
         inline-flex;
 
-    align-items:
+    justify-content:
         center;
 
-    justify-content:
+    align-items:
         center;
 
     width:
@@ -308,26 +365,23 @@ header {
     height:
         600px;
 
-    position:
-        relative;
-
     display:
         flex;
 
     align-items:
         center;
 
-    padding:
-        100px 7% 40px;
+    position:
+        relative;
 
-    overflow:
-        hidden;
+    padding:
+        105px 7% 45px;
 
     background:
 
         radial-gradient(
             circle at 78% 35%,
-            rgba(185,130,114,.34),
+            rgba(185, 130, 114, 0.34),
             transparent 31%
         ),
 
@@ -336,6 +390,9 @@ header {
             #f7ebe5,
             #f3ddd4
         );
+
+    overflow:
+        hidden;
 
 }
 
@@ -355,17 +412,17 @@ header {
         500px;
 
     right:
-        3%;
+        2%;
 
     top:
         100px;
 
-    border:
-        1px solid
-        rgba(109,31,43,.10);
-
     border-radius:
         50%;
+
+    border:
+        1px solid
+        rgba(109, 31, 43, 0.10);
 
 }
 
@@ -388,14 +445,14 @@ header {
         -130px;
 
     top:
-        25px;
-
-    border:
-        1px solid
-        rgba(109,31,43,.06);
+        30px;
 
     border-radius:
         50%;
+
+    border:
+        1px solid
+        rgba(109, 31, 43, 0.06);
 
 }
 
@@ -444,10 +501,13 @@ header {
         );
 
     line-height:
-        .84;
+        0.84;
 
     font-weight:
         500;
+
+    color:
+        var(--black);
 
     margin-bottom:
         24px;
@@ -504,7 +564,7 @@ header {
         2px;
 
     transition:
-        .3s ease;
+        0.3s ease;
 
 }
 
@@ -521,7 +581,7 @@ header {
 
 
 /* =========================================
-   HERO VISUAL
+   HERO PRODUCTS
 ========================================= */
 
 .hero-visual {
@@ -557,10 +617,13 @@ header {
 
     border:
         1px solid
-        rgba(109,31,43,.12);
+        rgba(109, 31, 43, 0.12);
 
     border-radius:
         50%;
+
+    pointer-events:
+        none;
 
 }
 
@@ -596,6 +659,9 @@ header {
     top:
         60px;
 
+    border-color:
+        rgba(185, 130, 114, 0.18);
+
 }
 
 
@@ -615,7 +681,7 @@ header {
 
     box-shadow:
         0 20px 45px
-        rgba(74,23,32,.16);
+        rgba(74, 23, 32, 0.16);
 
 }
 
@@ -658,7 +724,8 @@ header {
         rotate(1deg);
 
     animation:
-        mainFloat 5s
+        mainFloat
+        5s
         ease-in-out
         infinite;
 
@@ -686,7 +753,8 @@ header {
         rotate(-6deg);
 
     animation:
-        leftFloat 6s
+        leftFloat
+        6s
         ease-in-out
         infinite;
 
@@ -714,25 +782,35 @@ header {
         rotate(6deg);
 
     animation:
-        rightFloat 5.5s
+        rightFloat
+        5.5s
         ease-in-out
         infinite;
 
 }
 
 
+/* =========================================
+   HERO ANIMATIONS
+========================================= */
+
 @keyframes mainFloat {
 
-    0%,100% {
+    0%,
+    100% {
+
         transform:
             translateY(0)
             rotate(1deg);
+
     }
 
     50% {
+
         transform:
             translateY(-9px)
             rotate(1deg);
+
     }
 
 }
@@ -740,16 +818,21 @@ header {
 
 @keyframes leftFloat {
 
-    0%,100% {
+    0%,
+    100% {
+
         transform:
             translateY(0)
             rotate(-6deg);
+
     }
 
     50% {
+
         transform:
             translateY(8px)
             rotate(-4deg);
+
     }
 
 }
@@ -757,16 +840,21 @@ header {
 
 @keyframes rightFloat {
 
-    0%,100% {
+    0%,
+    100% {
+
         transform:
             translateY(0)
             rotate(6deg);
+
     }
 
     50% {
+
         transform:
             translateY(-7px)
             rotate(4deg);
+
     }
 
 }
@@ -784,9 +872,6 @@ header {
     margin:
         -25px auto 0;
 
-    padding:
-        0 25px;
-
     position:
         relative;
 
@@ -797,34 +882,40 @@ header {
         grid;
 
     grid-template-columns:
-        repeat(3,1fr);
+        repeat(3, 1fr);
 
     gap:
         12px;
+
+    padding:
+        0 25px;
 
 }
 
 
 .category-card {
 
+    padding:
+        19px 18px;
+
+    background:
+        rgba(255, 255, 255, 0.70);
+
     border:
         1px solid
         var(--border);
 
-    background:
-        rgba(255,255,255,.72);
-
-    padding:
-        19px;
-
     text-align:
         center;
 
-    cursor:
-        pointer;
+    backdrop-filter:
+        blur(8px);
 
     transition:
-        .3s ease;
+        0.35s ease;
+
+    cursor:
+        pointer;
 
 }
 
@@ -836,6 +927,10 @@ header {
 
     background:
         white;
+
+    box-shadow:
+        0 12px 35px
+        rgba(74, 23, 32, 0.07);
 
 }
 
@@ -984,7 +1079,7 @@ header {
 
     border:
         1px solid
-        rgba(109,31,43,.25);
+        rgba(109, 31, 43, 0.25);
 
     background:
         transparent;
@@ -1005,7 +1100,7 @@ header {
         pointer;
 
     transition:
-        .25s ease;
+        0.25s ease;
 
 }
 
@@ -1038,7 +1133,7 @@ header {
         grid;
 
     grid-template-columns:
-        repeat(3,1fr);
+        repeat(3, 1fr);
 
     gap:
         25px;
@@ -1049,14 +1144,14 @@ header {
 .product-card {
 
     background:
-        rgba(255,255,255,.55);
+        rgba(255, 255, 255, 0.55);
 
     border:
         1px solid
-        rgba(74,23,32,.10);
+        rgba(74, 23, 32, 0.10);
 
     transition:
-        .35s ease;
+        0.35s ease;
 
 }
 
@@ -1068,7 +1163,7 @@ header {
 
     box-shadow:
         0 20px 45px
-        rgba(74,23,32,.09);
+        rgba(74, 23, 32, 0.09);
 
 }
 
@@ -1105,7 +1200,7 @@ header {
         cover;
 
     transition:
-        transform .5s ease;
+        transform 0.5s ease;
 
 }
 
@@ -1200,7 +1295,7 @@ header {
         2px;
 
     transition:
-        .3s ease;
+        0.3s ease;
 
 }
 
@@ -1328,7 +1423,7 @@ header {
         500;
 
     line-height:
-        .95;
+        0.95;
 
     margin:
         18px 0 22px;
@@ -1456,7 +1551,7 @@ header {
         500;
 
     background:
-        rgba(33,23,25,.45);
+        rgba(33, 23, 25, 0.45);
 
     backdrop-filter:
         blur(5px);
@@ -1474,7 +1569,7 @@ header {
         hidden;
 
     transition:
-        .3s ease;
+        0.3s ease;
 
 }
 
@@ -1511,7 +1606,7 @@ header {
         translateX(100%);
 
     transition:
-        .35s ease;
+        0.35s ease;
 
 }
 
@@ -1928,9 +2023,7 @@ footer span {
    TABLET
 ========================================= */
 
-@media (
-    max-width: 900px
-) {
+@media (max-width: 900px) {
 
     .navbar {
 
@@ -1987,7 +2080,7 @@ footer span {
     .products-grid {
 
         grid-template-columns:
-            repeat(2,1fr);
+            repeat(2, 1fr);
 
     }
 
@@ -1995,15 +2088,15 @@ footer span {
 
 
 /* =========================================
-   MOBILE
+   MOBILE OPTIMIZED
 ========================================= */
 
-@media (
-    max-width: 600px
-) {
+@media (max-width: 600px) {
 
 
-    /* NAV */
+    /* =========================
+       NAVBAR
+    ========================= */
 
     header {
 
@@ -2068,28 +2161,30 @@ footer span {
     }
 
 
-    /* HERO */
+    /* =========================
+       HERO
+    ========================= */
 
     .hero {
 
         height:
-            650px;
+            505px;
 
         min-height:
-            650px;
+            505px;
 
         display:
             block;
 
         padding:
-            125px 24px 0;
+            112px 24px 0;
 
         background:
 
             radial-gradient(
-                circle at 75% 65%,
-                rgba(185,130,114,.30),
-                transparent 40%
+                circle at 75% 70%,
+                rgba(185,130,114,.28),
+                transparent 38%
             ),
 
             linear-gradient(
@@ -2104,16 +2199,16 @@ footer span {
     .hero::before {
 
         width:
-            370px;
+            300px;
 
         height:
-            370px;
+            300px;
 
         right:
-            -100px;
+            -90px;
 
         top:
-            260px;
+            240px;
 
     }
 
@@ -2121,19 +2216,23 @@ footer span {
     .hero::after {
 
         width:
-            470px;
+            390px;
 
         height:
-            470px;
+            390px;
 
         right:
-            -145px;
+            -120px;
 
         top:
-            210px;
+            190px;
 
     }
 
+
+    /* =========================
+       HERO TEXT
+    ========================= */
 
     .hero-content {
 
@@ -2143,19 +2242,25 @@ footer span {
         text-align:
             left;
 
+        position:
+            relative;
+
+        z-index:
+            20;
+
     }
 
 
     .eyebrow {
 
         font-size:
-            9px;
+            8px;
 
         letter-spacing:
             4px;
 
         margin-bottom:
-            14px;
+            12px;
 
     }
 
@@ -2163,13 +2268,13 @@ footer span {
     .hero h1 {
 
         font-size:
-            54px;
+            48px;
 
         line-height:
-            .83;
+            .86;
 
         margin-bottom:
-            20px;
+            16px;
 
     }
 
@@ -2177,16 +2282,16 @@ footer span {
     .hero-text {
 
         max-width:
-            340px;
+            330px;
 
         font-size:
-            12px;
+            11px;
 
         line-height:
-            1.65;
+            1.6;
 
         margin-bottom:
-            20px;
+            17px;
 
     }
 
@@ -2194,12 +2299,23 @@ footer span {
     .hero-button {
 
         padding:
-            13px 26px;
+            11px 24px;
+
+        font-size:
+            9px;
+
+        position:
+            relative;
+
+        z-index:
+            30;
 
     }
 
 
-    /* MOBILE HERO PRODUCTS */
+    /* =========================
+       HERO PRODUCTS
+    ========================= */
 
     .hero-visual {
 
@@ -2213,7 +2329,7 @@ footer span {
             0;
 
         top:
-            345px;
+            300px;
 
         width:
             100%;
@@ -2222,7 +2338,10 @@ footer span {
             none;
 
         height:
-            285px;
+            205px;
+
+        z-index:
+            5;
 
     }
 
@@ -2230,10 +2349,10 @@ footer span {
     .orbit-one {
 
         width:
-            310px;
+            245px;
 
         height:
-            310px;
+            245px;
 
         right:
             50%;
@@ -2242,7 +2361,7 @@ footer span {
             translateX(50%);
 
         top:
-            -5px;
+            -8px;
 
     }
 
@@ -2250,10 +2369,10 @@ footer span {
     .orbit-two {
 
         width:
-            235px;
+            185px;
 
         height:
-            235px;
+            185px;
 
         right:
             50%;
@@ -2262,7 +2381,7 @@ footer span {
             translateX(50%);
 
         top:
-            33px;
+            22px;
 
     }
 
@@ -2270,10 +2389,10 @@ footer span {
     .hero-main {
 
         width:
-            140px;
+            118px;
 
         height:
-            190px;
+            158px;
 
         right:
             50%;
@@ -2283,7 +2402,13 @@ footer span {
             rotate(1deg);
 
         top:
-            5px;
+            8px;
+
+        animation:
+            mobileMainFloat
+            5s
+            ease-in-out
+            infinite;
 
     }
 
@@ -2291,19 +2416,25 @@ footer span {
     .hero-left {
 
         width:
-            105px;
+            88px;
 
         height:
-            140px;
+            118px;
 
         left:
-            25px;
+            28px;
 
         top:
-            75px;
+            62px;
 
         transform:
             rotate(-6deg);
+
+        animation:
+            mobileLeftFloat
+            6s
+            ease-in-out
+            infinite;
 
     }
 
@@ -2311,24 +2442,104 @@ footer span {
     .hero-right {
 
         width:
-            100px;
+            85px;
 
         height:
-            135px;
+            115px;
 
         right:
-            25px;
+            28px;
 
         top:
-            85px;
+            70px;
 
         transform:
             rotate(6deg);
 
+        animation:
+            mobileRightFloat
+            5.5s
+            ease-in-out
+            infinite;
+
     }
 
 
-    /* CATEGORIES */
+    /* =========================
+       MOBILE HERO ANIMATIONS
+    ========================= */
+
+    @keyframes mobileMainFloat {
+
+        0%,
+        100% {
+
+            transform:
+                translateX(50%)
+                translateY(0)
+                rotate(1deg);
+
+        }
+
+        50% {
+
+            transform:
+                translateX(50%)
+                translateY(-5px)
+                rotate(1deg);
+
+        }
+
+    }
+
+
+    @keyframes mobileLeftFloat {
+
+        0%,
+        100% {
+
+            transform:
+                translateY(0)
+                rotate(-6deg);
+
+        }
+
+        50% {
+
+            transform:
+                translateY(5px)
+                rotate(-4deg);
+
+        }
+
+    }
+
+
+    @keyframes mobileRightFloat {
+
+        0%,
+        100% {
+
+            transform:
+                translateY(0)
+                rotate(6deg);
+
+        }
+
+        50% {
+
+            transform:
+                translateY(-5px)
+                rotate(4deg);
+
+        }
+
+    }
+
+
+    /* =========================
+       CATEGORIES
+    ========================= */
 
     .categories {
 
@@ -2336,24 +2547,24 @@ footer span {
             0;
 
         padding:
-            10px 12px;
+            9px 10px;
 
         grid-template-columns:
-            repeat(3,1fr);
+            repeat(3, 1fr);
 
         gap:
-            7px;
+            6px;
 
     }
 
 
     .category-card {
 
-        padding:
-            14px 5px;
-
         min-height:
-            105px;
+            92px;
+
+        padding:
+            12px 4px;
 
     }
 
@@ -2361,7 +2572,10 @@ footer span {
     .category-card span {
 
         font-size:
-            15px;
+            14px;
+
+        margin-bottom:
+            4px;
 
     }
 
@@ -2369,7 +2583,7 @@ footer span {
     .category-card h3 {
 
         font-size:
-            15px;
+            14px;
 
         line-height:
             1.05;
@@ -2385,12 +2599,14 @@ footer span {
     }
 
 
-    /* SHOP */
+    /* =========================
+       SHOP
+    ========================= */
 
     .shop-section {
 
         padding:
-            60px 14px 70px;
+            50px 12px 65px;
 
     }
 
@@ -2398,7 +2614,7 @@ footer span {
     .section-heading {
 
         margin-bottom:
-            20px;
+            18px;
 
     }
 
@@ -2417,7 +2633,7 @@ footer span {
     .section-heading h2 {
 
         font-size:
-            40px;
+            38px;
 
         line-height:
             .95;
@@ -2428,18 +2644,20 @@ footer span {
     .section-heading span {
 
         font-size:
-            11px;
+            10px;
 
         line-height:
             1.5;
 
         padding:
-            0 20px;
+            0 15px;
 
     }
 
 
-    /* FILTER */
+    /* =========================
+       FILTER
+    ========================= */
 
     .filter-bar {
 
@@ -2456,7 +2674,7 @@ footer span {
             5px;
 
         margin-bottom:
-            20px;
+            18px;
 
         scrollbar-width:
             none;
@@ -2478,23 +2696,25 @@ footer span {
             0 0 auto;
 
         padding:
-            9px 12px;
+            8px 11px;
 
         font-size:
-            8px;
+            7px;
 
     }
 
 
-    /* PRODUCTS */
+    /* =========================
+       PRODUCTS
+    ========================= */
 
     .products-grid {
 
         grid-template-columns:
-            repeat(2,1fr);
+            repeat(2, 1fr);
 
         gap:
-            9px;
+            8px;
 
     }
 
@@ -2502,7 +2722,7 @@ footer span {
     .product-image-wrap {
 
         aspect-ratio:
-            4 / 4.9;
+            4 / 4.8;
 
     }
 
@@ -2510,7 +2730,7 @@ footer span {
     .product-info {
 
         padding:
-            11px;
+            10px;
 
     }
 
@@ -2518,7 +2738,7 @@ footer span {
     .product-category {
 
         font-size:
-            7px;
+            6.5px;
 
         letter-spacing:
             1px;
@@ -2532,7 +2752,7 @@ footer span {
     .product-name {
 
         font-size:
-            20px;
+            19px;
 
         line-height:
             1;
@@ -2546,10 +2766,10 @@ footer span {
     .product-price {
 
         font-size:
-            11px;
+            10px;
 
         margin:
-            6px 0 11px;
+            5px 0 10px;
 
     }
 
@@ -2557,23 +2777,25 @@ footer span {
     .add-to-cart {
 
         padding:
-            10px 4px;
+            9px 3px;
 
         font-size:
             7px;
 
         letter-spacing:
-            1.3px;
+            1px;
 
     }
 
 
-    /* ABOUT */
+    /* =========================
+       ABOUT
+    ========================= */
 
     .about-section {
 
         padding:
-            65px 20px;
+            60px 20px;
 
     }
 
@@ -2581,7 +2803,7 @@ footer span {
     .about-content h2 {
 
         font-size:
-            43px;
+            42px;
 
     }
 
@@ -2591,15 +2813,20 @@ footer span {
         font-size:
             11px;
 
+        line-height:
+            1.7;
+
     }
 
 
-    /* CONTACT */
+    /* =========================
+       CONTACT
+    ========================= */
 
     .contact-section {
 
         padding:
-            65px 20px;
+            60px 20px;
 
     }
 
@@ -2607,12 +2834,14 @@ footer span {
     .contact-section h2 {
 
         font-size:
-            43px;
+            42px;
 
     }
 
 
-    /* CART */
+    /* =========================
+       CART
+    ========================= */
 
     .cart {
 
@@ -2620,7 +2849,7 @@ footer span {
             100%;
 
         padding:
-            28px 18px;
+            25px 18px;
 
     }
 
@@ -2670,7 +2899,6 @@ footer span {
 
     }
 
-
 }
 
 
@@ -2678,17 +2906,15 @@ footer span {
    VERY SMALL MOBILE
 ========================================= */
 
-@media (
-    max-width: 380px
-) {
+@media (max-width: 380px) {
 
     .hero {
 
         height:
-            625px;
+            490px;
 
         min-height:
-            625px;
+            490px;
 
     }
 
@@ -2696,7 +2922,15 @@ footer span {
     .hero h1 {
 
         font-size:
-            48px;
+            45px;
+
+    }
+
+
+    .hero-text {
+
+        max-width:
+            300px;
 
     }
 
@@ -2704,7 +2938,7 @@ footer span {
     .hero-visual {
 
         top:
-            335px;
+            292px;
 
     }
 
@@ -2712,10 +2946,10 @@ footer span {
     .hero-main {
 
         width:
-            125px;
+            108px;
 
         height:
-            170px;
+            145px;
 
     }
 
@@ -2723,13 +2957,13 @@ footer span {
     .hero-left {
 
         width:
-            95px;
+            80px;
 
         height:
-            127px;
+            108px;
 
         left:
-            15px;
+            18px;
 
     }
 
@@ -2737,13 +2971,13 @@ footer span {
     .hero-right {
 
         width:
-            90px;
+            78px;
 
         height:
-            122px;
+            105px;
 
         right:
-            15px;
+            18px;
 
     }
 
