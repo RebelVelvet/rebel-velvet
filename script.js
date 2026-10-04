@@ -151,7 +151,7 @@ function updateHeroImages() {
 
 
     /*
-     * 1. Get images from catalog
+     * First: catalog images
      */
 
     products.forEach(
@@ -173,8 +173,7 @@ function updateHeroImages() {
 
 
     /*
-     * 2. If catalog has no images,
-     *    get images directly from Drive data
+     * Fallback: Google Drive images
      */
 
     if (
@@ -213,7 +212,7 @@ function updateHeroImages() {
 
 
     /*
-     * Remove duplicate images
+     * Remove duplicates
      */
 
     heroSliderImages =
@@ -302,26 +301,32 @@ function startHeroSlider() {
         );
 
         if (sliderCurrent) {
-            sliderCurrent.textContent = "01";
+
+            sliderCurrent.textContent =
+                "01";
         }
 
+
         if (sliderTotal) {
-            sliderTotal.textContent = "01";
+
+            sliderTotal.textContent =
+                "01";
         }
+
 
         return;
     }
 
 
     /*
-     * Reset index
+     * Start from first image
      */
 
     heroSliderIndex = 0;
 
 
     /*
-     * Total slides
+     * Total images
      */
 
     const totalSlides =
@@ -352,14 +357,14 @@ function startHeroSlider() {
 
 
     /*
-     * Slide number
+     * Current number
      */
 
     updateHeroSlideNumber();
 
 
     /*
-     * Store data-slide
+     * Frame number
      */
 
     if (sliderFrame) {
@@ -372,8 +377,7 @@ function startHeroSlider() {
 
 
     /*
-     * Only run interval if there
-     * is more than one image
+     * One image = no timer
      */
 
     if (
@@ -433,18 +437,6 @@ function changeHeroSlide() {
 
 
     /*
-     * Prevent multiple transitions
-     */
-
-    if (heroSliderTransitionTimer) {
-
-        clearTimeout(
-            heroSliderTransitionTimer
-        );
-    }
-
-
-    /*
      * Fade out
      */
 
@@ -475,14 +467,14 @@ function changeHeroSlide() {
 
 
                 /*
-                 * Update slide number
+                 * Update counter
                  */
 
                 updateHeroSlideNumber();
 
 
                 /*
-                 * Update frame number
+                 * Update frame
                  */
 
                 if (sliderFrame) {
@@ -495,14 +487,7 @@ function changeHeroSlide() {
 
 
                 /*
-                 * Remove old load handler
-                 */
-
-                sliderImage.onload = null;
-
-
-                /*
-                 * Load new image
+                 * Load image
                  */
 
                 sliderImage.onload =
@@ -522,7 +507,7 @@ function changeHeroSlide() {
 
 
                 /*
-                 * Cached image fallback
+                 * Fallback for cached images
                  */
 
                 setTimeout(
@@ -545,7 +530,7 @@ function changeHeroSlide() {
 
 
 /* =========================================
-   UPDATE HERO SLIDE NUMBER
+   UPDATE HERO COUNTER
 ========================================= */
 
 function updateHeroSlideNumber() {
@@ -593,10 +578,6 @@ function displayProducts() {
         products;
 
 
-    /*
-     * Apply category filter
-     */
-
     if (
         currentFilter !== "all"
     ) {
@@ -616,10 +597,6 @@ function displayProducts() {
     }
 
 
-    /*
-     * No products
-     */
-
     if (
         filteredProducts.length === 0
     ) {
@@ -628,9 +605,7 @@ function displayProducts() {
 
             <div class="no-products">
 
-                <span>
-                    ✦
-                </span>
+                <span>✦</span>
 
                 <h3>
                     Coming Soon
@@ -647,10 +622,6 @@ function displayProducts() {
         return;
     }
 
-
-    /*
-     * Create product cards
-     */
 
     filteredProducts.forEach(
         function(product) {
@@ -688,17 +659,14 @@ function displayProducts() {
                         ${escapeHtml(product.category)}
                     </div>
 
-
                     <h3 class="product-name">
                         ${escapeHtml(product.name)}
                     </h3>
-
 
                     <div class="product-price">
                         ${Number(product.price).toLocaleString()}
                         EGP
                     </div>
-
 
                     <button
                         class="add-to-cart"
@@ -853,7 +821,6 @@ function updateShopTitle() {
             "Find Your Favorite";
 
         return;
-
     }
 
 
@@ -1016,7 +983,6 @@ function changeQuantity(
         );
 
         return;
-
     }
 
 
@@ -1141,17 +1107,11 @@ function renderCart() {
     ) {
 
         return;
-
     }
 
 
-    container.innerHTML =
-        "";
+    container.innerHTML = "";
 
-
-    /*
-     * Empty cart
-     */
 
     if (
         cart.length === 0
@@ -1161,9 +1121,7 @@ function renderCart() {
 
             <div class="empty-cart">
 
-                <span>
-                    ♡
-                </span>
+                <span>♡</span>
 
                 <p>
                     Your bag is empty.
@@ -1179,16 +1137,11 @@ function renderCart() {
 
 
         return;
-
     }
 
 
     let total = 0;
 
-
-    /*
-     * Cart items
-     */
 
     cart.forEach(
         function(item) {
@@ -1219,7 +1172,6 @@ function renderCart() {
                     alt="${escapeHtml(item.name)}"
                 >
 
-
                 <div class="cart-item-info">
 
                     <div class="cart-category">
@@ -1234,7 +1186,6 @@ function renderCart() {
                         ${Number(item.price).toLocaleString()}
                         EGP
                     </p>
-
 
                     <div class="quantity-control">
 
@@ -1257,7 +1208,6 @@ function renderCart() {
                     </div>
 
                 </div>
-
 
                 <button
                     class="remove-item"
@@ -1405,7 +1355,6 @@ function checkout() {
         );
 
         return;
-
     }
 
 
@@ -1454,10 +1403,8 @@ function checkout() {
     message +=
         "Name:%0A";
 
-
     message +=
         "Phone:%0A";
-
 
     message +=
         "Address:%0A";
