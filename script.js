@@ -137,11 +137,6 @@ function loadWebsiteData() {
 
 function updateHeroImages() {
 
-    /*
-     * Build the slider from the products
-     * returned by Google Sheet / Apps Script.
-     */
-
     heroSliderImages = [];
 
 
@@ -163,18 +158,12 @@ function updateHeroImages() {
     );
 
 
-    /*
-     * Remove duplicate image URLs.
-     */
-
     heroSliderImages =
         [...new Set(heroSliderImages)];
 
 
     /*
-     * If the catalog does not contain
-     * images, use the Drive image groups
-     * as a fallback.
+     * Fallback to Drive images
      */
 
     if (
@@ -217,8 +206,7 @@ function updateHeroImages() {
 
 
     /*
-     * Keep the old desktop hero images
-     * working.
+     * Desktop hero images
      */
 
     setHeroImage(
@@ -240,7 +228,7 @@ function updateHeroImages() {
 
 
     /*
-     * Start mobile slider.
+     * Start mobile slider
      */
 
     startHeroSlider();
@@ -300,16 +288,18 @@ function startHeroSlider() {
         );
 
 
+    const sliderFrame =
+        document.querySelector(
+            ".hero-main"
+        );
+
+
     if (!sliderImage) {
 
         return;
 
     }
 
-
-    /*
-     * No images = nothing to slide.
-     */
 
     if (
         heroSliderImages.length === 0
@@ -321,7 +311,7 @@ function startHeroSlider() {
 
 
     /*
-     * Stop any previous timer.
+     * Stop old timer
      */
 
     if (heroSliderTimer) {
@@ -337,7 +327,7 @@ function startHeroSlider() {
 
 
     /*
-     * First image.
+     * First image
      */
 
     sliderImage.src =
@@ -347,7 +337,21 @@ function startHeroSlider() {
 
 
     /*
-     * Change every 1 second.
+     * Slide number
+     */
+
+    if (sliderFrame) {
+
+        sliderFrame.dataset.slide =
+            String(
+                heroSliderIndex + 1
+            ).padStart(2, "0");
+
+    }
+
+
+    /*
+     * Change every 3 seconds
      */
 
     heroSliderTimer =
@@ -357,7 +361,7 @@ function startHeroSlider() {
                 changeHeroSlide();
 
             },
-            1000
+            3000
         );
 
 }
@@ -372,6 +376,12 @@ function changeHeroSlide() {
     const sliderImage =
         document.getElementById(
             "hero-lip-gloss"
+        );
+
+
+    const sliderFrame =
+        document.querySelector(
+            ".hero-main"
         );
 
 
@@ -392,7 +402,7 @@ function changeHeroSlide() {
 
 
     /*
-     * Fade out.
+     * Fade out
      */
 
     sliderImage.classList.add(
@@ -405,6 +415,7 @@ function changeHeroSlide() {
 
             heroSliderIndex++;
 
+
             if (
                 heroSliderIndex >=
                 heroSliderImages.length
@@ -415,14 +426,8 @@ function changeHeroSlide() {
             }
 
 
-            sliderImage.src =
-                heroSliderImages[
-                    heroSliderIndex
-                ];
-
-
             /*
-             * Fade back in.
+             * Set new image
              */
 
             sliderImage.onload =
@@ -435,9 +440,28 @@ function changeHeroSlide() {
                 };
 
 
+            sliderImage.src =
+                heroSliderImages[
+                    heroSliderIndex
+                ];
+
+
             /*
-             * Fallback in case the browser
-             * already has the image cached.
+             * Update number
+             */
+
+            if (sliderFrame) {
+
+                sliderFrame.dataset.slide =
+                    String(
+                        heroSliderIndex + 1
+                    ).padStart(2, "0");
+
+            }
+
+
+            /*
+             * Cached-image fallback
              */
 
             setTimeout(
@@ -448,12 +472,12 @@ function changeHeroSlide() {
                     );
 
                 },
-                100
+                150
             );
 
 
         },
-        400
+        650
     );
 
 }
@@ -618,9 +642,7 @@ function filterProducts(
 
     updateFilterButtons();
 
-
     updateShopTitle();
-
 
     displayProducts();
 
@@ -996,7 +1018,7 @@ function updateCartCount() {
 
     const total =
         cart.reduce(
-            function(sum, item) {
+            function(sum,item) {
 
                 return (
                     sum +
@@ -1347,10 +1369,8 @@ function checkout() {
     message +=
         "Name:%0A";
 
-
     message +=
         "Phone:%0A";
-
 
     message +=
         "Address:%0A";
@@ -1426,7 +1446,7 @@ function escapeAttribute(
 
 
 /*************************************************
- * CLOSE CART BY CLICKING OUTSIDE
+ * CLOSE CART OUTSIDE
  *************************************************/
 
 document.addEventListener(
