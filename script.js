@@ -1,6 +1,7 @@
 /*************************************************
  * REBEL VELVET
  * SHOP + FILTER + CART + GOOGLE SHEET PRICES
+ * + MOBILE HERO PRODUCT SLIDER
  *************************************************/
 
 
@@ -10,6 +11,7 @@ const WHATSAPP_NUMBER =
 
 const API_URL =
     "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec";
+
 
 /*************************************************
  * DATA
@@ -22,6 +24,17 @@ let productImages = {};
 let cart = [];
 
 let currentFilter = "all";
+
+
+/*************************************************
+ * HERO SLIDER DATA
+ *************************************************/
+
+let heroSliderImages = [];
+
+let heroSliderIndex = 0;
+
+let heroSliderTimer = null;
 
 
 /*************************************************
@@ -124,6 +137,89 @@ function loadWebsiteData() {
 
 function updateHeroImages() {
 
+    /*
+     * Build the slider from the products
+     * returned by Google Sheet / Apps Script.
+     */
+
+    heroSliderImages = [];
+
+
+    products.forEach(
+        function(product) {
+
+            if (
+                product &&
+                product.image
+            ) {
+
+                heroSliderImages.push(
+                    product.image
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Remove duplicate image URLs.
+     */
+
+    heroSliderImages =
+        [...new Set(heroSliderImages)];
+
+
+    /*
+     * If the catalog does not contain
+     * images, use the Drive image groups
+     * as a fallback.
+     */
+
+    if (
+        heroSliderImages.length === 0
+    ) {
+
+        Object.keys(productImages)
+            .forEach(
+                function(key) {
+
+                    const images =
+                        productImages[key] || [];
+
+
+                    images.forEach(
+                        function(image) {
+
+                            if (
+                                image &&
+                                image.url
+                            ) {
+
+                                heroSliderImages.push(
+                                    image.url
+                                );
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        heroSliderImages =
+            [...new Set(heroSliderImages)];
+
+    }
+
+
+    /*
+     * Keep the old desktop hero images
+     * working.
+     */
 
     setHeroImage(
         "hero-body-splash",
@@ -141,6 +237,13 @@ function updateHeroImages() {
         "hero-car-freshener",
         "carAirFreshener"
     );
+
+
+    /*
+     * Start mobile slider.
+     */
+
+    startHeroSlider();
 
 }
 
@@ -181,6 +284,177 @@ function setHeroImage(
             images[0].url;
 
     }
+
+}
+
+
+/*************************************************
+ * MOBILE HERO SLIDER
+ *************************************************/
+
+function startHeroSlider() {
+
+    const sliderImage =
+        document.getElementById(
+            "hero-lip-gloss"
+        );
+
+
+    if (!sliderImage) {
+
+        return;
+
+    }
+
+
+    /*
+     * No images = nothing to slide.
+     */
+
+    if (
+        heroSliderImages.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * Stop any previous timer.
+     */
+
+    if (heroSliderTimer) {
+
+        clearInterval(
+            heroSliderTimer
+        );
+
+    }
+
+
+    heroSliderIndex = 0;
+
+
+    /*
+     * First image.
+     */
+
+    sliderImage.src =
+        heroSliderImages[
+            heroSliderIndex
+        ];
+
+
+    /*
+     * Change every 1 second.
+     */
+
+    heroSliderTimer =
+        setInterval(
+            function() {
+
+                changeHeroSlide();
+
+            },
+            1000
+        );
+
+}
+
+
+/*************************************************
+ * CHANGE HERO SLIDE
+ *************************************************/
+
+function changeHeroSlide() {
+
+    const sliderImage =
+        document.getElementById(
+            "hero-lip-gloss"
+        );
+
+
+    if (!sliderImage) {
+
+        return;
+
+    }
+
+
+    if (
+        heroSliderImages.length <= 1
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * Fade out.
+     */
+
+    sliderImage.classList.add(
+        "slider-fade"
+    );
+
+
+    setTimeout(
+        function() {
+
+            heroSliderIndex++;
+
+            if (
+                heroSliderIndex >=
+                heroSliderImages.length
+            ) {
+
+                heroSliderIndex = 0;
+
+            }
+
+
+            sliderImage.src =
+                heroSliderImages[
+                    heroSliderIndex
+                ];
+
+
+            /*
+             * Fade back in.
+             */
+
+            sliderImage.onload =
+                function() {
+
+                    sliderImage.classList.remove(
+                        "slider-fade"
+                    );
+
+                };
+
+
+            /*
+             * Fallback in case the browser
+             * already has the image cached.
+             */
+
+            setTimeout(
+                function() {
+
+                    sliderImage.classList.remove(
+                        "slider-fade"
+                    );
+
+                },
+                100
+            );
+
+
+        },
+        400
+    );
 
 }
 
