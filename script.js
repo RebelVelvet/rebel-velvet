@@ -801,8 +801,3 @@ async function init() {
 
 init();
 
-.product-sale-label {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-}
