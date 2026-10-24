@@ -542,3 +542,38 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.02; }
     scroll-behavior: auto !important;
   }
 }
+
+
+.product-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.price-old {
+  color: #806a69;
+  font-size: 0.9em;
+  text-decoration: line-through;
+}
+
+.price-current {
+  color: var(--burgundy);
+  font-weight: 600;
+}
+
+.sale-badge,
+.product-sale-label {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--burgundy);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.product-media {
+  position: relative;
+}
