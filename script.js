@@ -429,7 +429,7 @@ function addToCart(id) {
   if (!product) return;
 
   const salePrice = getSalePrice(product);
-  const effectivePrice = salePrice ?? Number(product.price) || 0;
+  const effectivePrice = (salePrice ?? Number(product.price)) || 0;
 
   const existingItem = findCartItem(id);
 
