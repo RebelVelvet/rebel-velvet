@@ -32,8 +32,10 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-//const ESC = { "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" };
+
+
 const ESC = { "&": "\x26amp;", "<": "\x26lt;", ">": "\x26gt;", '"': "\x26quot;", "'": "\x26#39;" };
+
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
 
 const priceFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
