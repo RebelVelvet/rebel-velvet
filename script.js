@@ -801,45 +801,6 @@ async function init() {
 
 init();
 
-
-وزوّدي التنسيق ده في آخر style.css عشان سعر العرض يبان بوضوح:
-
-
-
-.product-price {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.price-old {
-  color: #806a69;
-  font-size: 0.9em;
-  text-decoration: line-through;
-}
-
-.price-current {
-  color: var(--burgundy);
-  font-weight: 600;
-}
-
-.sale-badge,
-.product-sale-label {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: var(--burgundy);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
-.product-media {
-  position: relative;
-}
-
 .product-sale-label {
   position: absolute;
   top: 12px;
