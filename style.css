@@ -577,3 +577,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.02; }
 .product-media {
   position: relative;
 }
+
+.product-sale-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
