@@ -98,7 +98,7 @@ function getSalePrice(product) {
 }
 
 function getEffectivePrice(product) {
-  return getSalePrice(product) ?? Number(product.price) || 0;
+  return (getSalePrice(product) ?? Number(product.price)) || 0;
 }
 
 function renderProductPrice(product) {
