@@ -8,11 +8,11 @@
 const CONFIG = {
   brand: "Rebel Velvet",
   currency: "EGP",
-  whatsapp: "201092542461",              // digits only, country code first
-  instagram: "https://www.instagram.com/", // TODO: replace with your handle, e.g. https://www.instagram.com/rebelvelvet
+  whatsapp: "201092542461",
+  instagram: "https://www.instagram.com/",
   catalogApi:
     "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
-  storageKey: "rebelVelvetCart",         // kept the same so saved bags survive the redesign
+  storageKey: "rebelVelvetCart",
   slideInterval: 4000,
   placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
 };
@@ -32,17 +32,21 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-
-
-const ESC = { "&": "\x26amp;", "<": "\x26lt;", ">": "\x26gt;", '"': "\x26quot;", "'": "\x26#39;" };
-
-const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
+const ESC = {
+  "\x26": "\x26amp;",
+  "\x3C": "\x26lt;",
+  "\x3E": "\x26gt;",
+  '"': "\x26quot;",
+  "'": "\x26#39;",
+};
+const esc = (value) => String(value ?? "").replace(/[\x26\x3C\x3E"']/g, (c) => ESC[c]);
 
 const priceFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const price = (amount) => `${CONFIG.currency} ${priceFormat.format(Number(amount) || 0)}`;
 
 const pad = (n) => String(n).padStart(2, "0");
-const sameKey = (a, b) => String(a ?? "").trim().toLowerCase() === String(b ?? "").trim().toLowerCase();
+const sameKey = (a, b) =>
+  String(a ?? "").trim().toLowerCase() === String(b ?? "").trim().toLowerCase();
 
 /* ---------- Catalog (JSONP from Google Apps Script) ---------- */
 
@@ -66,7 +70,7 @@ function fetchCatalog() {
     script.onerror = () => finish(null);
     timer = setTimeout(() => finish(null), 12000);
 
-    script.src = `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
+    script.src = `${CONFIG.catalogApi}?callback=${callbackName}\x26t=${Date.now()}`;
     document.body.appendChild(script);
   });
 }
@@ -146,28 +150,28 @@ function renderProducts() {
 
   if (!list.length) {
     grid.innerHTML = `
-      <div class="empty">
-        <span aria-hidden="true">✦</span>
-        <h3>Coming soon</h3>
-        <p>New pieces are on their way.</p>
-      </div>`;
+      \x3Cdiv class="empty"\x3E
+        \x3Cspan aria-hidden="true"\x3E✦\x3C/span\x3E
+        \x3Ch3\x3EComing soon\x3C/h3\x3E
+        \x3Cp\x3ENew pieces are on their way.\x3C/p\x3E
+      \x3C/div\x3E`;
     return;
   }
 
   grid.innerHTML = list
     .map(
       (p) => `
-      <article class="product-card">
-        <div class="product-media">
-          [${esc\(p.image](${esc%28p.image)
-        </div>
-        <div class="product-body">
-          <p class="product-cat">${esc(p.category)}</p>
-          <h3 class="product-name">${esc(p.name)}</h3>
-          <p class="product-price">${price(p.price)}</p>
-          <button class="btn btn-outline" data-action="add" data-id="${esc(p.id)}">Add to bag</button>
-        </div>
-      </article>`
+      \x3Carticle class="product-card"\x3E
+        \x3Cdiv class="product-media"\x3E
+          \x3Cimg src="${esc(p.image || CONFIG.placeholderImage)}" alt="${esc(p.name)}" width="800" height="1000" loading="lazy"\x3E
+        \x3C/div\x3E
+        \x3Cdiv class="product-body"\x3E
+          \x3Cp class="product-cat"\x3E${esc(p.category)}\x3C/p\x3E
+          \x3Ch3 class="product-name"\x3E${esc(p.name)}\x3C/h3\x3E
+          \x3Cp class="product-price"\x3E${price(p.price)}\x3C/p\x3E
+          \x3Cbutton class="btn btn-outline" data-action="add" data-id="${esc(p.id)}"\x3EAdd to bag\x3C/button\x3E
+        \x3C/div\x3E
+      \x3C/article\x3E`
     )
     .join("");
 }
@@ -201,7 +205,7 @@ function persistCart() {
   try {
     localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.cart));
   } catch {
-    /* storage unavailable (private mode): bag still works for this visit */
+    /* storage unavailable: bag still works for this visit */
   }
 }
 
@@ -258,30 +262,30 @@ function renderCart() {
 
   if (!state.cart.length) {
     box.innerHTML = `
-      <div class="cart-empty">
-        <span aria-hidden="true">♡</span>
-        <p>Your bag is empty.</p>
-      </div>`;
+      \x3Cdiv class="cart-empty"\x3E
+        \x3Cspan aria-hidden="true"\x3E♡\x3C/span\x3E
+        \x3Cp\x3EYour bag is empty.\x3C/p\x3E
+      \x3C/div\x3E`;
     return;
   }
 
   box.innerHTML = state.cart
     .map(
       (l) => `
-      <div class="cart-line">
-        [${esc\(l.image\)}](${esc%28l.image%29})
-        <div>
-          <p class="cat">${esc(l.category)}</p>
-          <h4>${esc(l.name)}</h4>
-          <p class="price">${price(l.price)}</p>
-          <div class="qty">
-            <button data-action="qty" data-id="${esc(l.id)}" data-delta="-1" aria-label="Decrease quantity">−</button>
-            <span>${l.quantity}</span>
-            <button data-action="qty" data-id="${esc(l.id)}" data-delta="1" aria-label="Increase quantity">+</button>
-          </div>
-          <button class="remove" data-action="remove" data-id="${esc(l.id)}">Remove</button>
-        </div>
-      </div>`
+      \x3Cdiv class="cart-line"\x3E
+        \x3Cimg src="${esc(l.image)}" alt="" width="72" height="88"\x3E
+        \x3Cdiv\x3E
+          \x3Cp class="cat"\x3E${esc(l.category)}\x3C/p\x3E
+          \x3Ch4\x3E${esc(l.name)}\x3C/h4\x3E
+          \x3Cp class="price"\x3E${price(l.price)}\x3C/p\x3E
+          \x3Cdiv class="qty"\x3E
+            \x3Cbutton data-action="qty" data-id="${esc(l.id)}" data-delta="-1" aria-label="Decrease quantity"\x3E−\x3C/button\x3E
+            \x3Cspan\x3E${l.quantity}\x3C/span\x3E
+            \x3Cbutton data-action="qty" data-id="${esc(l.id)}" data-delta="1" aria-label="Increase quantity"\x3E+\x3C/button\x3E
+          \x3C/div\x3E
+          \x3Cbutton class="remove" data-action="remove" data-id="${esc(l.id)}"\x3ERemove\x3C/button\x3E
+        \x3C/div\x3E
+      \x3C/div\x3E`
     )
     .join("");
 }
@@ -426,9 +430,10 @@ async function init() {
   renderCart();
 
   const data = await fetchCatalog();
-  state.products = data && Array.isArray(data.catalog)
-    ? data.catalog.filter((p) => p && p.id && p.name)
-    : [];
+  state.products =
+    data && Array.isArray(data.catalog)
+      ? data.catalog.filter((p) => p && p.id && p.name)
+      : [];
   state.driveImages = data && data.products ? data.products : {};
 
   renderProducts();
