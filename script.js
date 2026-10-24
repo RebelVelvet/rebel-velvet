@@ -401,7 +401,7 @@ function updateSavedCartPrices() {
       category: product.category,
       price: getEffectivePrice(product),
       originalPrice: Number(product.price) || 0,
-      image: product.image || item.image || CONFIG.placeholderImage,
+      image: (product.image || item.image) || CONFIG.placeholderImage,
     };
   });
 
