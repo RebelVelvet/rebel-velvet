@@ -45,10 +45,10 @@ const $$ = (selector, root = document) =>
   [...root.querySelectorAll(selector)];
 
 const HTML_ENTITIES = {
-  "&": "&",
-  "<": "<",
-  ">": ">",
-  "": """,
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
   "'": "&#39;",
 };
 
@@ -288,7 +288,7 @@ function renderProducts() {
       (product) => `
         <article class="product-card">
           <div class="product-media">
-            [${escapeHtml\(](${escapeHtml%28)
+            <img src="${escapeHtml(product.image || CONFIG.placeholderImage)}" alt="${escapeHtml(product.name)}" />
             ${
               getSalePrice(product) !== null
                 ? '<span class="product-sale-label">SALE</span>'
@@ -482,7 +482,7 @@ function renderCartItem(item) {
 
   return `
     <div class="cart-line">
-      [${escapeHtml\(item.image](${escapeHtml%28item.image)
+      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" />
 
       <div>
         <p class="cat">${escapeHtml(item.category)}</p>
@@ -800,4 +800,3 @@ async function init() {
 }
 
 init();
-
