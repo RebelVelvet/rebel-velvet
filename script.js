@@ -1,3 +1,4 @@
+```javascript
 /* =========================================================
    REBEL VELVET | STOREFRONT
    Google Sheets + Products + Sale Prices + Cart + WhatsApp
@@ -6,25 +7,18 @@
 "use strict";
 
 /* ---------- Configuration ---------- */
-
 const CONFIG = {
   brand: "Rebel Velvet",
   currency: "EGP",
   whatsapp: "201092542461",
   instagram: "https://www.instagram.com/",
-
-  catalogApi:
-    "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
-
+  catalogApi: "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
   storageKey: "rebelVelvetCart",
   slideInterval: 4000,
-
-  placeholderImage:
-    "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet"
+  placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet"
 };
 
 /* ---------- State ---------- */
-
 const state = {
   products: [],
   driveImages: {},
@@ -32,20 +26,11 @@ const state = {
   filter: "all"
 };
 
-const slider = {
-  el: null,
-  slides: [],
-  index: 0,
-  timer: null
-};
+const slider = { el: null, slides: [], index: 0, timer: null };
 
 /* ---------- Helpers ---------- */
-
-const $ = (selector, root = document) =>
-  root.querySelector(selector);
-
-const $$ = (selector, root = document) =>
-  [...root.querySelectorAll(selector)];
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const HTML_ENTITIES = {
   "&": "&amp;",
@@ -56,40 +41,44 @@ const HTML_ENTITIES = {
 };
 
 function escapeHtml(value) {
-  return String(value ?? "").replace(
-    /[&<>"']/g,
-    character => HTML_ENTITIES[character]
-  );
+  return String(value ?? "").replace(/[&<>"']/g, character => HTML_ENTITIES[character]);
 }
 
-const priceFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0
-});
+const priceFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 
 function formatPrice(amount) {
-  return `${CONFIG.currency} ${priceFormat.format(
-    Number(amount) || 0
-  )}`;
+  return `${CONFIG.currency} ${priceFormat.format(Number(amount) || 0)}`;
 }
 
 function sameKey(first, second) {
-  return (
-    String(first ?? "").trim().toLowerCase() ===
-    String(second ?? "").trim().toLowerCase()
-  );
+  return String(first ?? "").trim().toLowerCase() === String(second ?? "").trim().toLowerCase();
+}
+
+function normalizeImageUrl(url) {
+  const value = String(url || "").trim();
+  if (!value) return "";
+
+  const fileMatch = value.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
+
+  if (fileMatch) {
+    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w1000`;
+  }
+
+  const openMatch = value.match(/[?&]id=([^&]+)/i);
+
+  if (value.includes("drive.google.com") && openMatch && !value.includes("/thumbnail")) {
+    return `https://drive.google.com/thumbnail?id=${openMatch[1]}&sz=w1000`;
+  }
+
+  return value;
 }
 
 /* ---------- Sale Prices ---------- */
-
 function getSalePrice(product) {
   const regularPrice = Number(product.price);
   const salePrice = Number(product.salePrice);
 
-  if (
-    Number.isFinite(salePrice) &&
-    salePrice > 0 &&
-    salePrice < regularPrice
-  ) {
+  if (Number.isFinite(salePrice) && salePrice > 0 && salePrice < regularPrice) {
     return salePrice;
   }
 
@@ -104,82 +93,67 @@ function renderProductPrice(product) {
   const salePrice = getSalePrice(product);
 
   if (salePrice === null) {
-    return `
-      <span class="price-current">
-        ${formatPrice(product.price)}
-      </span>`;
+    return `<span class="price-current">${formatPrice(product.price)}</span>`;
   }
 
   return `
-    <span class="price-old">
-      ${formatPrice(product.price)}
-    </span>
-
-    <span class="price-current">
-      ${formatPrice(salePrice)}
-    </span>
-
-    <span class="sale-badge">
-      SALE
-    </span>`;
+    <span class="price-old">${formatPrice(product.price)}</span>
+    <span class="price-current">${formatPrice(salePrice)}</span>
+    <span class="sale-badge">SALE</span>`;
 }
 
 /* ---------- Google Sheets Catalog ---------- */
-
 function fetchCatalog() {
   return new Promise(resolve => {
-    const callbackName =
-      `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-
+    const callbackName = `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const script = document.createElement("script");
-
     let finished = false;
 
-    const timeoutId = setTimeout(() => {
-      finish(null);
-    }, 12000);
+    const timeoutId = setTimeout(() => finish(null), 15000);
 
     function finish(data) {
       if (finished) return;
 
       finished = true;
-
       clearTimeout(timeoutId);
 
       try {
         delete window[callbackName];
-      } catch (_) {
+      } catch (error) {
         window[callbackName] = undefined;
       }
 
       script.remove();
 
-      resolve(data && data.success ? data : null);
+      if (data && data.success) {
+        console.log("REBEL VELVET catalog loaded:", data);
+        resolve(data);
+      } else {
+        console.error("REBEL VELVET catalog failed to load:", data);
+        resolve(null);
+      }
     }
 
     window[callbackName] = finish;
 
-    script.onerror = () => finish(null);
+    script.onerror = () => {
+      console.error("Could not load the catalog API script.");
+      finish(null);
+    };
 
-    script.src =
-      `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
-
+    script.src = `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
     document.head.appendChild(script);
   });
 }
 
 /* ---------- Categories and Filters ---------- */
-
 function getCategories() {
   const categories = [];
 
   state.products.forEach(product => {
     const category = String(product.category || "").trim();
 
-    if (
-      category &&
-      !categories.some(item => sameKey(item, category))
-    ) {
+    if (category && !categories.some(item => sameKey(item, category))) {
       categories.push(category);
     }
   });
@@ -198,12 +172,10 @@ function renderCategoryFilters() {
     $(".filter-bar")
   ].filter(Boolean);
 
-  const buttons = categories.map(category => `
+  const categoryButtons = categories.map(category => `
     <button
       type="button"
-      class="filter-btn${sameKey(state.filter, category)
-        ? " is-active active"
-        : ""}"
+      class="filter-btn${sameKey(state.filter, category) ? " is-active active" : ""}"
       data-filter="${escapeHtml(category)}"
     >
       ${escapeHtml(category)}
@@ -214,26 +186,25 @@ function renderCategoryFilters() {
     container.innerHTML = `
       <button
         type="button"
-        class="filter-btn${state.filter === "all"
-          ? " is-active active"
-          : ""}"
+        class="filter-btn${state.filter === "all" ? " is-active active" : ""}"
         data-filter="all"
       >
         All products
       </button>
-      ${buttons}
+      ${categoryButtons}
     `;
   });
 
   const categoryContainer = $(
-    "#category-grid, .category-grid, [data-category-grid]"
+    "#category-grid, .category-grid, .cat-grid, [data-category-grid]"
   );
 
   if (categoryContainer) {
     categoryContainer.innerHTML = categories.map(category => `
       <button
         type="button"
-        class="category-card"
+        class="cat-card category-card"
+        data-action="filter"
         data-filter="${escapeHtml(category)}"
       >
         <span>${escapeHtml(category)}</span>
@@ -243,9 +214,7 @@ function renderCategoryFilters() {
 }
 
 function getVisibleProducts() {
-  if (state.filter === "all") {
-    return state.products;
-  }
+  if (state.filter === "all") return state.products;
 
   return state.products.filter(product =>
     sameKey(product.category, state.filter)
@@ -254,17 +223,18 @@ function getVisibleProducts() {
 
 function setFilter(category) {
   state.filter = category || "all";
-
   renderCategoryFilters();
   renderProducts();
 }
 
 /* ---------- Product Display ---------- */
-
 function renderProducts() {
   const grid = $("#products");
 
-  if (!grid) return;
+  if (!grid) {
+    console.error('Product grid not found: expected an element with id="products".');
+    return;
+  }
 
   const products = getVisibleProducts();
 
@@ -276,43 +246,31 @@ function renderProducts() {
         <p>New pieces are on their way.</p>
       </div>
     `;
-
     return;
   }
 
   grid.innerHTML = products.map(product => {
-    const image = product.image || CONFIG.placeholderImage;
+    const image = normalizeImageUrl(product.image) || CONFIG.placeholderImage;
 
     return `
       <article class="product-card">
-
         <div class="product-media">
           <img
             src="${escapeHtml(image)}"
             alt="${escapeHtml(product.name)}"
             loading="lazy"
+            onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'"
           >
 
-          ${
-            getSalePrice(product) !== null
-              ? '<span class="product-sale-label">SALE</span>'
-              : ""
-          }
+          ${getSalePrice(product) !== null
+            ? '<span class="product-sale-label">SALE</span>'
+            : ""}
         </div>
 
         <div class="product-body">
-
-          <p class="product-cat">
-            ${escapeHtml(product.category || "")}
-          </p>
-
-          <h3 class="product-name">
-            ${escapeHtml(product.name)}
-          </h3>
-
-          <p class="product-price">
-            ${renderProductPrice(product)}
-          </p>
+          <p class="product-cat">${escapeHtml(product.category || "")}</p>
+          <h3 class="product-name">${escapeHtml(product.name)}</h3>
+          <p class="product-price">${renderProductPrice(product)}</p>
 
           <button
             class="btn btn-outline"
@@ -322,7 +280,6 @@ function renderProducts() {
           >
             Add to bag
           </button>
-
         </div>
       </article>
     `;
@@ -332,47 +289,34 @@ function renderProducts() {
 }
 
 /* ---------- Cart Storage ---------- */
-
 function loadCart() {
   try {
-    const savedCart = JSON.parse(
-      localStorage.getItem(CONFIG.storageKey) || "[]"
-    );
+    const savedCart = JSON.parse(localStorage.getItem(CONFIG.storageKey) || "[]");
 
     state.cart = Array.isArray(savedCart)
       ? savedCart.filter(item =>
-          item &&
-          item.id !== undefined &&
-          Number(item.quantity) > 0
+          item && item.id !== undefined && Number(item.quantity) > 0
         )
       : [];
-
-  } catch (_) {
+  } catch (error) {
     state.cart = [];
   }
 }
 
 function saveCart() {
   try {
-    localStorage.setItem(
-      CONFIG.storageKey,
-      JSON.stringify(state.cart)
-    );
-  } catch (_) {
-    // Cart continues working during the current visit.
+    localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.cart));
+  } catch (error) {
+    // Cart remains usable during this visit.
   }
 }
 
 function findProduct(id) {
-  return state.products.find(product =>
-    String(product.id) === String(id)
-  );
+  return state.products.find(product => String(product.id) === String(id));
 }
 
 function findCartItem(id) {
-  return state.cart.find(item =>
-    String(item.id) === String(id)
-  );
+  return state.cart.find(item => String(item.id) === String(id));
 }
 
 function updateSavedCartPrices() {
@@ -385,7 +329,7 @@ function updateSavedCartPrices() {
       ...item,
       name: product.name,
       category: product.category,
-      image: product.image || item.image || CONFIG.placeholderImage,
+      image: normalizeImageUrl(product.image) || item.image || CONFIG.placeholderImage,
       originalPrice: Number(product.price) || 0,
       price: getEffectivePrice(product)
     };
@@ -395,10 +339,8 @@ function updateSavedCartPrices() {
 }
 
 /* ---------- Add Products to Cart ---------- */
-
 function addToCart(id) {
   const product = findProduct(id);
-
   if (!product) return;
 
   const existingItem = findCartItem(id);
@@ -407,13 +349,12 @@ function addToCart(id) {
     existingItem.quantity += 1;
     existingItem.price = getEffectivePrice(product);
     existingItem.originalPrice = Number(product.price) || 0;
-
   } else {
     state.cart.push({
       id: String(product.id),
       name: product.name,
       category: product.category || "",
-      image: product.image || CONFIG.placeholderImage,
+      image: normalizeImageUrl(product.image) || CONFIG.placeholderImage,
       originalPrice: Number(product.price) || 0,
       price: getEffectivePrice(product),
       quantity: 1
@@ -424,35 +365,23 @@ function addToCart(id) {
   openCart();
 }
 
-/* ---------- Change Quantity ---------- */
-
 function changeQuantity(id, change) {
   const item = findCartItem(id);
-
   if (!item) return;
 
   item.quantity += change;
 
   if (item.quantity <= 0) {
-    state.cart = state.cart.filter(
-      cartItem => String(cartItem.id) !== String(id)
-    );
+    state.cart = state.cart.filter(cartItem => String(cartItem.id) !== String(id));
   }
 
   updateCart();
 }
 
-/* ---------- Remove Product ---------- */
-
 function removeFromCart(id) {
-  state.cart = state.cart.filter(
-    item => String(item.id) !== String(id)
-  );
-
+  state.cart = state.cart.filter(item => String(item.id) !== String(id));
   updateCart();
 }
-
-/* ---------- Cart Totals ---------- */
 
 function getCartCount() {
   return state.cart.reduce(
@@ -464,69 +393,47 @@ function getCartCount() {
 function getCartTotal() {
   return state.cart.reduce(
     (total, item) =>
-      total +
-      (Number(item.price) || 0) *
-      (Number(item.quantity) || 1),
+      total + (Number(item.price) || 0) * (Number(item.quantity) || 1),
     0
   );
 }
 
 /* ---------- Cart Item Display ---------- */
-
 function renderCartItem(item) {
-  const originalPrice =
-    Number(item.originalPrice) || Number(item.price) || 0;
-
+  const originalPrice = Number(item.originalPrice) || Number(item.price) || 0;
   const price = Number(item.price) || 0;
-
   const hasDiscount = originalPrice > price;
 
   return `
     <div class="cart-line">
-
       <img
-        src="${escapeHtml(item.image || CONFIG.placeholderImage)}"
+        src="${escapeHtml(normalizeImageUrl(item.image) || CONFIG.placeholderImage)}"
         alt="${escapeHtml(item.name)}"
         loading="lazy"
+        onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'"
       >
 
       <div class="cart-line-info">
-
-        <p class="cat">
-          ${escapeHtml(item.category || "")}
-        </p>
-
-        <h4>
-          ${escapeHtml(item.name)}
-        </h4>
+        <p class="cat">${escapeHtml(item.category || "")}</p>
+        <h4>${escapeHtml(item.name)}</h4>
 
         <p class="price">
-          ${
-            hasDiscount
-              ? `<span class="price-old">${formatPrice(originalPrice)}</span>`
-              : ""
-          }
-
-          <span class="price-current">
-            ${formatPrice(price)}
-          </span>
+          ${hasDiscount
+            ? `<span class="price-old">${formatPrice(originalPrice)}</span>`
+            : ""}
+          <span class="price-current">${formatPrice(price)}</span>
         </p>
 
         <div class="qty">
-
           <button
             type="button"
             data-action="qty"
             data-id="${escapeHtml(item.id)}"
             data-delta="-1"
             aria-label="Decrease quantity"
-          >
-            −
-          </button>
+          >−</button>
 
-          <span>
-            ${Number(item.quantity) || 1}
-          </span>
+          <span>${Number(item.quantity) || 1}</span>
 
           <button
             type="button"
@@ -534,12 +441,8 @@ function renderCartItem(item) {
             data-id="${escapeHtml(item.id)}"
             data-delta="1"
             aria-label="Increase quantity"
-          >
-            +
-          </button>
-
+          >+</button>
         </div>
-
       </div>
 
       <button
@@ -548,20 +451,13 @@ function renderCartItem(item) {
         data-action="remove"
         data-id="${escapeHtml(item.id)}"
         aria-label="Remove ${escapeHtml(item.name)}"
-      >
-        ×
-      </button>
-
+      >×</button>
     </div>
   `;
 }
 
-/* ---------- Render Cart ---------- */
-
 function renderCart() {
-  const itemsContainer = $(
-    "#cart-items, .cart-items, [data-cart-items]"
-  );
+  const itemsContainer = $("#cart-items, .cart-items, [data-cart-items]");
 
   if (itemsContainer) {
     itemsContainer.innerHTML = state.cart.length
@@ -572,32 +468,20 @@ function renderCart() {
   const count = getCartCount();
   const total = formatPrice(getCartTotal());
 
-  [
-    "#cart-count",
-    ".cart-count",
-    "[data-cart-count]"
-  ].forEach(selector => {
+  ["#cart-count", ".cart-count", "[data-cart-count]"].forEach(selector => {
     $$(selector).forEach(element => {
       element.textContent = count;
       element.classList.toggle("has-items", count > 0);
     });
   });
 
-  [
-    "#cart-total",
-    ".cart-total",
-    "[data-cart-total]"
-  ].forEach(selector => {
+  ["#cart-total", ".cart-total", "[data-cart-total]"].forEach(selector => {
     $$(selector).forEach(element => {
       element.textContent = total;
     });
   });
 
-  const checkoutButtons = $$(
-    "[data-checkout], #checkout-button, #checkout, .checkout-button"
-  );
-
-  checkoutButtons.forEach(button => {
+  $$("[data-checkout], #checkout-button, #checkout, .checkout-button").forEach(button => {
     button.disabled = state.cart.length === 0;
   });
 }
@@ -608,42 +492,30 @@ function updateCart() {
 }
 
 /* ---------- Open and Close Cart ---------- */
-
 function openCart() {
-  const drawer = $(
-    "#cart-drawer, .cart-drawer, [data-cart-drawer], #cart-overlay"
-  );
-
+  const drawer = $("#cart-drawer, .cart-drawer, [data-cart-drawer], #cart-overlay");
   if (!drawer) return;
 
   drawer.classList.add("is-open", "open");
   drawer.setAttribute("aria-hidden", "false");
-
   document.body.classList.add("is-locked");
 }
 
 function closeCart() {
-  const drawer = $(
-    "#cart-drawer, .cart-drawer, [data-cart-drawer], #cart-overlay"
-  );
-
+  const drawer = $("#cart-drawer, .cart-drawer, [data-cart-drawer], #cart-overlay");
   if (!drawer) return;
 
   drawer.classList.remove("is-open", "open");
   drawer.setAttribute("aria-hidden", "true");
-
   document.body.classList.remove("is-locked");
 }
 
 /* ---------- WhatsApp Checkout ---------- */
-
 function checkout() {
   if (!state.cart.length) return;
 
   const orderLines = state.cart.map(item => {
-    const originalPrice =
-      Number(item.originalPrice) || Number(item.price);
-
+    const originalPrice = Number(item.originalPrice) || Number(item.price);
     const currentPrice = Number(item.price) || 0;
 
     const priceText = originalPrice > currentPrice
@@ -668,34 +540,24 @@ function checkout() {
   const whatsappUrl =
     `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
 
-  window.open(
-    whatsappUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
+  window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
 /* ---------- Hero Slider ---------- */
-
 function setupSlider() {
   slider.el = $("#hero-slider-image");
-
   if (!slider.el) return;
 
   const catalogImages = state.products
-    .map(product => product.image)
+    .map(product => normalizeImageUrl(product.image))
     .filter(Boolean);
 
   const driveImages = Object.values(state.driveImages)
     .flat()
-    .map(image => image && (image.url || image.image))
+    .map(image => image && normalizeImageUrl(image.url || image.image))
     .filter(Boolean);
 
-  const images = catalogImages.length
-    ? catalogImages
-    : driveImages;
-
-  slider.slides = [...new Set(images)];
+  slider.slides = [...new Set(catalogImages.length ? catalogImages : driveImages)];
 
   if (!slider.slides.length) {
     slider.el.src = CONFIG.placeholderImage;
@@ -721,7 +583,6 @@ function setupSlider() {
 }
 
 /* ---------- Contact Links ---------- */
-
 function setContactLinks() {
   $$("[data-wa]").forEach(link => {
     link.href = `https://wa.me/${CONFIG.whatsapp}`;
@@ -737,7 +598,6 @@ function setContactLinks() {
 }
 
 /* ---------- Mobile Navigation ---------- */
-
 function setMenu(isOpen) {
   const header = $(".site-header");
   const button = $("#menu-toggle");
@@ -745,19 +605,13 @@ function setMenu(isOpen) {
   if (!header || !button) return;
 
   header.classList.toggle("nav-open", isOpen);
-
-  button.setAttribute(
-    "aria-expanded",
-    String(isOpen)
-  );
+  button.setAttribute("aria-expanded", String(isOpen));
 }
 
 /* ---------- Event Listeners ---------- */
-
 function bindEvents() {
   document.addEventListener("click", event => {
     const target = event.target;
-
     if (!(target instanceof Element)) return;
 
     const actionElement = target.closest("[data-action]");
@@ -766,31 +620,19 @@ function bindEvents() {
       const action = actionElement.dataset.action;
       const id = actionElement.dataset.id;
 
-      if (action === "add") {
-        addToCart(id);
-        return;
-      }
-
+      if (action === "add") { addToCart(id); return; }
       if (action === "qty") {
-        changeQuantity(
-          id,
-          Number(actionElement.dataset.delta)
-        );
+        changeQuantity(id, Number(actionElement.dataset.delta));
         return;
       }
+      if (action === "remove") { removeFromCart(id); return; }
+      if (action === "checkout") { checkout(); return; }
+      if (action === "close-cart") { closeCart(); return; }
+      if (action === "open-cart") { openCart(); return; }
 
-      if (action === "remove") {
-        removeFromCart(id);
-        return;
-      }
-
-      if (action === "checkout") {
-        checkout();
-        return;
-      }
-
-      if (action === "close-cart") {
-        closeCart();
+      if (action === "menu") {
+        const header = $(".site-header");
+        setMenu(!(header && header.classList.contains("nav-open")));
         return;
       }
     }
@@ -799,63 +641,37 @@ function bindEvents() {
 
     if (filterElement) {
       const category = filterElement.dataset.filter || "all";
-
       setFilter(category);
 
-      if (
-        filterElement.closest(
-          ".category-grid, #category-grid, [data-category-grid]"
-        )
-      ) {
-        $("#products")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+      if (filterElement.closest(".category-grid, #category-grid, .cat-grid, [data-category-grid]")) {
+        $("#products")?.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       return;
     }
 
-    if (
-      target.closest(
-        "[data-checkout], #checkout-button, #checkout, .checkout-button"
-      )
-    ) {
+    if (target.closest("[data-checkout], #checkout-button, #checkout, .checkout-button")) {
       checkout();
       return;
     }
 
-    if (
-      target.closest(
-        "[data-cart-open], #cart-open, .cart-open"
-      )
-    ) {
+    if (target.closest("[data-cart-open], #cart-open, .cart-open")) {
       openCart();
       return;
     }
 
-    if (
-      target.closest(
-        "[data-cart-close], #cart-close, .cart-close"
-      )
-    ) {
+    if (target.closest("[data-cart-close], #cart-close, .cart-close")) {
       closeCart();
       return;
     }
 
     if (target.closest("#menu-toggle")) {
       const header = $(".site-header");
-
-      setMenu(
-        !(header && header.classList.contains("nav-open"))
-      );
-
+      setMenu(!(header && header.classList.contains("nav-open")));
       return;
     }
 
-    if (target.closest(".site-header.nav-open a")) {
-      setMenu(false);
-    }
+    if (target.closest(".site-header.nav-open a")) setMenu(false);
   });
 
   document.addEventListener("keydown", event => {
@@ -865,26 +681,15 @@ function bindEvents() {
     }
   });
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      $(".site-header")?.classList.toggle(
-        "is-scrolled",
-        window.scrollY > 24
-      );
-    },
-    { passive: true }
-  );
+  window.addEventListener("scroll", () => {
+    $(".site-header")?.classList.toggle("is-scrolled", window.scrollY > 24);
+  }, { passive: true });
 }
 
 /* ---------- Initialize Store ---------- */
-
 async function init() {
   const year = $("#year");
-
-  if (year) {
-    year.textContent = new Date().getFullYear();
-  }
+  if (year) year.textContent = new Date().getFullYear();
 
   bindEvents();
   setContactLinks();
@@ -893,30 +698,26 @@ async function init() {
 
   const data = await fetchCatalog();
 
-  state.products =
-    data && Array.isArray(data.catalog)
-      ? data.catalog.filter(product =>
-          product &&
-          product.id &&
-          product.name
-        )
-      : [];
+  state.products = data && Array.isArray(data.catalog)
+    ? data.catalog
+        .filter(product => product && product.id && product.name)
+        .map(product => ({
+          ...product,
+          image: normalizeImageUrl(product.image)
+        }))
+    : [];
 
-  state.driveImages =
-    data && data.products && typeof data.products === "object"
-      ? data.products
-      : {};
+  state.driveImages = data && data.products && typeof data.products === "object"
+    ? data.products
+    : {};
 
   updateSavedCartPrices();
-
   renderCategoryFilters();
   renderProducts();
   renderCart();
   setupSlider();
 
-  const status = $(
-    "#catalog-status, [data-catalog-status]"
-  );
+  const status = $("#catalog-status, [data-catalog-status]");
 
   if (status) {
     status.textContent = state.products.length
@@ -925,8 +726,16 @@ async function init() {
 
     status.hidden = state.products.length > 0;
   }
+
+  if (!state.products.length) {
+    console.warn("No catalog products were rendered. Check the API response and Google Sheet.");
+  }
 }
 
 /* ---------- Start ---------- */
-
-document.addEventListener("DOMContentLoaded", init);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+```
