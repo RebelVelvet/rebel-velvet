@@ -32,24 +32,19 @@ const slider = {
   timer: null,
 };
 
-const reduceMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)"
-);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 /* ---------- Helpers ---------- */
 
-const $ = (selector, root = document) =>
-  root.querySelector(selector);
-
-const $$ = (selector, root = document) =>
-  [...root.querySelectorAll(selector)];
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const HTML_ENTITIES = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-  "'": "&#39;",
+  "&": "&",
+  "<": "<",
+  ">": ">",
+  '"': """,
+  "'": "'",
 };
 
 function escapeHtml(value) {
@@ -64,9 +59,7 @@ const priceFormat = new Intl.NumberFormat("en-US", {
 });
 
 function formatPrice(amount) {
-  return `${CONFIG.currency} ${priceFormat.format(
-    Number(amount) || 0
-  )}`;
+  return `${CONFIG.currency} ${priceFormat.format(Number(amount) || 0)}`;
 }
 
 function pad(number) {
@@ -105,43 +98,30 @@ function renderProductPrice(product) {
   const salePrice = getSalePrice(product);
 
   if (salePrice === null) {
-    return `
-      <span class="price-current">
-        ${formatPrice(product.price)}
-      </span>`;
+    return `<span class="price-current">${formatPrice(product.price)}</span>`;
   }
 
   return `
-    <span class="price-old">
-      ${formatPrice(product.price)}
-    </span>
-    <span class="price-current">
-      ${formatPrice(salePrice)}
-    </span>
-    <span class="sale-badge">
-      SALE
-    </span>`;
+    <span class="price-old">${formatPrice(product.price)}</span>
+    <span class="price-current">${formatPrice(salePrice)}</span>
+    <span class="sale-badge">SALE</span>`;
 }
 
 /* ---------- Catalog: JSONP from Google Apps Script ---------- */
 
 function fetchCatalog() {
   return new Promise((resolve) => {
-    const callbackName =
-      `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-
+    const callbackName = `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     const script = document.createElement("script");
     let finished = false;
     let timeoutId = null;
 
     function finish(data) {
       if (finished) return;
-
       finished = true;
       clearTimeout(timeoutId);
       delete window[callbackName];
       script.remove();
-
       resolve(data && data.success ? data : null);
     }
 
@@ -150,8 +130,8 @@ function fetchCatalog() {
 
     timeoutId = setTimeout(() => finish(null), 12000);
 
-    script.src =
-      `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
+    // تم تصحيح سطر جلب الـ API هنا
+    script.src = `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
 
     document.body.appendChild(script);
   });
@@ -161,7 +141,6 @@ function fetchCatalog() {
 
 function setupSlider() {
   slider.el = $("#hero-slider-image");
-
   if (!slider.el) return;
 
   const catalogImages = state.products
@@ -173,10 +152,7 @@ function setupSlider() {
     .map((image) => image && image.url)
     .filter(Boolean);
 
-  const source = catalogImages.length
-    ? catalogImages
-    : driveImages;
-
+  const source = catalogImages.length ? catalogImages : driveImages;
   slider.slides = [...new Set(source)];
 
   const total = $("#hero-slide-total");
@@ -210,9 +186,7 @@ function setupSlider() {
 function showSlide(index) {
   if (!slider.el || slider.slides.length < 2) return;
 
-  slider.index =
-    (index + slider.slides.length) % slider.slides.length;
-
+  slider.index = (index + slider.slides.length) % slider.slides.length;
   const nextImage = slider.slides[slider.index];
   const preload = new Image();
 
@@ -236,11 +210,7 @@ function showSlide(index) {
 }
 
 function startSlider() {
-  if (
-    slider.timer ||
-    slider.slides.length < 2 ||
-    reduceMotion.matches
-  ) {
+  if (slider.timer || slider.slides.length < 2 || reduceMotion.matches) {
     return;
   }
 
@@ -297,23 +267,10 @@ function renderProducts() {
           </div>
 
           <div class="product-body">
-            <p class="product-cat">
-              ${escapeHtml(product.category)}
-            </p>
-
-            <h3 class="product-name">
-              ${escapeHtml(product.name)}
-            </h3>
-
-            <p class="product-price">
-              ${renderProductPrice(product)}
-            </p>
-
-            <button
-              class="btn btn-outline"
-              data-action="add"
-              data-id="${escapeHtml(product.id)}"
-            >
+            <p class="product-cat">${escapeHtml(product.category)}</p>
+            <h3 class="product-name">${escapeHtml(product.name)}</h3>
+            <p class="product-price">${renderProductPrice(product)}</p>
+            <button class="btn btn-outline" data-action="add" data-id="${escapeHtml(product.id || product.name)}">
               Add to bag
             </button>
           </div>
@@ -333,10 +290,8 @@ function setFilter(category) {
   });
 
   const title = $("#shop-title");
-
   if (title) {
-    title.textContent =
-      category === "all" ? "Find your favorite" : category;
+    title.textContent = category === "all" ? "Find your favorite" : category;
   }
 
   renderProducts();
@@ -345,44 +300,26 @@ function setFilter(category) {
 /* ---------- Cart ---------- */
 
 function findProduct(id) {
-  return state.products.find(
-    (product) => String(product.id) === String(id)
-  );
+  return state.products.find((product) => String(product.id || product.name) === String(id));
 }
 
 function findCartItem(id) {
-  return state.cart.find(
-    (item) => String(item.id) === String(id)
-  );
+  return state.cart.find((item) => String(item.id) === String(id));
 }
 
 function getCartCount() {
-  return state.cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  return state.cart.reduce((total, item) => total + item.quantity, 0);
 }
 
 function getCartTotal() {
-  return state.cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  return state.cart.reduce((total, item) => total + item.price * item.quantity, 0);
 }
 
 function loadCart() {
   try {
-    const savedCart = JSON.parse(
-      localStorage.getItem(CONFIG.storageKey) || "[]"
-    );
-
+    const savedCart = JSON.parse(localStorage.getItem(CONFIG.storageKey) || "[]");
     state.cart = Array.isArray(savedCart)
-      ? savedCart.filter(
-          (item) =>
-            item &&
-            item.id !== undefined &&
-            Number(item.quantity) > 0
-        )
+      ? savedCart.filter((item) => item && item.id !== undefined && Number(item.quantity) > 0)
       : [];
   } catch {
     state.cart = [];
@@ -392,7 +329,6 @@ function loadCart() {
 function updateSavedCartPrices() {
   state.cart = state.cart.map((item) => {
     const product = findProduct(item.id);
-
     if (!product) return item;
 
     return {
@@ -401,7 +337,7 @@ function updateSavedCartPrices() {
       category: product.category,
       price: getEffectivePrice(product),
       originalPrice: Number(product.price) || 0,
-      image: (product.image || item.image) || CONFIG.placeholderImage,
+      image: product.image || item.image || CONFIG.placeholderImage,
     };
   });
 
@@ -410,13 +346,8 @@ function updateSavedCartPrices() {
 
 function saveCart() {
   try {
-    localStorage.setItem(
-      CONFIG.storageKey,
-      JSON.stringify(state.cart)
-    );
-  } catch {
-    // The cart still works for the current visit if storage is unavailable.
-  }
+    localStorage.setItem(CONFIG.storageKey, JSON.stringify(state.cart));
+  } catch {}
 }
 
 function updateCart() {
@@ -430,7 +361,6 @@ function addToCart(id) {
 
   const salePrice = getSalePrice(product);
   const effectivePrice = (salePrice ?? Number(product.price)) || 0;
-
   const existingItem = findCartItem(id);
 
   if (existingItem) {
@@ -439,7 +369,7 @@ function addToCart(id) {
     existingItem.originalPrice = Number(product.price) || 0;
   } else {
     state.cart.push({
-      id: String(product.id),
+      id: String(product.id || product.name),
       name: product.name,
       category: product.category,
       price: effectivePrice,
@@ -460,19 +390,14 @@ function changeQuantity(id, change) {
   item.quantity += change;
 
   if (item.quantity <= 0) {
-    state.cart = state.cart.filter(
-      (cartItem) => cartItem !== item
-    );
+    state.cart = state.cart.filter((cartItem) => cartItem !== item);
   }
 
   updateCart();
 }
 
 function removeFromCart(id) {
-  state.cart = state.cart.filter(
-    (item) => String(item.id) !== String(id)
-  );
-
+  state.cart = state.cart.filter((item) => String(item.id) !== String(id));
   updateCart();
 }
 
@@ -483,11 +408,9 @@ function renderCartItem(item) {
   return `
     <div class="cart-line">
       <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" />
-
       <div>
         <p class="cat">${escapeHtml(item.category)}</p>
         <h4>${escapeHtml(item.name)}</h4>
-
         <p class="price">
           ${
             hasDiscount
@@ -496,32 +419,12 @@ function renderCartItem(item) {
               : `<span class="price-current">${formatPrice(item.price)}</span>`
           }
         </p>
-
         <div class="qty">
-          <button
-            data-action="qty"
-            data-id="${escapeHtml(item.id)}"
-            data-delta="-1"
-            aria-label="Decrease quantity"
-          >−</button>
-
+          <button data-action="qty" data-id="${escapeHtml(item.id)}" data-delta="-1" aria-label="Decrease quantity">−</button>
           <span>${Number(item.quantity) || 1}</span>
-
-          <button
-            data-action="qty"
-            data-id="${escapeHtml(item.id)}"
-            data-delta="1"
-            aria-label="Increase quantity"
-          >+</button>
+          <button data-action="qty" data-id="${escapeHtml(item.id)}" data-delta="1" aria-label="Increase quantity">+</button>
         </div>
-
-        <button
-          class="remove"
-          data-action="remove"
-          data-id="${escapeHtml(item.id)}"
-        >
-          Remove
-        </button>
+        <button class="remove" data-action="remove" data-id="${escapeHtml(item.id)}">Remove</button>
       </div>
     </div>`;
 }
@@ -549,12 +452,10 @@ function renderCart() {
     return;
   }
 
-  container.innerHTML = state.cart
-    .map(renderCartItem)
-    .join("");
+  container.innerHTML = state.cart.map(renderCartItem).join("");
 }
 
-/* ---------- Cart drawer and mobile menu ---------- */
+/* ---------- Cart drawer & Navigation ---------- */
 
 let lastFocusedElement = null;
 
@@ -563,7 +464,6 @@ function openCart() {
   if (!overlay) return;
 
   lastFocusedElement = document.activeElement;
-
   renderCart();
   overlay.classList.add("is-open");
   document.body.classList.add("is-locked");
@@ -579,10 +479,7 @@ function closeCart() {
   overlay.classList.remove("is-open");
   document.body.classList.remove("is-locked");
 
-  if (
-    lastFocusedElement &&
-    typeof lastFocusedElement.focus === "function"
-  ) {
+  if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
     lastFocusedElement.focus();
   }
 }
@@ -597,18 +494,14 @@ function setMenu(isOpen) {
   menuButton.setAttribute("aria-expanded", String(isOpen));
 }
 
-/* ---------- WhatsApp checkout ---------- */
+/* ---------- WhatsApp Checkout ---------- */
 
 function checkout() {
   if (!state.cart.length) return;
 
   const orderLines = state.cart.map((item) => {
-    const regularPrice =
-      Number(item.originalPrice) || Number(item.price);
-
-    const discounted =
-      regularPrice > Number(item.price);
-
+    const regularPrice = Number(item.originalPrice) || Number(item.price);
+    const discounted = regularPrice > Number(item.price);
     const itemPrice = discounted
       ? `${formatPrice(regularPrice)} -> ${formatPrice(item.price)}`
       : formatPrice(item.price);
@@ -628,57 +521,33 @@ function checkout() {
     "Address:",
   ].join("\n");
 
-  const checkoutUrl =
-    `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
-
+  const checkoutUrl = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
   window.open(checkoutUrl, "_blank", "noopener");
 }
 
-/* ---------- Click actions ---------- */
+/* ---------- Events & Actions ---------- */
 
 const ACTIONS = {
   add: (element) => addToCart(element.dataset.id),
-
-  qty: (element) =>
-    changeQuantity(
-      element.dataset.id,
-      Number(element.dataset.delta)
-    ),
-
-  remove: (element) =>
-    removeFromCart(element.dataset.id),
-
+  qty: (element) => changeQuantity(element.dataset.id, Number(element.dataset.delta)),
+  remove: (element) => removeFromCart(element.dataset.id),
   filter: (element) => {
     setFilter(element.dataset.filter);
-
     if (element.closest(".cat-grid")) {
-      $("#shop")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      $("#shop")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   },
-
   "open-cart": () => openCart(),
   "close-cart": () => closeCart(),
-
   continue: () => {
     closeCart();
     setFilter("all");
-
-    $("#shop")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    $("#shop")?.scrollIntoView({ behavior: "smooth", block: "start" });
   },
-
   checkout: () => checkout(),
-
   menu: () => {
     const header = $(".site-header");
-    if (header) {
-      setMenu(!header.classList.contains("nav-open"));
-    }
+    if (header) setMenu(!header.classList.contains("nav-open"));
   },
 };
 
@@ -688,22 +557,13 @@ function bindEvents() {
     if (!(target instanceof Element)) return;
 
     const actionElement = target.closest("[data-action]");
-
-    if (
-      actionElement &&
-      ACTIONS[actionElement.dataset.action]
-    ) {
+    if (actionElement && ACTIONS[actionElement.dataset.action]) {
       ACTIONS[actionElement.dataset.action](actionElement);
       return;
     }
 
-    if (target.id === "cart-overlay") {
-      closeCart();
-    }
-
-    if (target.closest(".nav-links a")) {
-      setMenu(false);
-    }
+    if (target.id === "cart-overlay") closeCart();
+    if (target.closest(".nav-links a")) setMenu(false);
   });
 
   document.addEventListener("keydown", (event) => {
@@ -717,11 +577,7 @@ function bindEvents() {
     "error",
     (event) => {
       const image = event.target;
-
-      if (
-        image instanceof HTMLImageElement &&
-        !image.dataset.fallback
-      ) {
+      if (image instanceof HTMLImageElement && !image.dataset.fallback) {
         image.dataset.fallback = "1";
         image.src = CONFIG.placeholderImage;
       }
@@ -730,39 +586,23 @@ function bindEvents() {
   );
 
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      stopSlider();
-    } else {
-      startSlider();
-    }
+    if (document.hidden) stopSlider();
+    else startSlider();
   });
 
   window.addEventListener(
     "scroll",
     () => {
-      $(".site-header")?.classList.toggle(
-        "is-scrolled",
-        window.scrollY > 24
-      );
+      $(".site-header")?.classList.toggle("is-scrolled", window.scrollY > 24);
     },
     { passive: true }
   );
 }
 
-/* ---------- Contact links ---------- */
-
 function setContactLinks() {
-  $$("[data-wa]").forEach((link) => {
-    link.href = `https://wa.me/${CONFIG.whatsapp}`;
-  });
-
-  $$("[data-tel]").forEach((link) => {
-    link.href = `tel:+${CONFIG.whatsapp}`;
-  });
-
-  $$("[data-ig]").forEach((link) => {
-    link.href = CONFIG.instagram;
-  });
+  $$("[data-wa]").forEach((link) => { link.href = `https://wa.me/${CONFIG.whatsapp}`; });
+  $$("[data-tel]").forEach((link) => { link.href = `tel:+${CONFIG.whatsapp}`; });
+  $$("[data-ig]").forEach((link) => { link.href = CONFIG.instagram; });
 }
 
 /* ---------- Initialize ---------- */
@@ -780,18 +620,10 @@ async function init() {
 
   state.products =
     data && Array.isArray(data.catalog)
-      ? data.catalog.filter(
-          (product) =>
-            product &&
-            product.id &&
-            product.name
-        )
+      ? data.catalog.filter((product) => product && (product.id || product.name))
       : [];
 
-  state.driveImages =
-    data && data.products
-      ? data.products
-      : {};
+  state.driveImages = data && data.products ? data.products : {};
 
   updateSavedCartPrices();
   renderProducts();
