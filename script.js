@@ -10,10 +10,12 @@ const CONFIG = {
   currency: "EGP",
   whatsapp: "201092542461",
   instagram: "https://www.instagram.com/",
-  catalogApi: "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
+  catalogApi:
+    "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
   storageKey: "rebelVelvetCart",
   slideInterval: 4000,
-  placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
+  placeholderImage:
+    "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
 };
 
 const state = {
@@ -30,19 +32,24 @@ const slider = {
   timer: null,
 };
 
-const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const reduceMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+);
 
 /* ---------- Helpers ---------- */
 
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const $ = (selector, root = document) =>
+  root.querySelector(selector);
+
+const $$ = (selector, root = document) =>
+  [...root.querySelectorAll(selector)];
 
 const HTML_ENTITIES = {
-  "&": "&",
-  "<": "<",
-  ">": ">",
-  '"': """,
-  "'": "'",
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
 };
 
 function escapeHtml(value) {
@@ -57,7 +64,9 @@ const priceFormat = new Intl.NumberFormat("en-US", {
 });
 
 function formatPrice(amount) {
-  return `${CONFIG.currency} ${priceFormat.format(Number(amount) || 0)}`;
+  return `${CONFIG.currency} ${priceFormat.format(
+    Number(amount) || 0
+  )}`;
 }
 
 function pad(number) {
@@ -118,17 +127,21 @@ function renderProductPrice(product) {
 
 function fetchCatalog() {
   return new Promise((resolve) => {
-    const callbackName = `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const callbackName =
+      `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
     const script = document.createElement("script");
     let finished = false;
     let timeoutId = null;
 
     function finish(data) {
       if (finished) return;
+
       finished = true;
       clearTimeout(timeoutId);
       delete window[callbackName];
       script.remove();
+
       resolve(data && data.success ? data : null);
     }
 
@@ -137,7 +150,8 @@ function fetchCatalog() {
 
     timeoutId = setTimeout(() => finish(null), 12000);
 
-    script.src = `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
+    script.src =
+      `CONFIG.catalogApi?callback={callbackName}&t=${Date.now()}`;
 
     document.body.appendChild(script);
   });
@@ -159,7 +173,9 @@ function setupSlider() {
     .map((image) => image && image.url)
     .filter(Boolean);
 
-  const source = catalogImages.length ? catalogImages : driveImages;
+  const source = catalogImages.length
+    ? catalogImages
+    : driveImages;
 
   slider.slides = [...new Set(source)];
 
@@ -194,7 +210,8 @@ function setupSlider() {
 function showSlide(index) {
   if (!slider.el || slider.slides.length < 2) return;
 
-  slider.index = (index + slider.slides.length) % slider.slides.length;
+  slider.index =
+    (index + slider.slides.length) % slider.slides.length;
 
   const nextImage = slider.slides[slider.index];
   const preload = new Image();
@@ -271,7 +288,7 @@ function renderProducts() {
       (product) => `
         <article class="product-card">
           <div class="product-media">
-            <img src="${escapeHtml(product.image || CONFIG.placeholderImage)}" alt="${escapeHtml(product.name)}" />
+            <img src="escapeHtml(product.image||CONFIG.placeholderImage)"alt="{escapeHtml(product.name)}" />
             ${
               getSalePrice(product) !== null
                 ? '<span class="product-sale-label">SALE</span>'
@@ -397,7 +414,9 @@ function saveCart() {
       CONFIG.storageKey,
       JSON.stringify(state.cart)
     );
-  } catch {}
+  } catch {
+    // The cart still works for the current visit if storage is unavailable.
+  }
 }
 
 function updateCart() {
@@ -463,7 +482,7 @@ function renderCartItem(item) {
 
   return `
     <div class="cart-line">
-      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" />
+      <img src="escapeHtml(item.image)"alt="{escapeHtml(item.name)}" />
 
       <div>
         <p class="cat">${escapeHtml(item.category)}</p>
@@ -610,7 +629,7 @@ function checkout() {
   ].join("\n");
 
   const checkoutUrl =
-    `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
+    `https://wa.me/CONFIG.whatsapp?text={encodeURIComponent(message)}`;
 
   window.open(checkoutUrl, "_blank", "noopener");
 }
@@ -768,7 +787,6 @@ async function init() {
             product.name
         )
       : [];
-
   state.driveImages =
     data && data.products
       ? data.products
@@ -781,3 +799,5 @@ async function init() {
 }
 
 init();
+
+
