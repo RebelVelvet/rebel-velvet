@@ -1,27 +1,21 @@
 ```javascript
 /* =========================================================
    REBEL VELVET | STOREFRONT
-   Google Sheets catalog + sale prices + cart + WhatsApp
+   Google Sheets catalog + sale prices + cart + WhatsApp checkout
    ========================================================= */
 
 "use strict";
-
-/* ---------- Configuration ---------- */
 
 const CONFIG = {
   brand: "Rebel Velvet",
   currency: "EGP",
   whatsapp: "201092542461",
   instagram: "https://www.instagram.com/",
-  catalogApi:
-    "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
+  catalogApi: "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
   storageKey: "rebelVelvetCart",
   slideInterval: 4000,
-  placeholderImage:
-    "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet"
+  placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet"
 };
-
-/* ---------- State ---------- */
 
 const state = {
   products: [],
@@ -37,17 +31,13 @@ const slider = {
   timer: null
 };
 
-const reduceMotion = window.matchMedia(
-  "(prefers-reduced-motion: reduce)"
-);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let lastFocusedElement = null;
 
 /* ---------- Helpers ---------- */
 
-const $ = (selector, root = document) =>
-  root.querySelector(selector);
-
-const $$ = (selector, root = document) =>
-  [...root.querySelectorAll(selector)];
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const HTML_ENTITIES = {
   "&": "&amp;",
@@ -65,13 +55,11 @@ function escapeHtml(value) {
 }
 
 const priceFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 2
+  maximumFractionDigits: 0
 });
 
 function formatPrice(amount) {
-  return `${CONFIG.currency} ${priceFormat.format(
-    Number(amount) || 0
-  )}`;
+  return `${CONFIG.currency} ${priceFormat.format(Number(amount) || 0)}`;
 }
 
 function pad(number) {
@@ -85,23 +73,29 @@ function sameKey(first, second) {
   );
 }
 
-/* ---------- Image URLs ---------- */
+/* ---------- Image URL handling ---------- */
 
 function normalizeImageUrl(url) {
   const value = String(url || "").trim();
 
   if (!value) return "";
 
-  // Convert Google Drive file links into thumbnail links.
+  const thumbnailMatch = value.match(
+    /drive\.google\.com\/thumbnail\?id=([^&]+)/i
+  );
+
+  if (thumbnailMatch) {
+    return `https://drive.google.com/thumbnail?id=${thumbnailMatch[1]}&sz=w1200`;
+  }
+
   const fileMatch = value.match(
-    /drive\.google\.com\/file\/d\/([^/?]+)/i
+    /drive\.google\.com\/file\/d\/([^/]+)/i
   );
 
   if (fileMatch) {
-    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w1000`;
+    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w1200`;
   }
 
-  // Handle Google Drive open?id=FILE_ID links.
   const idMatch = value.match(/[?&]id=([^&]+)/i);
 
   if (
@@ -109,24 +103,13 @@ function normalizeImageUrl(url) {
     idMatch &&
     !value.includes("/thumbnail")
   ) {
-    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1000`;
+    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1200`;
   }
 
   return value;
 }
 
-function getProductImage(product) {
-  return (
-    normalizeImageUrl(
-      product.image ||
-      product.imageUrl ||
-      product.url ||
-      ""
-    ) || CONFIG.placeholderImage
-  );
-}
-
-/* ---------- Sale Prices ---------- */
+/* ---------- Sale prices ---------- */
 
 function getSalePrice(product) {
   const regularPrice = Number(product.price);
@@ -172,7 +155,7 @@ function renderProductPrice(product) {
   `;
 }
 
-/* ---------- Load Google Sheets Catalog ---------- */
+/* ---------- Google Apps Script catalog ---------- */
 
 function fetchCatalog() {
   return new Promise(resolve => {
@@ -182,9 +165,7 @@ function fetchCatalog() {
     const script = document.createElement("script");
     let finished = false;
 
-    const timeoutId = setTimeout(() => {
-      finish(null);
-    }, 15000);
+    const timeoutId = setTimeout(() => finish(null), 15000);
 
     function finish(data) {
       if (finished) return;
@@ -201,18 +182,10 @@ function fetchCatalog() {
       script.remove();
 
       if (data && data.success && Array.isArray(data.catalog)) {
-        console.log(
-          "REBEL VELVET catalog loaded:",
-          data.catalog
-        );
-
+        console.log("REBEL VELVET catalog loaded:", data);
         resolve(data);
       } else {
-        console.error(
-          "REBEL VELVET catalog returned an invalid response:",
-          data
-        );
-
+        console.error("REBEL VELVET catalog response was invalid:", data);
         resolve(null);
       }
     }
@@ -221,15 +194,12 @@ function fetchCatalog() {
 
     script.onerror = () => {
       console.error(
-        "REBEL VELVET: failed to load the Google Apps Script API.",
-        script.src
+        "Could not load catalog API. Check Apps Script deployment permissions."
       );
 
       finish(null);
     };
 
-    // IMPORTANT:
-    // Use template literals so the callback name is inserted correctly.
     script.src =
       `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
 
@@ -237,7 +207,7 @@ function fetchCatalog() {
   });
 }
 
-/* ---------- Categories and Filters ---------- */
+/* ---------- Categories and filters ---------- */
 
 function getCategories() {
   const categories = [];
@@ -259,7 +229,7 @@ function getCategories() {
 function renderCategoryFilters() {
   const categories = getCategories();
 
-  const filterContainers = [
+  const containers = [
     $("#product-filters"),
     $(".product-filters"),
     $("[data-product-filters]"),
@@ -267,62 +237,47 @@ function renderCategoryFilters() {
     $(".filter-bar")
   ].filter(Boolean);
 
-  filterContainers.forEach(container => {
+  const categoryButtons = categories.map(category => `
+    <button
+      type="button"
+      class="filter-btn${sameKey(state.filter, category) ? " is-active active" : ""}"
+      data-filter="${escapeHtml(category)}"
+      aria-pressed="${sameKey(state.filter, category)}"
+    >
+      ${escapeHtml(category)}
+    </button>
+  `).join("");
+
+  containers.forEach(container => {
     container.innerHTML = `
       <button
         type="button"
-        class="filter-btn ${
-          state.filter === "all" ? "active is-active" : ""
-        }"
+        class="filter-btn${state.filter === "all" ? " is-active active" : ""}"
         data-filter="all"
         aria-pressed="${state.filter === "all"}"
       >
         All products
       </button>
 
-      ${categories.map(category => `
-        <button
-          type="button"
-          class="filter-btn ${
-            sameKey(state.filter, category)
-              ? "active is-active"
-              : ""
-          }"
-          data-filter="${escapeHtml(category)}"
-          aria-pressed="${sameKey(state.filter, category)}"
-        >
-          ${escapeHtml(category)}
-        </button>
-      `).join("")}
+      ${categoryButtons}
     `;
   });
 
-  // Update the existing category cards if present.
-  const categoryGrid = $(
+  const categoryContainer = $(
     "#category-grid, .category-grid, .cat-grid, [data-category-grid]"
   );
 
-  if (categoryGrid) {
-    const existingCards = $$(".cat-card", categoryGrid);
-
-    // Preserve original category cards and their existing design.
-    // Only update their filter behavior when possible.
-    existingCards.forEach(card => {
-      const label = (
-        card.dataset.filter ||
-        card.textContent ||
-        ""
-      ).trim();
-
-      const matchingCategory = categories.find(category =>
-        sameKey(category, label)
-      );
-
-      if (matchingCategory) {
-        card.dataset.filter = matchingCategory;
-        card.dataset.action = "filter";
-      }
-    });
+  if (categoryContainer) {
+    categoryContainer.innerHTML = categories.map(category => `
+      <button
+        type="button"
+        class="cat-card category-card"
+        data-action="filter"
+        data-filter="${escapeHtml(category)}"
+      >
+        <span>${escapeHtml(category)}</span>
+      </button>
+    `).join("");
   }
 }
 
@@ -336,11 +291,10 @@ function getVisibleProducts() {
   );
 }
 
-function setFilter(category) {
+function setFilter(category = "all") {
   state.filter = category || "all";
 
   renderCategoryFilters();
-  renderProducts();
 
   const title = $("#shop-title");
 
@@ -350,16 +304,18 @@ function setFilter(category) {
         ? "Find your favorite"
         : state.filter;
   }
+
+  renderProducts();
 }
 
-/* ---------- Render Products ---------- */
+/* ---------- Product display ---------- */
 
 function renderProducts() {
   const grid = $("#products");
 
   if (!grid) {
     console.error(
-      'REBEL VELVET: product grid "#products" was not found.'
+      'Product grid not found. Expected an element with id="products".'
     );
     return;
   }
@@ -375,19 +331,20 @@ function renderProducts() {
       </div>
     `;
 
+    renderCart();
     return;
   }
 
   grid.innerHTML = products.map(product => {
-    const imageUrl = getProductImage(product);
+    const image =
+      normalizeImageUrl(product.image) || CONFIG.placeholderImage;
 
     return `
       <article class="product-card">
-
         <div class="product-media">
           <img
-            src="${escapeHtml(imageUrl)}"
-            alt="${escapeHtml(product.name || "REBEL VELVET product")}"
+            src="${escapeHtml(image)}"
+            alt="${escapeHtml(product.name)}"
             loading="lazy"
             onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'"
           >
@@ -400,13 +357,12 @@ function renderProducts() {
         </div>
 
         <div class="product-body">
-
           <p class="product-cat">
             ${escapeHtml(product.category || "")}
           </p>
 
           <h3 class="product-name">
-            ${escapeHtml(product.name || "")}
+            ${escapeHtml(product.name)}
           </h3>
 
           <p class="product-price">
@@ -421,7 +377,6 @@ function renderProducts() {
           >
             Add to bag
           </button>
-
         </div>
       </article>
     `;
@@ -430,7 +385,7 @@ function renderProducts() {
   renderCart();
 }
 
-/* ---------- Cart Storage ---------- */
+/* ---------- Cart storage and calculations ---------- */
 
 function loadCart() {
   try {
@@ -457,94 +412,20 @@ function saveCart() {
       JSON.stringify(state.cart)
     );
   } catch (error) {
-    console.warn("Could not save the cart in local storage.");
+    // Cart remains available for the current visit.
   }
 }
 
 function findProduct(id) {
-  return state.products.find(product =>
-    String(product.id) === String(id)
+  return state.products.find(
+    product => String(product.id) === String(id)
   );
 }
 
 function findCartItem(id) {
-  return state.cart.find(item =>
-    String(item.id) === String(id)
+  return state.cart.find(
+    item => String(item.id) === String(id)
   );
-}
-
-function updateSavedCartPrices() {
-  state.cart = state.cart.map(item => {
-    const product = findProduct(item.id);
-
-    if (!product) return item;
-
-    return {
-      ...item,
-      name: product.name,
-      category: product.category,
-      image: getProductImage(product),
-      originalPrice: Number(product.price) || 0,
-      price: getEffectivePrice(product)
-    };
-  });
-
-  saveCart();
-}
-
-/* ---------- Cart Actions ---------- */
-
-function addToCart(id) {
-  const product = findProduct(id);
-
-  if (!product) return;
-
-  const existingItem = findCartItem(id);
-
-  if (existingItem) {
-    existingItem.quantity =
-      (Number(existingItem.quantity) || 0) + 1;
-
-    existingItem.price = getEffectivePrice(product);
-    existingItem.originalPrice = Number(product.price) || 0;
-  } else {
-    state.cart.push({
-      id: String(product.id),
-      name: product.name,
-      category: product.category || "",
-      image: getProductImage(product),
-      originalPrice: Number(product.price) || 0,
-      price: getEffectivePrice(product),
-      quantity: 1
-    });
-  }
-
-  updateCart();
-  openCart();
-}
-
-function changeQuantity(id, change) {
-  const item = findCartItem(id);
-
-  if (!item) return;
-
-  item.quantity = (Number(item.quantity) || 0) + change;
-
-  if (item.quantity <= 0) {
-    state.cart = state.cart.filter(cartItem =>
-      String(cartItem.id) !== String(id)
-    );
-  }
-
-  updateCart();
-}
-
-function removeFromCart(id) {
-  state.cart = state.cart.filter(item =>
-    String(item.id) !== String(id)
-  );
-
-  updateCart();
 }
 
 function getCartCount() {
@@ -564,38 +445,121 @@ function getCartTotal() {
   );
 }
 
-/* ---------- Render Cart ---------- */
+function updateSavedCartPrices() {
+  state.cart = state.cart.map(item => {
+    const product = findProduct(item.id);
+
+    if (!product) return item;
+
+    return {
+      ...item,
+      name: product.name,
+      category: product.category || "",
+      image:
+        normalizeImageUrl(product.image) ||
+        item.image ||
+        CONFIG.placeholderImage,
+      originalPrice: Number(product.price) || 0,
+      price: getEffectivePrice(product)
+    };
+  });
+
+  saveCart();
+}
+
+function updateCart() {
+  saveCart();
+  renderCart();
+}
+
+/* ---------- Add and update cart items ---------- */
+
+function addToCart(id) {
+  const product = findProduct(id);
+
+  if (!product) return;
+
+  const existingItem = findCartItem(id);
+
+  if (existingItem) {
+    existingItem.quantity =
+      (Number(existingItem.quantity) || 0) + 1;
+
+    existingItem.price = getEffectivePrice(product);
+    existingItem.originalPrice = Number(product.price) || 0;
+  } else {
+    state.cart.push({
+      id: String(product.id),
+      name: product.name,
+      category: product.category || "",
+      image:
+        normalizeImageUrl(product.image) ||
+        CONFIG.placeholderImage,
+      originalPrice: Number(product.price) || 0,
+      price: getEffectivePrice(product),
+      quantity: 1
+    });
+  }
+
+  updateCart();
+  openCart();
+}
+
+function changeQuantity(id, delta) {
+  const item = findCartItem(id);
+
+  if (!item) return;
+
+  item.quantity = (Number(item.quantity) || 0) + delta;
+
+  if (item.quantity <= 0) {
+    state.cart = state.cart.filter(
+      cartItem => String(cartItem.id) !== String(id)
+    );
+  }
+
+  updateCart();
+}
+
+function removeFromCart(id) {
+  state.cart = state.cart.filter(
+    item => String(item.id) !== String(id)
+  );
+
+  updateCart();
+}
+
+/* ---------- Cart display ---------- */
 
 function renderCartItem(item) {
   const originalPrice =
     Number(item.originalPrice) || Number(item.price) || 0;
 
   const price = Number(item.price) || 0;
-  const hasDiscount = originalPrice > price;
+  const discounted = originalPrice > price;
+
+  const image =
+    normalizeImageUrl(item.image) || CONFIG.placeholderImage;
 
   return `
     <div class="cart-line">
-
       <img
-        src="${escapeHtml(
-          normalizeImageUrl(item.image) || CONFIG.placeholderImage
-        )}"
-        alt="${escapeHtml(item.name || "")}"
+        src="${escapeHtml(image)}"
+        alt="${escapeHtml(item.name)}"
         loading="lazy"
         onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'"
       >
 
       <div class="cart-line-info">
-
         <p class="cat">
           ${escapeHtml(item.category || "")}
         </p>
 
-        <h4>${escapeHtml(item.name || "")}</h4>
+        <h4>${escapeHtml(item.name)}</h4>
 
         <p class="price">
           ${
-            hasDiscount
+            discounted
               ? `<span class="price-old">${formatPrice(originalPrice)}</span>`
               : ""
           }
@@ -606,14 +570,15 @@ function renderCartItem(item) {
         </p>
 
         <div class="qty">
-
           <button
             type="button"
             data-action="qty"
             data-id="${escapeHtml(item.id)}"
             data-delta="-1"
             aria-label="Decrease quantity"
-          >−</button>
+          >
+            −
+          </button>
 
           <span>${Number(item.quantity) || 1}</span>
 
@@ -623,8 +588,9 @@ function renderCartItem(item) {
             data-id="${escapeHtml(item.id)}"
             data-delta="1"
             aria-label="Increase quantity"
-          >+</button>
-
+          >
+            +
+          </button>
         </div>
       </div>
 
@@ -633,69 +599,63 @@ function renderCartItem(item) {
         class="remove-item"
         data-action="remove"
         data-id="${escapeHtml(item.id)}"
-        aria-label="Remove ${escapeHtml(item.name || "product")}"
+        aria-label="Remove ${escapeHtml(item.name)}"
       >
         ×
       </button>
-
     </div>
   `;
 }
 
 function renderCart() {
-  const itemsContainer = $(
+  const container = $(
     "#cart-items, .cart-items, [data-cart-items]"
   );
 
-  const countElements = $$("#cart-count, .cart-count, [data-cart-count]");
+  if (container) {
+    container.innerHTML = state.cart.length
+      ? state.cart.map(renderCartItem).join("")
+      : '<p class="cart-empty">Your bag is currently empty.</p>';
+  }
 
-  const totalElements = $$("#cart-total, .cart-total, [data-cart-total]");
+  const count = getCartCount();
 
-  const checkoutButtons = $$(
-    "[data-checkout], #checkout-button, #checkout, .checkout-button"
-  );
-
-  countElements.forEach(element => {
-    element.textContent = getCartCount();
+  [
+    "#cart-count",
+    ".cart-count",
+    "[data-cart-count]"
+  ].forEach(selector => {
+    $$(selector).forEach(element => {
+      element.textContent = count;
+      element.classList.toggle("has-items", count > 0);
+    });
   });
 
-  totalElements.forEach(element => {
-    element.textContent = formatPrice(getCartTotal());
+  const total = formatPrice(getCartTotal());
+
+  [
+    "#cart-total",
+    ".cart-total",
+    "[data-cart-total]"
+  ].forEach(selector => {
+    $$(selector).forEach(element => {
+      element.textContent = total;
+    });
   });
 
-  checkoutButtons.forEach(button => {
+  $$(
+    '[data-checkout], #checkout-button, #checkout, .checkout-button'
+  ).forEach(button => {
     button.disabled = state.cart.length === 0;
   });
-
-  if (!itemsContainer) return;
-
-  itemsContainer.innerHTML = state.cart.length
-    ? state.cart.map(renderCartItem).join("")
-    : `
-      <div class="cart-empty">
-        <span aria-hidden="true">♡</span>
-        <p>Your bag is empty.</p>
-      </div>
-    `;
 }
 
-function updateCart() {
-  saveCart();
-  renderCart();
-}
-
-/* ---------- Open and Close Cart ---------- */
-
-let lastFocusedElement = null;
-
-function getCartOverlay() {
-  return $(
-    "#cart-overlay, #cart-drawer, .cart-drawer, [data-cart-drawer]"
-  );
-}
+/* ---------- Cart drawer ---------- */
 
 function openCart() {
-  const overlay = getCartOverlay();
+  const overlay = $(
+    "#cart-overlay, #cart-drawer, .cart-drawer, [data-cart-drawer]"
+  );
 
   if (!overlay) return;
 
@@ -705,24 +665,23 @@ function openCart() {
 
   overlay.classList.add("is-open", "open");
   overlay.setAttribute("aria-hidden", "false");
-
   document.body.classList.add("is-locked");
 
-  const closeButton = $(
-    "#close-cart, #cart-close, [data-cart-close]"
-  );
-
-  if (closeButton) closeButton.focus();
+  $(
+    "#close-cart, #cart-close, .cart-close",
+    overlay
+  )?.focus();
 }
 
 function closeCart() {
-  const overlay = getCartOverlay();
+  const overlay = $(
+    "#cart-overlay, #cart-drawer, .cart-drawer, [data-cart-drawer]"
+  );
 
   if (!overlay) return;
 
   overlay.classList.remove("is-open", "open");
   overlay.setAttribute("aria-hidden", "true");
-
   document.body.classList.remove("is-locked");
 
   if (
@@ -733,20 +692,21 @@ function closeCart() {
   }
 }
 
-/* ---------- WhatsApp Checkout ---------- */
+/* ---------- WhatsApp checkout ---------- */
 
 function checkout() {
   if (!state.cart.length) return;
 
   const orderLines = state.cart.map(item => {
-    const originalPrice =
+    const regularPrice =
       Number(item.originalPrice) || Number(item.price) || 0;
 
     const currentPrice = Number(item.price) || 0;
 
-    const priceText = originalPrice > currentPrice
-      ? `${formatPrice(originalPrice)} -> ${formatPrice(currentPrice)}`
-      : formatPrice(currentPrice);
+    const priceText =
+      regularPrice > currentPrice
+        ? `${formatPrice(regularPrice)} -> ${formatPrice(currentPrice)}`
+        : formatPrice(currentPrice);
 
     return `• ${item.name} x ${item.quantity} = ${priceText}`;
   });
@@ -769,7 +729,7 @@ function checkout() {
   window.open(checkoutUrl, "_blank", "noopener,noreferrer");
 }
 
-/* ---------- Hero Slider ---------- */
+/* ---------- Hero slider ---------- */
 
 function setupSlider() {
   slider.el = $("#hero-slider-image");
@@ -782,15 +742,11 @@ function setupSlider() {
 
   const driveImages = Object.values(state.driveImages)
     .flat()
-    .map(image =>
-      image && normalizeImageUrl(image.url || image.image)
-    )
+    .map(item => item && normalizeImageUrl(item.url || item.image))
     .filter(Boolean);
 
   slider.slides = [
-    ...new Set(
-      catalogImages.length ? catalogImages : driveImages
-    )
+    ...new Set(catalogImages.length ? catalogImages : driveImages)
   ];
 
   const total = $("#hero-slide-total");
@@ -815,9 +771,8 @@ function setupSlider() {
 
   const frame = $(".hero-frame");
 
-  if (frame && !frame.dataset.sliderEventsBound) {
-    frame.dataset.sliderEventsBound = "true";
-
+  if (frame && !frame.dataset.sliderBound) {
+    frame.dataset.sliderBound = "1";
     frame.addEventListener("mouseenter", stopSlider);
     frame.addEventListener("mouseleave", startSlider);
   }
@@ -875,7 +830,7 @@ function stopSlider() {
   slider.timer = null;
 }
 
-/* ---------- Contact Links ---------- */
+/* ---------- Contact links and mobile menu ---------- */
 
 function setContactLinks() {
   $$("[data-wa]").forEach(link => {
@@ -891,8 +846,6 @@ function setContactLinks() {
   });
 }
 
-/* ---------- Mobile Navigation ---------- */
-
 function setMenu(isOpen) {
   const header = $(".site-header");
   const menuButton = $("#menu-toggle");
@@ -903,55 +856,7 @@ function setMenu(isOpen) {
   menuButton.setAttribute("aria-expanded", String(isOpen));
 }
 
-/* ---------- Click Actions ---------- */
-
-const ACTIONS = {
-  add: element => addToCart(element.dataset.id),
-
-  qty: element => {
-    changeQuantity(
-      element.dataset.id,
-      Number(element.dataset.delta)
-    );
-  },
-
-  remove: element => removeFromCart(element.dataset.id),
-
-  filter: element => {
-    setFilter(element.dataset.filter || "all");
-
-    if (element.closest(".cat-grid, .category-grid, #category-grid")) {
-      $("#shop, #products")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
-  },
-
-  "open-cart": () => openCart(),
-
-  "close-cart": () => closeCart(),
-
-  continue: () => {
-    closeCart();
-    setFilter("all");
-
-    $("#shop, #products")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  },
-
-  checkout: () => checkout(),
-
-  menu: () => {
-    const header = $(".site-header");
-
-    if (header) {
-      setMenu(!header.classList.contains("nav-open"));
-    }
-  }
-};
+/* ---------- Event listeners ---------- */
 
 function bindEvents() {
   document.addEventListener("click", event => {
@@ -961,12 +866,81 @@ function bindEvents() {
 
     const actionElement = target.closest("[data-action]");
 
-    if (
-      actionElement &&
-      ACTIONS[actionElement.dataset.action]
-    ) {
-      ACTIONS[actionElement.dataset.action](actionElement);
-      return;
+    if (actionElement) {
+      const action = actionElement.dataset.action;
+      const id = actionElement.dataset.id;
+
+      if (action === "add") {
+        addToCart(id);
+        return;
+      }
+
+      if (action === "qty") {
+        changeQuantity(
+          id,
+          Number(actionElement.dataset.delta)
+        );
+        return;
+      }
+
+      if (action === "remove") {
+        removeFromCart(id);
+        return;
+      }
+
+      if (action === "checkout") {
+        checkout();
+        return;
+      }
+
+      if (action === "close-cart") {
+        closeCart();
+        return;
+      }
+
+      if (action === "open-cart") {
+        openCart();
+        return;
+      }
+
+      if (action === "menu") {
+        const header = $(".site-header");
+
+        setMenu(
+          !(header && header.classList.contains("nav-open"))
+        );
+
+        return;
+      }
+
+      if (action === "filter") {
+        setFilter(actionElement.dataset.filter || "all");
+
+        if (
+          actionElement.closest(
+            ".cat-grid, .category-grid, #category-grid, [data-category-grid]"
+          )
+        ) {
+          $("#shop, #products")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        }
+
+        return;
+      }
+
+      if (action === "continue") {
+        closeCart();
+        setFilter("all");
+
+        $("#shop, #products")?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+        return;
+      }
     }
 
     const filterElement = target.closest("[data-filter]");
@@ -978,8 +952,15 @@ function bindEvents() {
 
     if (
       target.closest(
-        "[data-cart-open], #cart-open, .cart-open"
+        '[data-checkout], #checkout-button, #checkout, .checkout-button'
       )
+    ) {
+      checkout();
+      return;
+    }
+
+    if (
+      target.closest("[data-cart-open], #cart-open, .cart-open")
     ) {
       openCart();
       return;
@@ -994,15 +975,6 @@ function bindEvents() {
       return;
     }
 
-    if (
-      target.closest(
-        "[data-checkout], #checkout-button, #checkout, .checkout-button"
-      )
-    ) {
-      checkout();
-      return;
-    }
-
     if (target.closest("#menu-toggle")) {
       const header = $(".site-header");
 
@@ -1013,12 +985,12 @@ function bindEvents() {
       return;
     }
 
-    if (target.closest(".nav-links a")) {
-      setMenu(false);
-    }
-
     if (target.id === "cart-overlay") {
       closeCart();
+    }
+
+    if (target.closest(".site-header.nav-open a, .nav-links a")) {
+      setMenu(false);
     }
   });
 
@@ -1036,7 +1008,8 @@ function bindEvents() {
 
       if (
         image instanceof HTMLImageElement &&
-        !image.dataset.fallback
+        !image.dataset.fallback &&
+        image.src !== CONFIG.placeholderImage
       ) {
         image.dataset.fallback = "1";
         image.src = CONFIG.placeholderImage;
@@ -1065,7 +1038,7 @@ function bindEvents() {
   );
 }
 
-/* ---------- Initialize Store ---------- */
+/* ---------- Initialize ---------- */
 
 async function init() {
   const year = $("#year");
@@ -1084,14 +1057,10 @@ async function init() {
   state.products =
     data && Array.isArray(data.catalog)
       ? data.catalog
-          .filter(product =>
-            product &&
-            product.id &&
-            product.name
-          )
+          .filter(product => product && product.id && product.name)
           .map(product => ({
             ...product,
-            image: normalizeImageUrl(product.image || "")
+            image: normalizeImageUrl(product.image)
           }))
       : [];
 
@@ -1119,8 +1088,8 @@ async function init() {
   }
 
   if (!state.products.length) {
-    console.error(
-      "REBEL VELVET: no products loaded. Check the API URL and Google Apps Script deployment."
+    console.warn(
+      "No catalog products rendered. Check Apps Script response and deployment access."
     );
   }
 }
