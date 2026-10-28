@@ -1,123 +1,141 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rebel Velvet Fragrance</title>
-    <!-- FontAwesome للأيقونات -->
+    <title>REBEL VELVET | Beauty Beyond Rules</title>
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- جوجل فونتس للخطوط الفاخرة -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts for Luxury Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-burgundy: #4A0E17;
-            --accent-gold: #C5A059;
-            --cream-bg: #FBF8F5;
-            --soft-pink: #F3EBE6;
-            --text-dark: #2C2C2C;
-            --text-muted: #7A7A7A;
+            --burgundy: #4A0E17;
+            --burgundy-light: #6D1F2B;
+            --gold: #C5A059;
+            --cream: #FAF6F0;
+            --soft-rose: #F3EBE6;
+            --text-main: #2C2C2C;
+            --text-muted: #666666;
             --white: #FFFFFF;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--cream-bg); color: var(--text-dark); line-height: 1.6; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); color: var(--text-main); line-height: 1.6; }
 
         /* Announcement Bar */
-        .top-bar { background: var(--primary-burgundy); color: var(--white); text-align: center; padding: 8px; font-size: 13px; letter-spacing: 1px; }
+        .top-bar { background: var(--burgundy); color: var(--white); text-align: center; padding: 10px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
 
         /* Navigation Header */
-        header { background: var(--cream-bg); border-bottom: 1px solid rgba(0,0,0,0.05); sticky: top; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; }
-        .logo { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--primary-burgundy); text-decoration: none; letter-spacing: 2px; text-align: center; }
-        .logo span { display: block; font-size: 10px; font-family: 'Tajawal', sans-serif; letter-spacing: 4px; color: var(--accent-gold); margin-top: -3px; }
-        .nav-links { display: flex; gap: 25px; list-style: none; }
-        .nav-links a { text-decoration: none; color: var(--text-dark); font-weight: 500; font-size: 15px; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent-gold); }
+        header { background: var(--cream); border-bottom: 1px solid rgba(74, 14, 23, 0.08); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 18px 30px; }
+        .logo { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 700; color: var(--burgundy); text-decoration: none; letter-spacing: 3px; text-align: center; }
+        .logo span { display: block; font-size: 9px; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 5px; color: var(--gold); margin-top: -2px; }
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .nav-links a:hover { color: var(--gold); }
         .nav-icons { display: flex; gap: 20px; align-items: center; }
-        .nav-icons a, .cart-icon-btn { color: var(--primary-burgundy); font-size: 18px; cursor: pointer; position: relative; text-decoration: none; background: none; border: none; }
-        .cart-count { position: absolute; top: -8px; right: -10px; background: var(--accent-gold); color: var(--white); font-size: 11px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .nav-icons a, .cart-icon-btn { color: var(--burgundy); font-size: 18px; cursor: pointer; position: relative; text-decoration: none; background: none; border: none; }
+        .cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: var(--white); font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* Hero Banner Section */
-        .hero { position: relative; height: 80vh; min-height: 500px; background: radial-gradient(circle, rgba(251,248,245,1) 0%, rgba(243,235,230,1) 100%); display: flex; align-items: center; overflow: hidden; }
-        .hero-container { max-width: 1300px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; padding: 0 30px; align-items: center; }
-        .hero-text { padding-right: 20px; }
-        .hero-subtitle { font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
-        .hero-title { font-family: 'Cinzel', serif; font-size: 48px; color: var(--primary-burgundy); line-height: 1.2; margin-bottom: 15px; }
-        .hero-desc { color: var(--text-muted); font-size: 16px; margin-bottom: 25px; }
-        .btn-burgundy { background: var(--primary-burgundy); color: var(--white); border: none; padding: 12px 30px; font-size: 15px; border-radius: 30px; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 4px 15px rgba(74,14,23,0.2); }
-        .btn-burgundy:hover { background: #350A10; transform: translateY(-2px); }
-        .hero-image-wrap { position: relative; text-align: center; }
-        .hero-image-wrap img { max-width: 85%; height: auto; border-radius: 15px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); transition: opacity 0.5s ease-in-out; }
+        /* Hero Section */
+        .hero { min-height: 85vh; background: radial-gradient(circle, rgba(250,246,240,1) 0%, rgba(243,235,230,1) 100%); display: flex; align-items: center; overflow: hidden; }
+        .hero-container { max-width: 1300px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; padding: 40px 30px; align-items: center; gap: 40px; }
+        .hero-subtitle { font-family: 'Cinzel', serif; color: var(--gold); font-size: 14px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+        .hero-title { font-family: 'Cinzel', serif; font-size: 54px; color: var(--burgundy); line-height: 1.15; margin-bottom: 20px; font-weight: 600; }
+        .hero-desc { color: var(--text-muted); font-size: 16px; margin-bottom: 30px; max-width: 500px; }
+        .btn-primary { background: var(--burgundy); color: var(--white); border: none; padding: 14px 35px; font-size: 14px; border-radius: 30px; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; box-shadow: 0 4px 20px rgba(74,14,23,0.15); }
+        .btn-primary:hover { background: var(--burgundy-light); transform: translateY(-2px); }
+        .hero-image-wrap { text-align: center; }
+        .hero-image-wrap img { max-width: 90%; height: auto; border-radius: 20px; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.08)); transition: opacity 0.5s ease; }
+
+        /* About Us Section (Rebel Velvet Narrative) */
+        .about-section { background: var(--white); padding: 80px 30px; border-top: 1px solid var(--soft-rose); border-bottom: 1px solid var(--soft-rose); }
+        .about-container { max-width: 900px; margin: 0 auto; text-align: center; }
+        .about-tagline { font-family: 'Cinzel', serif; color: var(--gold); font-size: 15px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; }
+        .about-heading { font-family: 'Cinzel', serif; font-size: 38px; color: var(--burgundy); margin-bottom: 25px; }
+        .about-text { color: var(--text-muted); font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+        .about-highlight { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 20px; margin-top: 30px; font-weight: 600; letter-spacing: 1px; }
 
         /* Features Ribbon */
-        .features-bar { background: var(--primary-burgundy); color: var(--white); padding: 25px 0; }
-        .features-container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; border-color: rgba(255,255,255,0.1); }
-        .feature-item { padding: 0 15px; }
-        .feature-item i { font-size: 24px; color: var(--accent-gold); margin-bottom: 10px; }
-        .feature-item h4 { font-family: 'Cinzel', serif; font-size: 16px; letter-spacing: 1px; margin-bottom: 5px; }
-        .feature-item p { font-size: 12px; color: var(--soft-pink); opacity: 0.8; }
+        .features-bar { background: var(--burgundy); color: var(--white); padding: 35px 0; }
+        .features-container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
+        .feature-item { padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.1); }
+        .feature-item:last-child { border-right: none; }
+        .feature-item i { font-size: 24px; color: var(--gold); margin-bottom: 12px; }
+        .feature-item h4 { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 1px; margin-bottom: 5px; }
+        .feature-item p { font-size: 12px; color: var(--soft-rose); opacity: 0.8; }
 
+        /* Shop & Catalog Section */
+        .shop-section { padding: 80px 30px; max-width: 1300px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 30px; }
+        .section-title p { color: var(--gold); font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; }
+        .section-title h2 { font-family: 'Cinzel', serif; font-size: 36px; color: var(--burgundy); margin-top: 5px; }
+        
         /* Category Filter Buttons */
-        .section-title { text-align: center; margin: 50px 0 20px; }
-        .section-title h2 { font-family: 'Cinzel', serif; font-size: 32px; color: var(--primary-burgundy); }
-        .section-title p { color: var(--accent-gold); font-size: 14px; letter-spacing: 2px; }
-        .filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
-        .filter-btn { background: var(--white); border: 1px solid var(--soft-pink); padding: 10px 25px; border-radius: 25px; cursor: pointer; font-family: 'Tajawal', sans-serif; font-size: 14px; color: var(--text-dark); transition: 0.3s; }
-        .filter-btn.active, .filter-btn:hover { background: var(--primary-burgundy); color: var(--white); border-color: var(--primary-burgundy); }
+        .filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 45px; flex-wrap: wrap; }
+        .filter-btn { background: var(--white); border: 1px solid var(--soft-rose); padding: 11px 28px; border-radius: 30px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); transition: 0.3s; }
+        .filter-btn.active, .filter-btn:hover { background: var(--burgundy); color: var(--white); border-color: var(--burgundy); }
 
         /* Products Grid */
-        .products-grid { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 30px 60px; }
-        .product-card { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; position: relative; text-align: center; border: 1px solid rgba(0,0,0,0.03); }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
-        .product-thumb { height: 280px; width: 100%; object-fit: cover; background: var(--soft-pink); }
-        .product-info { padding: 20px; }
-        .product-category { font-size: 11px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .product-name { font-size: 16px; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; height: 45px; display: flex; align-items: center; justify-content: center; }
-        .product-price { font-size: 16px; color: var(--primary-burgundy); font-weight: bold; margin-bottom: 15px; }
-        .add-to-cart-btn { width: 100%; background: var(--soft-pink); color: var(--primary-burgundy); border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .add-to-cart-btn:hover { background: var(--primary-burgundy); color: var(--white); }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 30px; }
+        .product-card { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.03); transition: 0.3s; text-align: center; border: 1px solid rgba(0,0,0,0.03); }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .product-thumb { height: 300px; width: 100%; object-fit: cover; background: var(--soft-rose); }
+        .product-info { padding: 22px; }
+        .product-category { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; font-weight: 600; }
+        .product-name { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 10px; height: 42px; display: flex; align-items: center; justify-content: center; }
+        .product-price { font-size: 17px; color: var(--burgundy); font-weight: 700; margin-bottom: 18px; }
+        .add-to-cart-btn { width: 100%; background: var(--soft-rose); color: var(--burgundy); border: none; padding: 12px; border-radius: 25px; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
+        .add-to-cart-btn:hover { background: var(--burgundy); color: var(--white); }
 
-        /* Cart Drawer Slide-out */
-        .cart-drawer { position: fixed; top: 0; left: -400px; width: 380px; height: 100%; background: var(--white); box-shadow: 5px 0 25px rgba(0,0,0,0.1); z-index: 2000; transition: 0.4s ease; display: flex; flex-direction: column; }
-        .cart-drawer.open { left: 0; }
-        .cart-header { background: var(--primary-burgundy); color: var(--white); padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .cart-body { padding: 20px; flex: 1; overflow-y: auto; }
-        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; border-bottom: 1px solid var(--soft-pink); padding-bottom: 15px; }
-        .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
-        .cart-item-details { flex: 1; text-align: right; }
-        .cart-footer { padding: 20px; background: var(--cream-bg); border-top: 1px solid rgba(0,0,0,0.05); }
-        .whatsapp-checkout-btn { width: 100%; background: #25D366; color: white; border: none; padding: 12px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        /* Sliding Cart Drawer */
+        .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100%; background: var(--white); box-shadow: -5px 0 30px rgba(0,0,0,0.1); z-index: 2000; transition: 0.4s ease; display: flex; flex-direction: column; }
+        .cart-drawer.open { right: 0; }
+        .cart-header { background: var(--burgundy); color: var(--white); padding: 22px; display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h3 { font-family: 'Cinzel', serif; font-size: 18px; letter-spacing: 1px; }
+        .cart-body { padding: 25px; flex: 1; overflow-y: auto; }
+        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; border-bottom: 1px solid var(--soft-rose); padding-bottom: 15px; }
+        .cart-item img { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; }
+        .cart-item-details { flex: 1; text-align: left; }
+        .cart-footer { padding: 25px; background: var(--cream); border-top: 1px solid rgba(0,0,0,0.05); }
+        .whatsapp-checkout-btn { width: 100%; background: #25D366; color: white; border: none; padding: 14px; border-radius: 30px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* Floating WhatsApp Button */
-        .floating-wa { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; }
+        .floating-wa { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); z-index: 1000; text-decoration: none; }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
+        /* Footer */
+        footer { background: var(--burgundy); color: var(--white); text-align: center; padding: 40px 20px; border-top: 1px solid var(--gold); }
+        footer p { font-size: 13px; color: var(--soft-rose); opacity: 0.8; margin-top: 10px; }
+
+        /* Responsive Styles */
+        @media (max-width: 900px) {
             .hero-container { grid-template-columns: 1fr; text-align: center; }
-            .hero-text { padding-right: 0; margin-bottom: 30px; }
-            .hero-title { font-size: 36px; }
-            .features-container { grid-template-columns: 1fr; gap: 20px; }
-            .cart-drawer { width: 100%; left: -100%; }
+            .hero-desc { margin: 0 auto 30px; }
+            .hero-title { font-size: 40px; }
+            .features-container { grid-template-columns: 1fr 1fr; gap: 20px; }
+            .feature-item { border-right: none; }
+            .cart-drawer { width: 100%; right: -100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Announcement Bar -->
-    <div class="top-bar">شحن مجاني للطلبات الأكثر من 500 ج.م ✦ توصيل سريع لجميع المحافظات</div>
+    <!-- Announcement Bar -->
+    <div class="top-bar">Complimentary shipping on orders over 500 EGP ✦ Velvet touch. Rebel soul.</div>
 
-    <!-- Header Navigation -->
+    <!-- Navigation Header -->
     <header>
         <div class="nav-container">
             <a href="#" class="logo">
                 REBEL VELVET
-                <span>FRAGRANCE</span>
+                <span>BEAUTY BEYOND RULES</span>
             </a>
             <ul class="nav-links">
-                <li><a href="#shop">المتجر</a></li>
-                <li><a href="#about">من نحن</a></li>
-                <li><a href="#contact">تواصل معنا</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#shop">Collection</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="nav-icons">
                 <a href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram"></i></a>
@@ -130,52 +148,77 @@
         </div>
     </header>
 
-    <!-- Hero Banner -->
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-text">
-                <p class="hero-subtitle">Velvet touch. Rebel soul.</p>
-                <h1 class="hero-title">عطور تلمس إحساسك وتبرز أنوثتك</h1>
-                <p class="hero-desc">اكتشفي تشكيلة بادي سبلاش وليب جلوس والمعطرات الفاخرة المصممة خصيصاً لتمنحك بريقاً وثقة لا تُنسى.</p>
-                <a href="#shop" class="btn-burgundy">تسوقي الآن <i class="fas fa-arrow-left"></i></a>
+                <p class="hero-subtitle">Beauty Beyond Rules</p>
+                <h1 class="hero-title">Elevate Your Daily Ritual</h1>
+                <p class="hero-desc">Discover luxurious body care, lip gloss, and captivating fragrances designed to celebrate your individuality and natural radiant glow.</p>
+                <a href="#shop" class="btn-primary">Explore Collection <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
             </div>
             <div class="hero-image-wrap">
-                <img id="hero-slider-img" src="https://placehold.co/800x1000/f3ebe6/4a0e17?text=Rebel+Velvet" alt="Rebel Velvet Fragrance">
+                <img id="hero-slider-img" src="https://placehold.co/800x1000/f3ebe6/4a0e17?text=REBEL+VELVET" alt="Rebel Velvet Beauty">
             </div>
         </div>
     </section>
 
-    <!-- Features Bar -->
+    <!-- About Section (Narrative Text) -->
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <p class="about-tagline">Beauty Beyond Rules</p>
+            <h2 class="about-heading">About REBEL VELVET</h2>
+            <p class="about-text">
+                At REBEL VELVET, we believe beauty begins with the way you care for yourself. We bring together skincare, self-care, and beauty essentials designed to make every routine feel like a luxurious ritual.
+            </p>
+            <p class="about-text">
+                Our philosophy is rooted in the belief that caring for your skin is more than a daily habit — it is an expression of self-love, confidence, and individuality. Inspired by the softness of velvet and the spirit of rebellion, we create experiences that celebrate your natural beauty while encouraging you to embrace your own rules.
+            </p>
+            <p class="about-text">
+                From thoughtful skincare essentials to indulgent body care, makeup, and captivating fragrances, every detail is designed to help you feel confident, radiant, and unapologetically yourself.
+            </p>
+            <p class="about-highlight">
+                REBEL VELVET — Velvet touch. Rebel soul.
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Ribbon -->
     <section class="features-bar">
         <div class="features-container">
             <div class="feature-item">
-                <i class="fas fa-pump-soap"></i>
-                <h4>SKINCARE & BODY</h4>
-                <p>عناية ورائحة تدوم طوال اليوم</p>
+                <i class="fas fa-sparkles"></i>
+                <h4>Clean & Radiant</h4>
+                <p>Thoughtful beauty essentials</p>
             </div>
             <div class="feature-item">
-                <i class="fas fa-magic"></i>
-                <h4>MAKEUP & GLOSS</h4>
-                <p>لمسـات سحرية لإطلالة جذابة</p>
+                <i class="fas fa-heart"></i>
+                <h4>Self-Love Ritual</h4>
+                <p>Everyday luxurious care</p>
             </div>
             <div class="feature-item">
-                <i class="fas fa-spray-can"></i>
-                <h4>FRAGRANCE</h4>
-                <p>أكثر من مجرد عطر.. إنه هويتك</p>
+                <i class="fas fa-gem"></i>
+                <h4>Velvet Touch</h4>
+                <p>Unapologetic confidence</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-truck-fast"></i>
+                <h4>Fast Delivery</h4>
+                <p>Direct to your doorstep</p>
             </div>
         </div>
     </section>
 
     <!-- Main Shop Section -->
-    <section id="shop">
+    <section class="shop-section" id="shop">
         <div class="section-title">
-            <p>OUR COLLECTION</p>
-            <h2>تشكيلتنا المميزة</h2>
+            <p>Our Curated Range</p>
+            <h2>Explore The Collection</h2>
         </div>
 
         <!-- Category Filters -->
         <div class="filters">
-            <button class="filter-btn active" onclick="filterProducts('all', this)">الكل</button>
+            <button class="filter-btn active" onclick="filterProducts('all', this)">All Products</button>
             <button class="filter-btn" onclick="filterProducts('Body Splash', this)">Body Splash</button>
             <button class="filter-btn" onclick="filterProducts('Lip Gloss', this)">Lip Gloss</button>
             <button class="filter-btn" onclick="filterProducts('Car Air Freshener', this)">Car Freshener</button>
@@ -183,34 +226,43 @@
 
         <!-- Products Grid Container -->
         <div class="products-grid" id="products-container">
-            <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">جاري تحميل المنتجات...</p>
+            <p style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Loading collection...</p>
         </div>
     </section>
 
     <!-- Sliding Cart Drawer -->
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
-            <h3>سلة المشتريات</h3>
-            <i class="fas fa-times" style="cursor: pointer;" onclick="toggleCart()"></i>
+            <h3>Shopping Bag</h3>
+            <i class="fas fa-times" style="cursor: pointer; font-size: 18px;" onclick="toggleCart()"></i>
         </div>
         <div class="cart-body" id="cart-items">
-            <p style="text-align: center; color: var(--text-muted);">السلة فارغة حالياً</p>
+            <p style="text-align: center; color: var(--text-muted); margin-top: 40px;">Your bag is currently empty.</p>
         </div>
         <div class="cart-footer">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold;">
-                <span>الإجمالي:</span>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 18px; font-weight: 700;">
+                <span>Total:</span>
                 <span id="cart-total">0 EGP</span>
             </div>
             <button class="whatsapp-checkout-btn" onclick="checkoutWhatsApp()">
-                <i class="fab fa-whatsapp"></i> إتمام الطلب عبر الواتساب
+                <i class="fab fa-whatsapp"></i> Checkout via WhatsApp
             </button>
         </div>
     </div>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/201092542461" class="floating-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://wa.me/201092542461" class="floating-wa" target="_blank" id="contact"><i class="fab fa-whatsapp"></i></a>
 
-    <!-- JavaScript Logic -->
+    <!-- Footer -->
+    <footer>
+        <div class="logo" style="color: var(--white);">
+            REBEL VELVET
+            <span style="color: var(--gold);">BEAUTY BEYOND RULES</span>
+        </div>
+        <p>© 2026 REBEL VELVET. All Rights Reserved. Velvet touch. Rebel soul.</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
     <script>
         const CONFIG = {
             currency: "EGP",
@@ -234,7 +286,7 @@
                     renderProducts(allProducts);
                     setupSlider(data.catalog);
                 } else {
-                    document.getElementById('products-container').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">فشل جلب المنتجات. تحقق من الربط.</p>';
+                    document.getElementById('products-container').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Unable to load catalog. Please check API integration.</p>';
                 }
             };
 
@@ -246,7 +298,7 @@
         function renderProducts(products) {
             const container = document.getElementById('products-container');
             if (!products.length) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">لا توجد منتجات في هذه الفئة حالياً.</p>';
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No products available in this category.</p>';
                 return;
             }
 
@@ -257,7 +309,7 @@
                         <div class="product-category">${p.category}</div>
                         <div class="product-name">${p.name}</div>
                         <div class="product-price">${p.price} ${CONFIG.currency}</div>
-                        <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">إضافة للسلة <i class="fas fa-shopping-bag"></i></button>
+                        <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left: 5px;"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -327,7 +379,7 @@
             cartTotal.textContent = `${totalPrice} ${CONFIG.currency}`;
 
             if (!cart.length) {
-                cartItems.innerHTML = '<p style="text-align: center; color: var(--text-muted);">السلة فارغة حالياً</p>';
+                cartItems.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 40px;">Your bag is currently empty.</p>';
                 return;
             }
 
@@ -335,10 +387,10 @@
                 <div class="cart-item">
                     <img src="${item.image}">
                     <div class="cart-item-details">
-                        <h4 style="font-size: 14px;">${item.name}</h4>
-                        <p style="font-size: 12px; color: var(--primary-burgundy);">${item.price} x ${item.qty} ${CONFIG.currency}</p>
+                        <h4 style="font-size: 14px; color: var(--text-main);">${item.name}</h4>
+                        <p style="font-size: 13px; color: var(--burgundy); font-weight: 600;">${item.price} x ${item.qty} ${CONFIG.currency}</p>
                     </div>
-                    <i class="fas fa-trash" style="color: #ff4d4d; cursor: pointer;" onclick="removeFromCart('${item.id}')"></i>
+                    <i class="fas fa-trash" style="color: #d9534f; cursor: pointer; font-size: 14px;" onclick="removeFromCart('${item.id}')"></i>
                 </div>
             `).join('');
         }
@@ -349,14 +401,14 @@
         }
 
         function checkoutWhatsApp() {
-            if (!cart.length) return alert('السلة فارغة!');
+            if (!cart.length) return alert('Your shopping bag is empty!');
             
-            let msg = `مرحباً Rebel Velvet، أود طلب الأتي:\n\n`;
+            let msg = `Hello REBEL VELVET, I would like to place an order:\n\n`;
             cart.forEach(i => {
-                msg += `• ${i.name} (العدد: ${i.qty}) = ${i.price * i.qty} ${CONFIG.currency}\n`;
+                msg += `• ${i.name} (Qty: ${i.qty}) = ${i.price * i.qty} ${CONFIG.currency}\n`;
             });
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            msg += `\nالإجمالي: ${total} ${CONFIG.currency}`;
+            msg += `\nTotal: ${total} ${CONFIG.currency}`;
 
             window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
