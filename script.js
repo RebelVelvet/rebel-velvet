@@ -1,9 +1,12 @@
-/* =========================================
+```javascript
+/* =========================================================
    REBEL VELVET | STOREFRONT
-   Google Sheets catalog + sale prices + cart + WhatsApp checkout
-   ========================================= */
+   Google Sheets catalog + sale prices + cart + WhatsApp
+   ========================================================= */
 
 "use strict";
+
+/* ---------- Configuration ---------- */
 
 const CONFIG = {
   brand: "Rebel Velvet",
@@ -15,21 +18,23 @@ const CONFIG = {
   storageKey: "rebelVelvetCart",
   slideInterval: 4000,
   placeholderImage:
-    "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
+    "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet"
 };
+
+/* ---------- State ---------- */
 
 const state = {
   products: [],
   driveImages: {},
   cart: [],
-  filter: "all",
+  filter: "all"
 };
 
 const slider = {
   el: null,
   slides: [],
   index: 0,
-  timer: null,
+  timer: null
 };
 
 const reduceMotion = window.matchMedia(
@@ -49,18 +54,18 @@ const HTML_ENTITIES = {
   "<": "&lt;",
   ">": "&gt;",
   '"': "&quot;",
-  "'": "&#39;",
+  "'": "&#39;"
 };
 
 function escapeHtml(value) {
   return String(value ?? "").replace(
     /[&<>"']/g,
-    (character) => HTML_ENTITIES[character]
+    character => HTML_ENTITIES[character]
   );
 }
 
 const priceFormat = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 0,
+  maximumFractionDigits: 2
 });
 
 function formatPrice(amount) {
@@ -80,7 +85,48 @@ function sameKey(first, second) {
   );
 }
 
-/* ---------- Sale prices ---------- */
+/* ---------- Image URLs ---------- */
+
+function normalizeImageUrl(url) {
+  const value = String(url || "").trim();
+
+  if (!value) return "";
+
+  // Convert Google Drive file links into thumbnail links.
+  const fileMatch = value.match(
+    /drive\.google\.com\/file\/d\/([^/?]+)/i
+  );
+
+  if (fileMatch) {
+    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w1000`;
+  }
+
+  // Handle Google Drive open?id=FILE_ID links.
+  const idMatch = value.match(/[?&]id=([^&]+)/i);
+
+  if (
+    value.includes("drive.google.com") &&
+    idMatch &&
+    !value.includes("/thumbnail")
+  ) {
+    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1000`;
+  }
+
+  return value;
+}
+
+function getProductImage(product) {
+  return (
+    normalizeImageUrl(
+      product.image ||
+      product.imageUrl ||
+      product.url ||
+      ""
+    ) || CONFIG.placeholderImage
+  );
+}
+
+/* ---------- Sale Prices ---------- */
 
 function getSalePrice(product) {
   const regularPrice = Number(product.price);
@@ -89,6 +135,7 @@ function getSalePrice(product) {
   if (
     Number.isFinite(salePrice) &&
     salePrice > 0 &&
+    regularPrice > 0 &&
     salePrice < regularPrice
   ) {
     return salePrice;
@@ -98,7 +145,7 @@ function getSalePrice(product) {
 }
 
 function getEffectivePrice(product) {
-  return (getSalePrice(product) ?? Number(product.price)) || 0;
+  return getSalePrice(product) ?? (Number(product.price) || 0);
 }
 
 function renderProductPrice(product) {
@@ -108,56 +155,621 @@ function renderProductPrice(product) {
     return `
       <span class="price-current">
         ${formatPrice(product.price)}
-      </span>`;
+      </span>
+    `;
   }
 
   return `
     <span class="price-old">
       ${formatPrice(product.price)}
     </span>
+
     <span class="price-current">
       ${formatPrice(salePrice)}
     </span>
-    <span class="sale-badge">
-      SALE
-    </span>`;
+
+    <span class="sale-badge">SALE</span>
+  `;
 }
 
-/* ---------- Catalog: JSONP from Google Apps Script ---------- */
+/* ---------- Load Google Sheets Catalog ---------- */
 
 function fetchCatalog() {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const callbackName =
-      `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
     const script = document.createElement("script");
     let finished = false;
-    let timeoutId = null;
+
+    const timeoutId = setTimeout(() => {
+      finish(null);
+    }, 15000);
 
     function finish(data) {
       if (finished) return;
 
       finished = true;
       clearTimeout(timeoutId);
-      delete window[callbackName];
+
+      try {
+        delete window[callbackName];
+      } catch (error) {
+        window[callbackName] = undefined;
+      }
+
       script.remove();
 
-      resolve(data && data.success ? data : null);
+      if (data && data.success && Array.isArray(data.catalog)) {
+        console.log(
+          "REBEL VELVET catalog loaded:",
+          data.catalog
+        );
+
+        resolve(data);
+      } else {
+        console.error(
+          "REBEL VELVET catalog returned an invalid response:",
+          data
+        );
+
+        resolve(null);
+      }
     }
 
     window[callbackName] = finish;
-    script.onerror = () => finish(null);
 
-    timeoutId = setTimeout(() => finish(null), 12000);
+    script.onerror = () => {
+      console.error(
+        "REBEL VELVET: failed to load the Google Apps Script API.",
+        script.src
+      );
 
+      finish(null);
+    };
+
+    // IMPORTANT:
+    // Use template literals so the callback name is inserted correctly.
     script.src =
-      `CONFIG.catalogApi?callback={callbackName}&t=${Date.now()}`;
+      `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
 
-    document.body.appendChild(script);
+    document.head.appendChild(script);
   });
 }
 
-/* ---------- Hero slider ---------- */
+/* ---------- Categories and Filters ---------- */
+
+function getCategories() {
+  const categories = [];
+
+  state.products.forEach(product => {
+    const category = String(product.category || "").trim();
+
+    if (
+      category &&
+      !categories.some(item => sameKey(item, category))
+    ) {
+      categories.push(category);
+    }
+  });
+
+  return categories;
+}
+
+function renderCategoryFilters() {
+  const categories = getCategories();
+
+  const filterContainers = [
+    $("#product-filters"),
+    $(".product-filters"),
+    $("[data-product-filters]"),
+    $("#filter-bar"),
+    $(".filter-bar")
+  ].filter(Boolean);
+
+  filterContainers.forEach(container => {
+    container.innerHTML = `
+      <button
+        type="button"
+        class="filter-btn ${
+          state.filter === "all" ? "active is-active" : ""
+        }"
+        data-filter="all"
+        aria-pressed="${state.filter === "all"}"
+      >
+        All products
+      </button>
+
+      ${categories.map(category => `
+        <button
+          type="button"
+          class="filter-btn ${
+            sameKey(state.filter, category)
+              ? "active is-active"
+              : ""
+          }"
+          data-filter="${escapeHtml(category)}"
+          aria-pressed="${sameKey(state.filter, category)}"
+        >
+          ${escapeHtml(category)}
+        </button>
+      `).join("")}
+    `;
+  });
+
+  // Update the existing category cards if present.
+  const categoryGrid = $(
+    "#category-grid, .category-grid, .cat-grid, [data-category-grid]"
+  );
+
+  if (categoryGrid) {
+    const existingCards = $$(".cat-card", categoryGrid);
+
+    // Preserve original category cards and their existing design.
+    // Only update their filter behavior when possible.
+    existingCards.forEach(card => {
+      const label = (
+        card.dataset.filter ||
+        card.textContent ||
+        ""
+      ).trim();
+
+      const matchingCategory = categories.find(category =>
+        sameKey(category, label)
+      );
+
+      if (matchingCategory) {
+        card.dataset.filter = matchingCategory;
+        card.dataset.action = "filter";
+      }
+    });
+  }
+}
+
+function getVisibleProducts() {
+  if (state.filter === "all") {
+    return state.products;
+  }
+
+  return state.products.filter(product =>
+    sameKey(product.category, state.filter)
+  );
+}
+
+function setFilter(category) {
+  state.filter = category || "all";
+
+  renderCategoryFilters();
+  renderProducts();
+
+  const title = $("#shop-title");
+
+  if (title) {
+    title.textContent =
+      state.filter === "all"
+        ? "Find your favorite"
+        : state.filter;
+  }
+}
+
+/* ---------- Render Products ---------- */
+
+function renderProducts() {
+  const grid = $("#products");
+
+  if (!grid) {
+    console.error(
+      'REBEL VELVET: product grid "#products" was not found.'
+    );
+    return;
+  }
+
+  const products = getVisibleProducts();
+
+  if (!products.length) {
+    grid.innerHTML = `
+      <div class="empty">
+        <span aria-hidden="true">✦</span>
+        <h3>Coming soon</h3>
+        <p>New pieces are on their way.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML = products.map(product => {
+    const imageUrl = getProductImage(product);
+
+    return `
+      <article class="product-card">
+
+        <div class="product-media">
+          <img
+            src="${escapeHtml(imageUrl)}"
+            alt="${escapeHtml(product.name || "REBEL VELVET product")}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'"
+          >
+
+          ${
+            getSalePrice(product) !== null
+              ? '<span class="product-sale-label">SALE</span>'
+              : ""
+          }
+        </div>
+
+        <div class="product-body">
+
+          <p class="product-cat">
+            ${escapeHtml(product.category || "")}
+          </p>
+
+          <h3 class="product-name">
+            ${escapeHtml(product.name || "")}
+          </h3>
+
+          <p class="product-price">
+            ${renderProductPrice(product)}
+          </p>
+
+          <button
+            class="btn btn-outline"
+            type="button"
+            data-action="add"
+            data-id="${escapeHtml(product.id)}"
+          >
+            Add to bag
+          </button>
+
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  renderCart();
+}
+
+/* ---------- Cart Storage ---------- */
+
+function loadCart() {
+  try {
+    const savedCart = JSON.parse(
+      localStorage.getItem(CONFIG.storageKey) || "[]"
+    );
+
+    state.cart = Array.isArray(savedCart)
+      ? savedCart.filter(item =>
+          item &&
+          item.id !== undefined &&
+          Number(item.quantity) > 0
+        )
+      : [];
+  } catch (error) {
+    state.cart = [];
+  }
+}
+
+function saveCart() {
+  try {
+    localStorage.setItem(
+      CONFIG.storageKey,
+      JSON.stringify(state.cart)
+    );
+  } catch (error) {
+    console.warn("Could not save the cart in local storage.");
+  }
+}
+
+function findProduct(id) {
+  return state.products.find(product =>
+    String(product.id) === String(id)
+  );
+}
+
+function findCartItem(id) {
+  return state.cart.find(item =>
+    String(item.id) === String(id)
+  );
+}
+
+function updateSavedCartPrices() {
+  state.cart = state.cart.map(item => {
+    const product = findProduct(item.id);
+
+    if (!product) return item;
+
+    return {
+      ...item,
+      name: product.name,
+      category: product.category,
+      image: getProductImage(product),
+      originalPrice: Number(product.price) || 0,
+      price: getEffectivePrice(product)
+    };
+  });
+
+  saveCart();
+}
+
+/* ---------- Cart Actions ---------- */
+
+function addToCart(id) {
+  const product = findProduct(id);
+
+  if (!product) return;
+
+  const existingItem = findCartItem(id);
+
+  if (existingItem) {
+    existingItem.quantity =
+      (Number(existingItem.quantity) || 0) + 1;
+
+    existingItem.price = getEffectivePrice(product);
+    existingItem.originalPrice = Number(product.price) || 0;
+  } else {
+    state.cart.push({
+      id: String(product.id),
+      name: product.name,
+      category: product.category || "",
+      image: getProductImage(product),
+      originalPrice: Number(product.price) || 0,
+      price: getEffectivePrice(product),
+      quantity: 1
+    });
+  }
+
+  updateCart();
+  openCart();
+}
+
+function changeQuantity(id, change) {
+  const item = findCartItem(id);
+
+  if (!item) return;
+
+  item.quantity = (Number(item.quantity) || 0) + change;
+
+  if (item.quantity <= 0) {
+    state.cart = state.cart.filter(cartItem =>
+      String(cartItem.id) !== String(id)
+    );
+  }
+
+  updateCart();
+}
+
+function removeFromCart(id) {
+  state.cart = state.cart.filter(item =>
+    String(item.id) !== String(id)
+  );
+
+  updateCart();
+}
+
+function getCartCount() {
+  return state.cart.reduce(
+    (total, item) => total + (Number(item.quantity) || 0),
+    0
+  );
+}
+
+function getCartTotal() {
+  return state.cart.reduce(
+    (total, item) =>
+      total +
+      (Number(item.price) || 0) *
+      (Number(item.quantity) || 0),
+    0
+  );
+}
+
+/* ---------- Render Cart ---------- */
+
+function renderCartItem(item) {
+  const originalPrice =
+    Number(item.originalPrice) || Number(item.price) || 0;
+
+  const price = Number(item.price) || 0;
+  const hasDiscount = originalPrice > price;
+
+  return `
+    <div class="cart-line">
+
+      <img
+        src="${escapeHtml(
+          normalizeImageUrl(item.image) || CONFIG.placeholderImage
+        )}"
+        alt="${escapeHtml(item.name || "")}"
+        loading="lazy"
+        onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'"
+      >
+
+      <div class="cart-line-info">
+
+        <p class="cat">
+          ${escapeHtml(item.category || "")}
+        </p>
+
+        <h4>${escapeHtml(item.name || "")}</h4>
+
+        <p class="price">
+          ${
+            hasDiscount
+              ? `<span class="price-old">${formatPrice(originalPrice)}</span>`
+              : ""
+          }
+
+          <span class="price-current">
+            ${formatPrice(price)}
+          </span>
+        </p>
+
+        <div class="qty">
+
+          <button
+            type="button"
+            data-action="qty"
+            data-id="${escapeHtml(item.id)}"
+            data-delta="-1"
+            aria-label="Decrease quantity"
+          >−</button>
+
+          <span>${Number(item.quantity) || 1}</span>
+
+          <button
+            type="button"
+            data-action="qty"
+            data-id="${escapeHtml(item.id)}"
+            data-delta="1"
+            aria-label="Increase quantity"
+          >+</button>
+
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="remove-item"
+        data-action="remove"
+        data-id="${escapeHtml(item.id)}"
+        aria-label="Remove ${escapeHtml(item.name || "product")}"
+      >
+        ×
+      </button>
+
+    </div>
+  `;
+}
+
+function renderCart() {
+  const itemsContainer = $(
+    "#cart-items, .cart-items, [data-cart-items]"
+  );
+
+  const countElements = $$("#cart-count, .cart-count, [data-cart-count]");
+
+  const totalElements = $$("#cart-total, .cart-total, [data-cart-total]");
+
+  const checkoutButtons = $$(
+    "[data-checkout], #checkout-button, #checkout, .checkout-button"
+  );
+
+  countElements.forEach(element => {
+    element.textContent = getCartCount();
+  });
+
+  totalElements.forEach(element => {
+    element.textContent = formatPrice(getCartTotal());
+  });
+
+  checkoutButtons.forEach(button => {
+    button.disabled = state.cart.length === 0;
+  });
+
+  if (!itemsContainer) return;
+
+  itemsContainer.innerHTML = state.cart.length
+    ? state.cart.map(renderCartItem).join("")
+    : `
+      <div class="cart-empty">
+        <span aria-hidden="true">♡</span>
+        <p>Your bag is empty.</p>
+      </div>
+    `;
+}
+
+function updateCart() {
+  saveCart();
+  renderCart();
+}
+
+/* ---------- Open and Close Cart ---------- */
+
+let lastFocusedElement = null;
+
+function getCartOverlay() {
+  return $(
+    "#cart-overlay, #cart-drawer, .cart-drawer, [data-cart-drawer]"
+  );
+}
+
+function openCart() {
+  const overlay = getCartOverlay();
+
+  if (!overlay) return;
+
+  lastFocusedElement = document.activeElement;
+
+  renderCart();
+
+  overlay.classList.add("is-open", "open");
+  overlay.setAttribute("aria-hidden", "false");
+
+  document.body.classList.add("is-locked");
+
+  const closeButton = $(
+    "#close-cart, #cart-close, [data-cart-close]"
+  );
+
+  if (closeButton) closeButton.focus();
+}
+
+function closeCart() {
+  const overlay = getCartOverlay();
+
+  if (!overlay) return;
+
+  overlay.classList.remove("is-open", "open");
+  overlay.setAttribute("aria-hidden", "true");
+
+  document.body.classList.remove("is-locked");
+
+  if (
+    lastFocusedElement &&
+    typeof lastFocusedElement.focus === "function"
+  ) {
+    lastFocusedElement.focus();
+  }
+}
+
+/* ---------- WhatsApp Checkout ---------- */
+
+function checkout() {
+  if (!state.cart.length) return;
+
+  const orderLines = state.cart.map(item => {
+    const originalPrice =
+      Number(item.originalPrice) || Number(item.price) || 0;
+
+    const currentPrice = Number(item.price) || 0;
+
+    const priceText = originalPrice > currentPrice
+      ? `${formatPrice(originalPrice)} -> ${formatPrice(currentPrice)}`
+      : formatPrice(currentPrice);
+
+    return `• ${item.name} x ${item.quantity} = ${priceText}`;
+  });
+
+  const message = [
+    `Hello ${CONFIG.brand}! I'd like to place an order:`,
+    "",
+    ...orderLines,
+    "",
+    `Total: ${formatPrice(getCartTotal())}`,
+    "",
+    "Name:",
+    "Phone:",
+    "Address:"
+  ].join("\n");
+
+  const checkoutUrl =
+    `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
+
+  window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+}
+
+/* ---------- Hero Slider ---------- */
 
 function setupSlider() {
   slider.el = $("#hero-slider-image");
@@ -165,19 +777,21 @@ function setupSlider() {
   if (!slider.el) return;
 
   const catalogImages = state.products
-    .map((product) => product.image)
+    .map(product => normalizeImageUrl(product.image))
     .filter(Boolean);
 
   const driveImages = Object.values(state.driveImages)
     .flat()
-    .map((image) => image && image.url)
+    .map(image =>
+      image && normalizeImageUrl(image.url || image.image)
+    )
     .filter(Boolean);
 
-  const source = catalogImages.length
-    ? catalogImages
-    : driveImages;
-
-  slider.slides = [...new Set(source)];
+  slider.slides = [
+    ...new Set(
+      catalogImages.length ? catalogImages : driveImages
+    )
+  ];
 
   const total = $("#hero-slide-total");
   const current = $("#hero-slide-current");
@@ -188,7 +802,9 @@ function setupSlider() {
 
   if (!slider.slides.length) {
     slider.el.src = CONFIG.placeholderImage;
+
     if (current) current.textContent = "01";
+
     return;
   }
 
@@ -199,7 +815,9 @@ function setupSlider() {
 
   const frame = $(".hero-frame");
 
-  if (frame) {
+  if (frame && !frame.dataset.sliderEventsBound) {
+    frame.dataset.sliderEventsBound = "true";
+
     frame.addEventListener("mouseenter", stopSlider);
     frame.addEventListener("mouseleave", startSlider);
   }
@@ -230,6 +848,7 @@ function showSlide(index) {
   preload.src = nextImage;
 
   const current = $("#hero-slide-current");
+
   if (current) {
     current.textContent = pad(slider.index + 1);
   }
@@ -239,7 +858,8 @@ function startSlider() {
   if (
     slider.timer ||
     slider.slides.length < 2 ||
-    reduceMotion.matches
+    reduceMotion.matches ||
+    document.hidden
   ) {
     return;
   }
@@ -255,337 +875,23 @@ function stopSlider() {
   slider.timer = null;
 }
 
-/* ---------- Products ---------- */
+/* ---------- Contact Links ---------- */
 
-function getVisibleProducts() {
-  if (state.filter === "all") {
-    return state.products;
-  }
-
-  return state.products.filter((product) =>
-    sameKey(product.category, state.filter)
-  );
-}
-
-function renderProducts() {
-  const grid = $("#products");
-  if (!grid) return;
-
-  const products = getVisibleProducts();
-
-  if (!products.length) {
-    grid.innerHTML = `
-      <div class="empty">
-        <span aria-hidden="true">✦</span>
-        <h3>Coming soon</h3>
-        <p>New pieces are on their way.</p>
-      </div>`;
-    return;
-  }
-
-  grid.innerHTML = products
-    .map(
-      (product) => `
-        <article class="product-card">
-          <div class="product-media">
-            <img src="escapeHtml(product.image||CONFIG.placeholderImage)"alt="{escapeHtml(product.name)}" />
-            ${
-              getSalePrice(product) !== null
-                ? '<span class="product-sale-label">SALE</span>'
-                : ""
-            }
-          </div>
-
-          <div class="product-body">
-            <p class="product-cat">
-              ${escapeHtml(product.category)}
-            </p>
-
-            <h3 class="product-name">
-              ${escapeHtml(product.name)}
-            </h3>
-
-            <p class="product-price">
-              ${renderProductPrice(product)}
-            </p>
-
-            <button
-              class="btn btn-outline"
-              data-action="add"
-              data-id="${escapeHtml(product.id)}"
-            >
-              Add to bag
-            </button>
-          </div>
-        </article>`
-    )
-    .join("");
-}
-
-function setFilter(category) {
-  state.filter = category;
-
-  $$(".filter-btn").forEach((button) => {
-    button.setAttribute(
-      "aria-pressed",
-      String(button.dataset.filter === category)
-    );
+function setContactLinks() {
+  $$("[data-wa]").forEach(link => {
+    link.href = `https://wa.me/${CONFIG.whatsapp}`;
   });
 
-  const title = $("#shop-title");
-
-  if (title) {
-    title.textContent =
-      category === "all" ? "Find your favorite" : category;
-  }
-
-  renderProducts();
-}
-
-/* ---------- Cart ---------- */
-
-function findProduct(id) {
-  return state.products.find(
-    (product) => String(product.id) === String(id)
-  );
-}
-
-function findCartItem(id) {
-  return state.cart.find(
-    (item) => String(item.id) === String(id)
-  );
-}
-
-function getCartCount() {
-  return state.cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
-}
-
-function getCartTotal() {
-  return state.cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-}
-
-function loadCart() {
-  try {
-    const savedCart = JSON.parse(
-      localStorage.getItem(CONFIG.storageKey) || "[]"
-    );
-
-    state.cart = Array.isArray(savedCart)
-      ? savedCart.filter(
-          (item) =>
-            item &&
-            item.id !== undefined &&
-            Number(item.quantity) > 0
-        )
-      : [];
-  } catch {
-    state.cart = [];
-  }
-}
-
-function updateSavedCartPrices() {
-  state.cart = state.cart.map((item) => {
-    const product = findProduct(item.id);
-
-    if (!product) return item;
-
-    return {
-      ...item,
-      name: product.name,
-      category: product.category,
-      price: getEffectivePrice(product),
-      originalPrice: Number(product.price) || 0,
-      image: (product.image || item.image) || CONFIG.placeholderImage,
-    };
+  $$("[data-tel]").forEach(link => {
+    link.href = `tel:+${CONFIG.whatsapp}`;
   });
 
-  saveCart();
+  $$("[data-ig]").forEach(link => {
+    link.href = CONFIG.instagram;
+  });
 }
 
-function saveCart() {
-  try {
-    localStorage.setItem(
-      CONFIG.storageKey,
-      JSON.stringify(state.cart)
-    );
-  } catch {
-    // The cart still works for the current visit if storage is unavailable.
-  }
-}
-
-function updateCart() {
-  saveCart();
-  renderCart();
-}
-
-function addToCart(id) {
-  const product = findProduct(id);
-  if (!product) return;
-
-  const salePrice = getSalePrice(product);
-  const effectivePrice = (salePrice ?? Number(product.price)) || 0;
-
-  const existingItem = findCartItem(id);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-    existingItem.price = effectivePrice;
-    existingItem.originalPrice = Number(product.price) || 0;
-  } else {
-    state.cart.push({
-      id: String(product.id),
-      name: product.name,
-      category: product.category,
-      price: effectivePrice,
-      originalPrice: Number(product.price) || 0,
-      image: product.image || CONFIG.placeholderImage,
-      quantity: 1,
-    });
-  }
-
-  updateCart();
-  openCart();
-}
-
-function changeQuantity(id, change) {
-  const item = findCartItem(id);
-  if (!item) return;
-
-  item.quantity += change;
-
-  if (item.quantity <= 0) {
-    state.cart = state.cart.filter(
-      (cartItem) => cartItem !== item
-    );
-  }
-
-  updateCart();
-}
-
-function removeFromCart(id) {
-  state.cart = state.cart.filter(
-    (item) => String(item.id) !== String(id)
-  );
-
-  updateCart();
-}
-
-function renderCartItem(item) {
-  const originalPrice = Number(item.originalPrice) || item.price;
-  const hasDiscount = originalPrice > Number(item.price);
-
-  return `
-    <div class="cart-line">
-      <img src="escapeHtml(item.image)"alt="{escapeHtml(item.name)}" />
-
-      <div>
-        <p class="cat">${escapeHtml(item.category)}</p>
-        <h4>${escapeHtml(item.name)}</h4>
-
-        <p class="price">
-          ${
-            hasDiscount
-              ? `<span class="price-old">${formatPrice(originalPrice)}</span>
-                 <span class="price-current">${formatPrice(item.price)}</span>`
-              : `<span class="price-current">${formatPrice(item.price)}</span>`
-          }
-        </p>
-
-        <div class="qty">
-          <button
-            data-action="qty"
-            data-id="${escapeHtml(item.id)}"
-            data-delta="-1"
-            aria-label="Decrease quantity"
-          >−</button>
-
-          <span>${Number(item.quantity) || 1}</span>
-
-          <button
-            data-action="qty"
-            data-id="${escapeHtml(item.id)}"
-            data-delta="1"
-            aria-label="Increase quantity"
-          >+</button>
-        </div>
-
-        <button
-          class="remove"
-          data-action="remove"
-          data-id="${escapeHtml(item.id)}"
-        >
-          Remove
-        </button>
-      </div>
-    </div>`;
-}
-
-function renderCart() {
-  const count = $("#cart-count");
-  const total = $("#cart-total");
-  const checkoutButton = $("#checkout");
-  const container = $("#cart-items");
-
-  if (!container) return;
-
-  if (count) count.textContent = getCartCount();
-  if (total) total.textContent = formatPrice(getCartTotal());
-  if (checkoutButton) {
-    checkoutButton.disabled = getCartCount() === 0;
-  }
-
-  if (!state.cart.length) {
-    container.innerHTML = `
-      <div class="cart-empty">
-        <span aria-hidden="true">♡</span>
-        <p>Your bag is empty.</p>
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = state.cart
-    .map(renderCartItem)
-    .join("");
-}
-
-/* ---------- Cart drawer and mobile menu ---------- */
-
-let lastFocusedElement = null;
-
-function openCart() {
-  const overlay = $("#cart-overlay");
-  if (!overlay) return;
-
-  lastFocusedElement = document.activeElement;
-
-  renderCart();
-  overlay.classList.add("is-open");
-  document.body.classList.add("is-locked");
-
-  const closeButton = $("#close-cart");
-  if (closeButton) closeButton.focus();
-}
-
-function closeCart() {
-  const overlay = $("#cart-overlay");
-  if (!overlay || !overlay.classList.contains("is-open")) return;
-
-  overlay.classList.remove("is-open");
-  document.body.classList.remove("is-locked");
-
-  if (
-    lastFocusedElement &&
-    typeof lastFocusedElement.focus === "function"
-  ) {
-    lastFocusedElement.focus();
-  }
-}
+/* ---------- Mobile Navigation ---------- */
 
 function setMenu(isOpen) {
   const header = $(".site-header");
@@ -597,78 +903,42 @@ function setMenu(isOpen) {
   menuButton.setAttribute("aria-expanded", String(isOpen));
 }
 
-/* ---------- WhatsApp checkout ---------- */
-
-function checkout() {
-  if (!state.cart.length) return;
-
-  const orderLines = state.cart.map((item) => {
-    const regularPrice =
-      Number(item.originalPrice) || Number(item.price);
-
-    const discounted =
-      regularPrice > Number(item.price);
-
-    const itemPrice = discounted
-      ? `${formatPrice(regularPrice)} -> ${formatPrice(item.price)}`
-      : formatPrice(item.price);
-
-    return `• ${item.name} x ${item.quantity} = ${itemPrice}`;
-  });
-
-  const message = [
-    `Hello ${CONFIG.brand}! I'd like to place an order:`,
-    "",
-    ...orderLines,
-    "",
-    `Total: ${formatPrice(getCartTotal())}`,
-    "",
-    "Name:",
-    "Phone:",
-    "Address:",
-  ].join("\n");
-
-  const checkoutUrl =
-    `https://wa.me/CONFIG.whatsapp?text={encodeURIComponent(message)}`;
-
-  window.open(checkoutUrl, "_blank", "noopener");
-}
-
-/* ---------- Click actions ---------- */
+/* ---------- Click Actions ---------- */
 
 const ACTIONS = {
-  add: (element) => addToCart(element.dataset.id),
+  add: element => addToCart(element.dataset.id),
 
-  qty: (element) =>
+  qty: element => {
     changeQuantity(
       element.dataset.id,
       Number(element.dataset.delta)
-    ),
+    );
+  },
 
-  remove: (element) =>
-    removeFromCart(element.dataset.id),
+  remove: element => removeFromCart(element.dataset.id),
 
-  filter: (element) => {
-    setFilter(element.dataset.filter);
+  filter: element => {
+    setFilter(element.dataset.filter || "all");
 
-    if (element.closest(".cat-grid")) {
-      $("#shop")?.scrollIntoView({
+    if (element.closest(".cat-grid, .category-grid, #category-grid")) {
+      $("#shop, #products")?.scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: "start"
       });
     }
   },
 
   "open-cart": () => openCart(),
+
   "close-cart": () => closeCart(),
 
   continue: () => {
     closeCart();
     setFilter("all");
 
-    $("#shop")?.scrollIntoView({
+    $("#shop, #products")?.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "start"
     });
   },
 
@@ -676,15 +946,17 @@ const ACTIONS = {
 
   menu: () => {
     const header = $(".site-header");
+
     if (header) {
       setMenu(!header.classList.contains("nav-open"));
     }
-  },
+  }
 };
 
 function bindEvents() {
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", event => {
     const target = event.target;
+
     if (!(target instanceof Element)) return;
 
     const actionElement = target.closest("[data-action]");
@@ -697,16 +969,60 @@ function bindEvents() {
       return;
     }
 
-    if (target.id === "cart-overlay") {
+    const filterElement = target.closest("[data-filter]");
+
+    if (filterElement) {
+      setFilter(filterElement.dataset.filter || "all");
+      return;
+    }
+
+    if (
+      target.closest(
+        "[data-cart-open], #cart-open, .cart-open"
+      )
+    ) {
+      openCart();
+      return;
+    }
+
+    if (
+      target.closest(
+        "[data-cart-close], #cart-close, .cart-close, #close-cart"
+      )
+    ) {
       closeCart();
+      return;
+    }
+
+    if (
+      target.closest(
+        "[data-checkout], #checkout-button, #checkout, .checkout-button"
+      )
+    ) {
+      checkout();
+      return;
+    }
+
+    if (target.closest("#menu-toggle")) {
+      const header = $(".site-header");
+
+      setMenu(
+        !(header && header.classList.contains("nav-open"))
+      );
+
+      return;
     }
 
     if (target.closest(".nav-links a")) {
       setMenu(false);
     }
+
+    if (target.id === "cart-overlay") {
+      closeCart();
+    }
   });
 
-  document.addEventListener("keydown", (event) => {
+  document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
       closeCart();
       setMenu(false);
@@ -715,7 +1031,7 @@ function bindEvents() {
 
   document.addEventListener(
     "error",
-    (event) => {
+    event => {
       const image = event.target;
 
       if (
@@ -749,27 +1065,14 @@ function bindEvents() {
   );
 }
 
-/* ---------- Contact links ---------- */
-
-function setContactLinks() {
-  $$("[data-wa]").forEach((link) => {
-    link.href = `https://wa.me/${CONFIG.whatsapp}`;
-  });
-
-  $$("[data-tel]").forEach((link) => {
-    link.href = `tel:+${CONFIG.whatsapp}`;
-  });
-
-  $$("[data-ig]").forEach((link) => {
-    link.href = CONFIG.instagram;
-  });
-}
-
-/* ---------- Initialize ---------- */
+/* ---------- Initialize Store ---------- */
 
 async function init() {
   const year = $("#year");
-  if (year) year.textContent = new Date().getFullYear();
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
 
   bindEvents();
   setContactLinks();
@@ -780,24 +1083,53 @@ async function init() {
 
   state.products =
     data && Array.isArray(data.catalog)
-      ? data.catalog.filter(
-          (product) =>
+      ? data.catalog
+          .filter(product =>
             product &&
             product.id &&
             product.name
-        )
+          )
+          .map(product => ({
+            ...product,
+            image: normalizeImageUrl(product.image || "")
+          }))
       : [];
+
   state.driveImages =
-    data && data.products
+    data &&
+    data.products &&
+    typeof data.products === "object"
       ? data.products
       : {};
 
   updateSavedCartPrices();
+  renderCategoryFilters();
   renderProducts();
   renderCart();
   setupSlider();
+
+  const status = $("#catalog-status, [data-catalog-status]");
+
+  if (status) {
+    status.textContent = state.products.length
+      ? ""
+      : "Products could not be loaded. Please refresh the page.";
+
+    status.hidden = state.products.length > 0;
+  }
+
+  if (!state.products.length) {
+    console.error(
+      "REBEL VELVET: no products loaded. Check the API URL and Google Apps Script deployment."
+    );
+  }
 }
 
-init();
+/* ---------- Start ---------- */
 
-
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+```
