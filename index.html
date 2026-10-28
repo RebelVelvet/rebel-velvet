@@ -44,6 +44,11 @@
         .hero-image-container { max-width: 100%; margin: 0 auto; text-align: center; }
         .hero-image-container img { width: 100%; height: auto; display: block; object-fit: cover; }
 
+        /* Promo Banner inspired by reference images */
+        .promo-banner { background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); color: var(--white); padding: 50px 30px; text-align: center; margin: 50px 0; }
+        .promo-banner h2 { font-family: 'Cinzel', serif; font-size: 32px; letter-spacing: 2px; margin-bottom: 10px; }
+        .promo-banner p { color: var(--soft-rose); font-size: 15px; margin-bottom: 20px; opacity: 0.9; }
+
         /* Features Ribbon */
         .features-bar { background: var(--burgundy); color: var(--white); padding: 35px 0; }
         .features-container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; }
@@ -73,13 +78,19 @@
         .filter-btn.active, .filter-btn:hover { background: var(--burgundy); color: var(--white); border-color: var(--burgundy); }
 
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 30px; }
-        .product-card { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.03); transition: 0.3s; text-align: center; border: 1px solid rgba(0,0,0,0.03); }
+        .product-card { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.03); transition: 0.3s; text-align: center; border: 1px solid rgba(0,0,0,0.03); position: relative; }
         .product-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
         .product-thumb { height: 300px; width: 100%; object-fit: cover; background: var(--soft-rose); }
         .product-info { padding: 22px; }
         .product-category { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; font-weight: 600; }
         .product-name { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 10px; height: 42px; display: flex; align-items: center; justify-content: center; }
-        .product-price { font-size: 17px; color: var(--burgundy); font-weight: 700; margin-bottom: 18px; }
+        
+        /* Pricing styles with Sale support */
+        .product-price-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 18px; }
+        .product-price { font-size: 17px; color: var(--burgundy); font-weight: 700; }
+        .product-old-price { font-size: 14px; color: var(--text-muted); text-decoration: line-through; }
+        .sale-badge { position: absolute; top: 12px; left: 12px; background: #d9534f; color: white; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+
         .add-to-cart-btn { width: 100%; background: var(--soft-rose); color: var(--burgundy); border: none; padding: 12px; border-radius: 25px; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
         .add-to-cart-btn:hover { background: var(--burgundy); color: var(--white); }
 
@@ -150,7 +161,7 @@
         </div>
     </header>
 
-    <!-- Hero Banner Image (Vanity Cosmetics Homepage) -->
+    <!-- Hero Banner Image -->
     <section class="hero-banner">
         <div class="hero-image-container">
             <img src="Rebel Velvet Cosmetics Vanity Homepage.png" alt="Rebel Velvet Cosmetics Vanity Homepage">
@@ -183,6 +194,13 @@
         </div>
     </section>
 
+    <!-- Promo Banner inspired by reference design -->
+    <div class="promo-banner">
+        <h2>Limited Time Offer — Special Discounts On Bestsellers</h2>
+        <p>Glow more, spend less. Treat your skin and senses today!</p>
+        <a href="#shop" style="background: var(--gold); color: var(--white); padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;">Shop The Sale</a>
+    </div>
+
     <!-- Moving Product Gallery Carousel -->
     <section class="carousel-section">
         <div class="carousel-header">
@@ -205,6 +223,7 @@
             <button class="filter-btn" onclick="filterProducts('Body Splash', this)">Body Splash</button>
             <button class="filter-btn" onclick="filterProducts('Lip Gloss', this)">Lip Gloss</button>
             <button class="filter-btn" onclick="filterProducts('Car Air Freshener', this)">Car Air Freshener</button>
+            <button class="filter-btn" onclick="filterProducts('Perfume Sample', this)">Perfume Sample</button>
         </div>
 
         <div class="products-grid" id="products-container">
@@ -319,17 +338,26 @@
                 return;
             }
 
-            container.innerHTML = products.map(p => `
-                <div class="product-card">
-                    <img src="${p.image}" class="product-thumb" alt="${p.name}">
-                    <div class="product-info">
-                        <div class="product-category">${p.category}</div>
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-price">${p.price} ${CONFIG.currency}</div>
-                        <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left: 5px;"></i></button>
+            container.innerHTML = products.map(p => {
+                const hasSale = p.salePrice !== null && p.salePrice < p.price;
+                const effectivePrice = hasSale ? p.salePrice : p.price;
+                
+                return `
+                    <div class="product-card">
+                        ${hasSale ? `<span class="sale-badge">Sale</span>` : ''}
+                        <img src="${p.image}" class="product-thumb" alt="${p.name}">
+                        <div class="product-info">
+                            <div class="product-category">${p.category}</div>
+                            <div class="product-name">${p.name}</div>
+                            <div class="product-price-wrap">
+                                <span class="product-price">${effectivePrice} ${CONFIG.currency}</span>
+                                ${hasSale ? `<span class="product-old-price">${p.price} ${CONFIG.currency}</span>` : ''}
+                            </div>
+                            <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left: 5px;"></i></button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function filterProducts(category, btn) {
@@ -372,11 +400,13 @@
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
 
+            const finalPrice = (product.salePrice !== null && product.salePrice < product.price) ? product.salePrice : product.price;
             const existing = cart.find(item => item.id === productId);
+            
             if (existing) {
                 existing.qty++;
             } else {
-                cart.push({ ...product, qty: 1 });
+                cart.push({ ...product, price: finalPrice, qty: 1 });
             }
             updateCart();
             toggleCart();
