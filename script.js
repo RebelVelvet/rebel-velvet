@@ -10,12 +10,10 @@ const CONFIG = {
   currency: "EGP",
   whatsapp: "201092542461",
   instagram: "https://www.instagram.com/",
-  catalogApi:
-    "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
+  catalogApi: "https://script.google.com/macros/s/AKfycbzWgJUpdKAt0rLBIq69-e0ZqQmQsWG3b0z6OYbFnEd8UJQa5SNg0TfLvUZdqFazvleo/exec",
   storageKey: "rebelVelvetCart",
   slideInterval: 4000,
-  placeholderImage:
-    "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
+  placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
 };
 
 const state = {
@@ -399,9 +397,7 @@ function saveCart() {
       CONFIG.storageKey,
       JSON.stringify(state.cart)
     );
-  } catch {
-    // Cart works locally
-  }
+  } catch {}
 }
 
 function updateCart() {
