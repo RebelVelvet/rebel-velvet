@@ -33,91 +33,51 @@
         <div id="products">جاري تحميل المنتجات...</div>
     </div>
 
-    <!-- كود الجافاسكريبت مصحح وداخل الوسوم تماماً -->
     <script>
-        "use strict";
-
         const CONFIG = {
-            brand: "Rebel Velvet",
             currency: "EGP",
-            whatsapp: "201092542461",
-            instagram: "https://www.instagram.com/",
             catalogApi: "https://script.google.com/macros/s/AKfycbyCFf3T_OP5KcXjgGXpmK9jqGLrP_lDrjsiXkaNXnMF67p_nctuy3qjisghfEUHmGSh/exec",
-            storageKey: "rebelVelvetCart",
-            placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet",
+            placeholderImage: "https://placehold.co/800x1000/f1dfd8/6d1f2b?text=Rebel+Velvet"
         };
 
-        const state = {
-            products: [],
-            cart: [],
-            filter: "all",
-        };
+        let productsList = [];
 
-        const priceFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-
-        function formatPrice(amount) {
-            return `${CONFIG.currency} ${priceFormat.format(Number(amount) || 0)}`;
-        }
-
-        function escapeHtml(value) {
-            return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-                "&": "&", "<": "<", ">": ">", '"': """, "'": "'"
-            }[char]));
-        }
-
-        function fetchCatalog() {
-            return new Promise((resolve) => {
-                const callbackName = `rvCb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-                const script = document.createElement("script");
-                let finished = false;
-
-                window[callbackName] = function(data) {
-                    if (finished) return;
-                    finished = true;
-                    delete window[callbackName];
-                    script.remove();
-                    resolve(data && data.success ? data : null);
-                };
-
-                script.onerror = () => {
-                    if (finished) return;
-                    finished = true;
-                    delete window[callbackName];
-                    script.remove();
-                    resolve(null);
-                };
-
-                script.src = `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
-                document.body.appendChild(script);
-            });
+        async function fetchCatalog() {
+            const grid = document.getElementById("products");
+            try {
+                const response = await fetch(CONFIG.catalogApi);
+                const data = await response.json();
+                
+                if (data && data.success && data.catalog) {
+                    productsList = data.catalog;
+                    renderProducts();
+                } else {
+                    grid.innerHTML = '<p>لا توجد منتجات متاحة في الجدول حالياً.</p>';
+                }
+            } catch (error) {
+                console.error("Error fetching catalog:", error);
+                grid.innerHTML = '<p>فشل في تحميل البيانات. تحقق من الرابط أو الصلاحيات.</p>';
+            }
         }
 
         function renderProducts() {
             const grid = document.getElementById("products");
-            if (!grid) return;
-
-            if (!state.products.length) {
-                grid.innerHTML = '<p>لا توجد منتجات متاحة حالياً.</p>';
+            if (!productsList.length) {
+                grid.innerHTML = '<p>لا توجد منتجات مطابقة.</p>';
                 return;
             }
 
-            grid.innerHTML = state.products.map(product => `
+            grid.innerHTML = productsList.map(product => `
                 <article class="product-card">
-                    <img src="${escapeHtml(product.image || CONFIG.placeholderImage)}" alt="${escapeHtml(product.name)}" />
-                    <h3 class="product-name">${escapeHtml(product.name)}</h3>
-                    <p class="product-price">${formatPrice(product.price)}</p>
-                    <button class="btn" onclick="alert('تمت الإضافة إلى السلة')">Add to bag</button>
+                    <img src="${product.image || CONFIG.placeholderImage}" alt="${product.name}" />
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-price">${CONFIG.currency} ${product.price}</p>
+                    <button class="btn" onclick="alert('تمت الإضافة إلى السلة: ${product.name}')">Add to bag</button>
                 </article>
             `).join("");
         }
 
-        async function init() {
-            const data = await fetchCatalog();
-            state.products = data && Array.isArray(data.catalog) ? data.catalog : [];
-            renderProducts();
-        }
-
-        window.onload = init;
+        window.onload = fetchCatalog;
     </script>
 </body>
 </html>
