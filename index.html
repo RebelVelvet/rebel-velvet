@@ -39,14 +39,10 @@
         .nav-icons a:hover { color: var(--gold); }
         .cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: var(--white); font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* Exact Hero Banner Image matching your uploaded design */
+        /* Hero Banner Image */
         .hero-banner { width: 100%; background: #FAF6F0; }
         .hero-image-container { max-width: 100%; margin: 0 auto; text-align: center; }
         .hero-image-container img { width: 100%; height: auto; display: block; object-fit: cover; }
-
-        /* 4 Rotating Tips Ticker on Homepage */
-        .tips-ticker { background: var(--burgundy); color: var(--white); padding: 18px 20px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; letter-spacing: 0.5px; min-height: 60px; display: flex; align-items: center; justify-content: center; font-weight: 500; }
-        .tips-ticker span { color: var(--gold); margin-right: 10px; font-weight: 700; font-family: 'Cinzel', serif; }
 
         /* Carousel Section */
         .carousel-section { padding: 50px 0; background: var(--white); border-bottom: 1px solid var(--soft-rose); }
@@ -85,14 +81,6 @@
         .about-heading { font-family: 'Cinzel', serif; font-size: 38px; color: var(--burgundy); margin-bottom: 25px; }
         .about-text { color: var(--text-muted); font-size: 16px; line-height: 1.8; margin-bottom: 20px; font-family: 'Plus Jakarta Sans', sans-serif; }
         .about-highlight { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 20px; margin-top: 30px; font-weight: 600; letter-spacing: 1px; }
-
-        /* Tips & Tricks Full Section */
-        .tips-section { padding: 80px 30px; max-width: 1300px; margin: 0 auto; }
-        .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
-        .tip-card { background: var(--white); border-radius: 16px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); border: 1px solid var(--soft-rose); text-align: left; }
-        .tip-card i { font-size: 28px; color: var(--gold); margin-bottom: 15px; }
-        .tip-card h3 { font-family: 'Cinzel', serif; font-size: 18px; color: var(--burgundy); margin-bottom: 12px; }
-        .tip-card p { color: var(--text-muted); font-size: 14px; line-height: 1.7; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         /* Contact Section */
         .contact-section { background: var(--soft-rose); padding: 80px 30px; text-align: center; }
@@ -138,7 +126,6 @@
             <ul class="nav-links">
                 <li><a href="#shop">Collection</a></li>
                 <li><a href="#about">About Us</a></li>
-                <li><a href="#tips">Tips & Tricks</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="nav-icons">
@@ -152,18 +139,14 @@
         </div>
     </header>
 
-    <!-- Exact Hero Banner Image matching your reference -->
+    <!-- Hero Banner Image -->
     <section class="hero-banner">
         <div class="hero-image-container">
             <img src="Rebel Velvet Fragrance Homepage.png" alt="Rebel Velvet Fragrance Homepage">
         </div>
-        <!-- Ticker showing rotating tips from Sheet -->
-        <div class="tips-ticker" id="tips-ticker">
-            <span>✨ Beauty Tip:</span> Loading daily ritual tips...
-        </div>
     </section>
 
-    <!-- Moving Product Gallery Carousel (Placed right below the hero banner) -->
+    <!-- Moving Product Gallery Carousel -->
     <section class="carousel-section">
         <div class="carousel-header">
             <h3>Explore All Our Products</h3>
@@ -198,3 +181,217 @@
             <p class="about-tagline">Beauty Beyond Rules</p>
             <h2 class="about-heading">REBEL VELVET</h2>
             <p class="about-text">
+                At REBEL VELVET, we believe beauty begins with the way you care for yourself. We bring together skincare, self-care, and beauty essentials designed to make every routine feel like a luxurious ritual.
+            </p>
+            <p class="about-text">
+                Our philosophy is rooted in the belief that caring for your skin is more than a daily habit — it is an expression of self-love, confidence, and individuality. Inspired by the softness of velvet and the spirit of rebellion, we create experiences that celebrate your natural beauty while encouraging you to embrace your own rules.
+            </p>
+            <p class="about-text">
+                From thoughtful skincare essentials to indulgent body care, makeup, and captivating fragrances, every detail is designed to help you feel confident, radiant, and unapologetically yourself.
+            </p>
+            <p class="about-highlight">
+                REBEL VELVET — Velvet touch. Rebel soul.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <p class="contact-subtitle">We'd Love to Hear From You</p>
+            <h2 class="contact-heading">CONTACT US</h2>
+            <p class="contact-desc">
+                Have a question about our products, need help with an order, or simply want to connect with us? We're here to help. Stay connected with REBEL VELVET for beauty inspiration, skincare tips, product updates, and exclusive offers.
+            </p>
+            <div class="social-icons-wrap">
+                <a href="https://www.facebook.com/share/1EbuXHbqzp/" target="_blank" class="social-icon-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/rebelvelvet01/" target="_blank" class="social-icon-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/201039788599" target="_blank" class="social-icon-btn" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="tel:+201039788599" class="social-icon-btn" title="Call Us"><i class="fas fa-phone"></i></a>
+            </div>
+            <p style="font-family: 'Cinzel', serif; font-size: 18px; color: var(--burgundy); font-weight: 600;">REBEL VELVET — Beauty Beyond Rules.</p>
+        </div>
+    </section>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Shopping Bag</h3>
+            <i class="fas fa-times" style="cursor: pointer; font-size: 18px;" onclick="toggleCart()"></i>
+        </div>
+        <div class="cart-body" id="cart-items">
+            <p style="text-align: center; color: var(--text-muted); margin-top: 40px;">Your bag is currently empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 18px; font-weight: 700;">
+                <span>Total:</span>
+                <span id="cart-total">0 EGP</span>
+            </div>
+            <button class="whatsapp-checkout-btn" onclick="checkoutWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Checkout via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/201039788599" class="floating-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+    <footer>
+        <div class="logo" style="color: var(--white);">
+            REBEL VELVET
+            <span style="color: var(--gold);">BEAUTY BEYOND RULES</span>
+        </div>
+        <p>© 2026 REBEL VELVET. All Rights Reserved. Velvet touch. Rebel soul.</p>
+    </footer>
+
+    <!-- JavaScript Integration -->
+    <script>
+        const CONFIG = {
+            currency: "EGP",
+            whatsapp: "201039788599",
+            catalogApi: "https://script.google.com/macros/s/AKfycbyCFf3T_OP5KcXjgGXpmK9jqGLrP_lDrjsiXkaNXnMF67p_nctuy3qjisghfEUHmGSh/exec"
+        };
+
+        let allProducts = [];
+        let cart = [];
+
+        function loadData() {
+            const callbackName = 'rvCb_' + Date.now();
+            const script = document.createElement('script');
+
+            window[callbackName] = function(data) {
+                delete window[callbackName];
+                script.remove();
+                if (data && data.success) {
+                    allProducts = data.catalog || [];
+                    renderProducts(allProducts);
+                    setupCarousel(allProducts);
+                } else {
+                    document.getElementById('products-container').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Unable to load data.</p>';
+                }
+            };
+
+            script.src = CONFIG.catalogApi + '?callback=' + callbackName + '&t=' + Date.now();
+            document.body.appendChild(script);
+        }
+
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            if (!products.length) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No products available.</p>';
+                return;
+            }
+
+            container.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <img src="${p.image}" class="product-thumb" alt="${p.name}">
+                    <div class="product-info">
+                        <div class="product-category">${p.category}</div>
+                        <div class="product-name">${p.name}</div>
+                        <div class="product-price">${p.price} ${CONFIG.currency}</div>
+                        <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left: 5px;"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (category === 'all') {
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.category.toLowerCase() === category.toLowerCase());
+                renderProducts(filtered);
+            }
+        }
+
+        function setupCarousel(products) {
+            const track = document.getElementById('carousel-track');
+            if (!products.length || !track) return;
+
+            track.innerHTML = products.map(p => `
+                <div class="carousel-item">
+                    <img src="${p.image}" alt="${p.name}">
+                </div>
+            `).join('');
+
+            let position = 0;
+            setInterval(() => {
+                position += 260;
+                if (position >= track.scrollWidth - track.clientWidth) {
+                    position = 0;
+                }
+                track.style.transform = `translateX(-${position}px)`;
+            }, 3000);
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-drawer').classList.toggle('open');
+        }
+
+        function addToCart(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCart();
+            toggleCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+            const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            cartCount.textContent = totalQty;
+            cartTotal.textContent = `${totalPrice} ${CONFIG.currency}`;
+
+            if (!cart.length) {
+                cartItems.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 40px;">Your bag is currently empty.</p>';
+                return;
+            }
+
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}">
+                    <div class="cart-item-details">
+                        <h4 style="font-size: 14px; color: var(--text-main);">${item.name}</h4>
+                        <p style="font-size: 13px; color: var(--burgundy); font-weight: 600;">${item.price} x ${item.qty} ${CONFIG.currency}</p>
+                    </div>
+                    <i class="fas fa-trash" style="color: #d9534f; cursor: pointer; font-size: 14px;" onclick="removeFromCart('${item.id}')"></i>
+                </div>
+            `).join('');
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            updateCart();
+        }
+
+        function checkoutWhatsApp() {
+            if (!cart.length) return alert('Your shopping bag is empty!');
+            
+            let msg = `Hello REBEL VELVET, I would like to place an order:\n\n`;
+            cart.forEach(i => {
+                msg += `• ${i.name} (Qty: ${i.qty}) = ${i.price * i.qty} ${CONFIG.currency}\n`;
+            });
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            msg += `\nTotal: ${total} ${CONFIG.currency}`;
+
+            window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>
