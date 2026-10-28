@@ -25,15 +25,13 @@
         html { scroll-behavior: smooth; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--cream); color: var(--text-main); line-height: 1.6; }
 
-        /* Announcement Bar */
         .top-bar { background: var(--burgundy); color: var(--white); text-align: center; padding: 10px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; }
 
-        /* Navigation Header */
         header { background: var(--cream); border-bottom: 1px solid rgba(74, 14, 23, 0.08); position: sticky; top: 0; z-index: 1000; }
         .nav-container { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 18px 30px; }
-        .logo { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 700; color: var(--burgundy); text-decoration: none; letter-spacing: 3px; text-align: center; }
-        .logo span { display: block; font-size: 9px; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 5px; color: var(--gold); margin-top: -2px; }
-        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .logo { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--burgundy); text-decoration: none; letter-spacing: 2px; text-align: center; }
+        .logo span { display: block; font-size: 9px; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 4px; color: var(--gold); margin-top: -2px; }
+        .nav-links { display: flex; gap: 25px; list-style: none; }
         .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .nav-links a:hover { color: var(--gold); }
         .nav-icons { display: flex; gap: 20px; align-items: center; }
@@ -41,34 +39,23 @@
         .nav-icons a:hover { color: var(--gold); }
         .cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: var(--white); font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* Hero Section */
-        .hero { min-height: 85vh; background: radial-gradient(circle, rgba(250,246,240,1) 0%, rgba(243,235,230,1) 100%); display: flex; align-items: center; overflow: hidden; }
-        .hero-container { max-width: 1300px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; padding: 40px 30px; align-items: center; gap: 40px; }
-        .hero-subtitle { font-family: 'Cinzel', serif; color: var(--gold); font-size: 14px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
-        .hero-title { font-family: 'Cinzel', serif; font-size: 52px; color: var(--burgundy); line-height: 1.15; margin-bottom: 20px; font-weight: 600; }
-        .hero-desc { color: var(--text-muted); font-size: 16px; margin-bottom: 30px; max-width: 500px; }
-        .btn-primary { background: var(--burgundy); color: var(--white); border: none; padding: 14px 35px; font-size: 14px; border-radius: 30px; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; box-shadow: 0 4px 20px rgba(74,14,23,0.15); }
-        .btn-primary:hover { background: var(--burgundy-light); transform: translateY(-2px); }
-        .hero-image-wrap { text-align: center; }
-        .hero-image-wrap img { max-width: 100%; height: auto; border-radius: 20px; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.08)); }
+        /* Exact Hero Banner Image matching your uploaded design */
+        .hero-banner { width: 100%; background: #FAF6F0; }
+        .hero-image-container { max-width: 100%; margin: 0 auto; text-align: center; }
+        .hero-image-container img { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        /* 4 Rotating Tips Ticker on Homepage */
+        .tips-ticker { background: var(--burgundy); color: var(--white); padding: 18px 20px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; letter-spacing: 0.5px; min-height: 60px; display: flex; align-items: center; justify-content: center; font-weight: 500; }
+        .tips-ticker span { color: var(--gold); margin-right: 10px; font-weight: 700; font-family: 'Cinzel', serif; }
 
         /* Carousel Section */
-        .carousel-section { padding: 60px 0; background: var(--white); border-top: 1px solid var(--soft-rose); border-bottom: 1px solid var(--soft-rose); }
-        .carousel-header { text-align: center; margin-bottom: 30px; }
+        .carousel-section { padding: 50px 0; background: var(--white); border-bottom: 1px solid var(--soft-rose); }
+        .carousel-header { text-align: center; margin-bottom: 25px; }
         .carousel-header h3 { font-family: 'Cinzel', serif; font-size: 24px; color: var(--burgundy); }
         .carousel-container { max-width: 1300px; margin: 0 auto; overflow: hidden; position: relative; padding: 0 20px; }
         .carousel-track { display: flex; gap: 20px; transition: transform 0.5s ease-in-out; }
         .carousel-item { min-width: 240px; height: 320px; border-radius: 12px; overflow: hidden; background: var(--soft-rose); position: relative; flex-shrink: 0; }
         .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Features Bar */
-        .features-bar { background: var(--burgundy); color: var(--white); padding: 35px 0; }
-        .features-container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
-        .feature-item { padding: 0 15px; border-right: 1px solid rgba(255,255,255,0.1); }
-        .feature-item:last-child { border-right: none; }
-        .feature-item i { font-size: 24px; color: var(--gold); margin-bottom: 12px; }
-        .feature-item h4 { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 1px; margin-bottom: 5px; }
-        .feature-item p { font-size: 12px; color: var(--soft-rose); opacity: 0.8; }
 
         /* Shop Section */
         .shop-section { padding: 80px 30px; max-width: 1300px; margin: 0 auto; }
@@ -96,23 +83,23 @@
         .about-container { max-width: 900px; margin: 0 auto; text-align: center; }
         .about-tagline { font-family: 'Cinzel', serif; color: var(--gold); font-size: 15px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 15px; }
         .about-heading { font-family: 'Cinzel', serif; font-size: 38px; color: var(--burgundy); margin-bottom: 25px; }
-        .about-text { color: var(--text-muted); font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+        .about-text { color: var(--text-muted); font-size: 16px; line-height: 1.8; margin-bottom: 20px; font-family: 'Plus Jakarta Sans', sans-serif; }
         .about-highlight { font-family: 'Cinzel', serif; color: var(--burgundy); font-size: 20px; margin-top: 30px; font-weight: 600; letter-spacing: 1px; }
 
-        /* Beauty Rituals & Tips Section */
+        /* Tips & Tricks Full Section */
         .tips-section { padding: 80px 30px; max-width: 1300px; margin: 0 auto; }
         .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
         .tip-card { background: var(--white); border-radius: 16px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.03); border: 1px solid var(--soft-rose); text-align: left; }
         .tip-card i { font-size: 28px; color: var(--gold); margin-bottom: 15px; }
-        .tip-card h3 { font-family: 'Cinzel', serif; font-size: 20px; color: var(--burgundy); margin-bottom: 12px; }
-        .tip-card p { color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+        .tip-card h3 { font-family: 'Cinzel', serif; font-size: 18px; color: var(--burgundy); margin-bottom: 12px; }
+        .tip-card p { color: var(--text-muted); font-size: 14px; line-height: 1.7; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         /* Contact Section */
         .contact-section { background: var(--soft-rose); padding: 80px 30px; text-align: center; }
         .contact-container { max-width: 800px; margin: 0 auto; }
         .contact-heading { font-family: 'Cinzel', serif; font-size: 36px; color: var(--burgundy); margin-bottom: 10px; }
         .contact-subtitle { color: var(--gold); font-family: 'Cinzel', serif; letter-spacing: 3px; margin-bottom: 20px; }
-        .contact-desc { color: var(--text-muted); margin-bottom: 35px; }
+        .contact-desc { color: var(--text-muted); margin-bottom: 35px; line-height: 1.8; font-family: 'Plus Jakarta Sans', sans-serif; }
         .social-icons-wrap { display: flex; justify-content: center; gap: 25px; margin-bottom: 30px; }
         .social-icon-btn { width: 55px; height: 55px; border-radius: 50%; background: var(--burgundy); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 22px; text-decoration: none; transition: 0.3s; box-shadow: 0 5px 15px rgba(74,14,23,0.15); }
         .social-icon-btn:hover { background: var(--gold); transform: translateY(-3px); }
@@ -128,29 +115,20 @@
         .cart-footer { padding: 25px; background: var(--cream); border-top: 1px solid rgba(0,0,0,0.05); }
         .whatsapp-checkout-btn { width: 100%; background: #25D366; color: white; border: none; padding: 14px; border-radius: 30px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Floating WhatsApp Button */
         .floating-wa { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); z-index: 1000; text-decoration: none; }
 
-        /* Footer */
         footer { background: var(--burgundy); color: var(--white); text-align: center; padding: 40px 20px; border-top: 1px solid var(--gold); }
         footer p { font-size: 13px; color: var(--soft-rose); opacity: 0.8; margin-top: 10px; }
 
         @media (max-width: 900px) {
-            .hero-container { grid-template-columns: 1fr; text-align: center; }
-            .hero-desc { margin: 0 auto 30px; }
-            .hero-title { font-size: 38px; }
-            .features-container { grid-template-columns: 1fr; gap: 20px; }
-            .feature-item { border-right: none; }
             .cart-drawer { width: 100%; right: -100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Announcement Bar -->
     <div class="top-bar">Complimentary shipping on orders over 500 EGP ✦ Velvet touch. Rebel soul.</div>
 
-    <!-- Header Navigation -->
     <header>
         <div class="nav-container">
             <a href="#" class="logo">
@@ -160,7 +138,7 @@
             <ul class="nav-links">
                 <li><a href="#shop">Collection</a></li>
                 <li><a href="#about">About Us</a></li>
-                <li><a href="#tips">Rituals & Tips</a></li>
+                <li><a href="#tips">Tips & Tricks</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="nav-icons">
@@ -174,51 +152,24 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-text">
-                <p class="hero-subtitle">Velvet touch. Rebel soul.</p>
-                <h1 class="hero-title">Beauty Beyond Rules</h1>
-                <p class="hero-desc">Discover high-performance skincare, indulgent body care, and captivating fragrances designed to celebrate your natural radiant glow.</p>
-                <a href="#shop" class="btn-primary">Explore Collection <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
-            </div>
-            <div class="hero-image-wrap">
-                <img src="https://placehold.co/800x1000/f3ebe6/4a0e17?text=REBEL+VELVET+FRAGRANCE" alt="REBEL VELVET Fragrance Homepage">
-            </div>
+    <!-- Exact Hero Banner Image matching your reference -->
+    <section class="hero-banner">
+        <div class="hero-image-container">
+            <img src="Rebel Velvet Fragrance Homepage.png" alt="Rebel Velvet Fragrance Homepage">
+        </div>
+        <!-- Ticker showing rotating tips from Sheet -->
+        <div class="tips-ticker" id="tips-ticker">
+            <span>✨ Beauty Tip:</span> Loading daily ritual tips...
         </div>
     </section>
 
-    <!-- Moving Product Gallery Carousel -->
+    <!-- Moving Product Gallery Carousel (Placed right below the hero banner) -->
     <section class="carousel-section">
         <div class="carousel-header">
-            <h3>Explore Our Products</h3>
+            <h3>Explore All Our Products</h3>
         </div>
         <div class="carousel-container">
-            <div class="carousel-track" id="carousel-track">
-                <!-- Dynamically populated from Google Drive/Sheet -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Ribbon -->
-    <section class="features-bar">
-        <div class="features-container">
-            <div class="feature-item">
-                <i class="fas fa-pump-soap"></i>
-                <h4>SKINCARE & BODY</h4>
-                <p>Healthy skin. Real you.</p>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-magic"></i>
-                <h4>MAKEUP & GLOSS</h4>
-                <p>Be bold. Be you.</p>
-            </div>
-            <div class="feature-item">
-                <i class="fas fa-spray-can"></i>
-                <h4>FRAGRANCE</h4>
-                <p>More than a scent.</p>
-            </div>
+            <div class="carousel-track" id="carousel-track"></div>
         </div>
     </section>
 
@@ -241,249 +192,9 @@
         </div>
     </section>
 
-    <!-- About REBEL VELVET Section -->
+    <!-- About Section -->
     <section class="about-section" id="about">
         <div class="about-container">
             <p class="about-tagline">Beauty Beyond Rules</p>
             <h2 class="about-heading">REBEL VELVET</h2>
             <p class="about-text">
-                At REBEL VELVET, we believe beauty begins with the way you care for yourself. We bring together skincare, self-care, and beauty essentials designed to make every routine feel like a luxurious ritual.
-            </p>
-            <p class="about-text">
-                Our philosophy is rooted in the belief that caring for your skin is more than a daily habit — it is an expression of self-love, confidence, and individuality. Inspired by the softness of velvet and the spirit of rebellion, we create experiences that celebrate your natural beauty while encouraging you to embrace your own rules.
-            </p>
-            <p class="about-text">
-                From thoughtful skincare essentials to indulgent body care, makeup, and captivating fragrances, every detail is designed to help you feel confident, radiant, and unapologetically yourself.
-            </p>
-            <p class="about-highlight">
-                REBEL VELVET — Velvet touch. Rebel soul.
-            </p>
-        </div>
-    </section>
-
-    <!-- Beauty Rituals & Tips Section -->
-    <section class="tips-section" id="tips">
-        <div class="section-title">
-            <p>Self-Care Guide</p>
-            <h2>Beauty Rituals & Tips</h2>
-        </div>
-        <div class="tips-grid">
-            <div class="tip-card">
-                <i class="fas fa-sparkles"></i>
-                <h3>Layering Your Fragrance</h3>
-                <p>Apply your favorite body splash right after a warm shower on damp skin. Layering it with matching body oils ensures a captivating scent that lasts all day.</p>
-            </div>
-            <div class="tip-card">
-                <i class="fas fa-droplet"></i>
-                <h3>Radiant Skin Prep</h3>
-                <p>Hydrated skin is the secret to a flawless makeup and lip glow routine. Never skip daily hydration to maintain your natural skin barrier.</p>
-            </div>
-            <div class="tip-card">
-                <i class="fas fa-heart"></i>
-                <h3>Embrace Your Routine</h3>
-                <p>Self-care isn't a chore — it's an expression of self-love and confidence. Take a few minutes every morning to indulge in your personal beauty ritual.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Us Section -->
-    <section class="contact-section" id="contact">
-        <div class="contact-container">
-            <p class="contact-subtitle">We'd Love to Hear From You</p>
-            <h2 class="contact-heading">CONTACT US</h2>
-            <p class="contact-desc">
-                Have a question about our products, need help with an order, or simply want to connect with us? We're here to help. Follow us for beauty inspiration, skincare tips, product updates, and exclusive offers.
-            </p>
-            <div class="social-icons-wrap">
-                <a href="https://www.facebook.com/share/1EbuXHbqzp/" target="_blank" class="social-icon-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/rebelvelvet01/" target="_blank" class="social-icon-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/201039788599" target="_blank" class="social-icon-btn" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="tel:+201039788599" class="social-icon-btn" title="Call Us"><i class="fas fa-phone"></i></a>
-            </div>
-            <p style="font-family: 'Cinzel', serif; font-size: 18px; color: var(--burgundy); font-weight: 600;">REBEL VELVET — Beauty Beyond Rules.</p>
-        </div>
-    </section>
-
-    <!-- Sliding Cart Drawer -->
-    <div class="cart-drawer" id="cart-drawer">
-        <div class="cart-header">
-            <h3>Shopping Bag</h3>
-            <i class="fas fa-times" style="cursor: pointer; font-size: 18px;" onclick="toggleCart()"></i>
-        </div>
-        <div class="cart-body" id="cart-items">
-            <p style="text-align: center; color: var(--text-muted); margin-top: 40px;">Your bag is currently empty.</p>
-        </div>
-        <div class="cart-footer">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 18px; font-weight: 700;">
-                <span>Total:</span>
-                <span id="cart-total">0 EGP</span>
-            </div>
-            <button class="whatsapp-checkout-btn" onclick="checkoutWhatsApp()">
-                <i class="fab fa-whatsapp"></i> Checkout via WhatsApp
-            </button>
-        </div>
-    </div>
-
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/201039788599" class="floating-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
-
-    <!-- Footer -->
-    <footer>
-        <div class="logo" style="color: var(--white);">
-            REBEL VELVET
-            <span style="color: var(--gold);">BEAUTY BEYOND RULES</span>
-        </div>
-        <p>© 2026 REBEL VELVET. All Rights Reserved. Velvet touch. Rebel soul.</p>
-    </footer>
-
-    <!-- JavaScript Integration Script -->
-    <script>
-        const CONFIG = {
-            currency: "EGP",
-            whatsapp: "201039788599",
-            catalogApi: "https://script.google.com/macros/s/AKfycbyCFf3T_OP5KcXjgGXpmK9jqGLrP_lDrjsiXkaNXnMF67p_nctuy3qjisghfEUHmGSh/exec"
-        };
-
-        let allProducts = [];
-        let cart = [];
-
-        function loadProducts() {
-            const callbackName = 'rvCb_' + Date.now();
-            const script = document.createElement('script');
-
-            window[callbackName] = function(data) {
-                delete window[callbackName];
-                script.remove();
-                if (data && data.success && data.catalog) {
-                    allProducts = data.catalog;
-                    renderProducts(allProducts);
-                    setupCarousel(data.catalog);
-                } else {
-                    document.getElementById('products-container').innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Unable to load catalog. Please check API integration.</p>';
-                }
-            };
-
-            script.src = CONFIG.catalogApi + '?callback=' + callbackName + '&t=' + Date.now();
-            document.body.appendChild(script);
-        }
-
-        function renderProducts(products) {
-            const container = document.getElementById('products-container');
-            if (!products.length) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No products available in this category.</p>';
-                return;
-            }
-
-            container.innerHTML = products.map(p => `
-                <div class="product-card">
-                    <img src="${p.image}" class="product-thumb" alt="${p.name}">
-                    <div class="product-info">
-                        <div class="product-category">${p.category}</div>
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-price">${p.price} ${CONFIG.currency}</div>
-                        <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left: 5px;"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterProducts(category, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            if (category === 'all') {
-                renderProducts(allProducts);
-            } else {
-                const filtered = allProducts.filter(p => p.category.toLowerCase() === category.toLowerCase());
-                renderProducts(filtered);
-            }
-        }
-
-        function setupCarousel(products) {
-            const track = document.getElementById('carousel-track');
-            if (!products.length || !track) return;
-
-            track.innerHTML = products.map(p => `
-                <div class="carousel-item">
-                    <img src="${p.image}" alt="${p.name}">
-                </div>
-            `).join('');
-
-            let position = 0;
-            setInterval(() => {
-                position += 260;
-                if (position >= track.scrollWidth - track.clientWidth) {
-                    position = 0;
-                }
-                track.style.transform = `translateX(-${position}px)`;
-            }, 3000);
-        }
-
-        function toggleCart() {
-            document.getElementById('cart-drawer').classList.toggle('open');
-        }
-
-        function addToCart(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
-
-            const existing = cart.find(item => item.id === productId);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
-            updateCart();
-            toggleCart();
-        }
-
-        function updateCart() {
-            const cartItems = document.getElementById('cart-items');
-            const cartCount = document.getElementById('cart-count');
-            const cartTotal = document.getElementById('cart-total');
-
-            const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
-            const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-
-            cartCount.textContent = totalQty;
-            cartTotal.textContent = `${totalPrice} ${CONFIG.currency}`;
-
-            if (!cart.length) {
-                cartItems.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 40px;">Your bag is currently empty.</p>';
-                return;
-            }
-
-            cartItems.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <img src="${item.image}">
-                    <div class="cart-item-details">
-                        <h4 style="font-size: 14px; color: var(--text-main);">${item.name}</h4>
-                        <p style="font-size: 13px; color: var(--burgundy); font-weight: 600;">${item.price} x ${item.qty} ${CONFIG.currency}</p>
-                    </div>
-                    <i class="fas fa-trash" style="color: #d9534f; cursor: pointer; font-size: 14px;" onclick="removeFromCart('${item.id}')"></i>
-                </div>
-            `).join('');
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(i => i.id !== id);
-            updateCart();
-        }
-
-        function checkoutWhatsApp() {
-            if (!cart.length) return alert('Your shopping bag is empty!');
-            
-            let msg = `Hello REBEL VELVET, I would like to place an order:\n\n`;
-            cart.forEach(i => {
-                msg += `• ${i.name} (Qty: ${i.qty}) = ${i.price * i.qty} ${CONFIG.currency}\n`;
-            });
-            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            msg += `\nTotal: ${total} ${CONFIG.currency}`;
-
-            window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        window.onload = loadProducts;
-    </script>
-</body>
-</html>
