@@ -139,6 +139,7 @@ function fetchCatalog() {
 
       finished = true;
       clearTimeout(timeoutId);
+
       delete window[callbackName];
       script.remove();
 
@@ -146,12 +147,14 @@ function fetchCatalog() {
     }
 
     window[callbackName] = finish;
+
     script.onerror = () => finish(null);
 
     timeoutId = setTimeout(() => finish(null), 12000);
 
+    // FIX: Correct API URL and JSONP callback interpolation.
     script.src =
-      `CONFIG.catalogApi?callback={callbackName}&t=${Date.now()}`;
+      `${CONFIG.catalogApi}?callback=${callbackName}&t=${Date.now()}`;
 
     document.body.appendChild(script);
   });
@@ -188,7 +191,9 @@ function setupSlider() {
 
   if (!slider.slides.length) {
     slider.el.src = CONFIG.placeholderImage;
+
     if (current) current.textContent = "01";
+
     return;
   }
 
@@ -230,6 +235,7 @@ function showSlide(index) {
   preload.src = nextImage;
 
   const current = $("#hero-slide-current");
+
   if (current) {
     current.textContent = pad(slider.index + 1);
   }
@@ -269,6 +275,7 @@ function getVisibleProducts() {
 
 function renderProducts() {
   const grid = $("#products");
+
   if (!grid) return;
 
   const products = getVisibleProducts();
@@ -280,6 +287,7 @@ function renderProducts() {
         <h3>Coming soon</h3>
         <p>New pieces are on their way.</p>
       </div>`;
+
     return;
   }
 
@@ -288,7 +296,16 @@ function renderProducts() {
       (product) => `
         <article class="product-card">
           <div class="product-media">
-            <img src="escapeHtml(product.image||CONFIG.placeholderImage)"alt="{escapeHtml(product.name)}" />
+
+            <!-- FIX: Correct product image and name interpolation. -->
+            <img
+              src="${escapeHtml(
+                product.image || CONFIG.placeholderImage
+              )}"
+              alt="${escapeHtml(product.name)}"
+              loading="lazy"
+            />
+
             ${
               getSalePrice(product) !== null
                 ? '<span class="product-sale-label">SALE</span>'
@@ -426,6 +443,7 @@ function updateCart() {
 
 function addToCart(id) {
   const product = findProduct(id);
+
   if (!product) return;
 
   const salePrice = getSalePrice(product);
@@ -455,6 +473,7 @@ function addToCart(id) {
 
 function changeQuantity(id, change) {
   const item = findCartItem(id);
+
   if (!item) return;
 
   item.quantity += change;
@@ -482,7 +501,12 @@ function renderCartItem(item) {
 
   return `
     <div class="cart-line">
-      <img src="escapeHtml(item.image)"alt="{escapeHtml(item.name)}" />
+
+      <!-- FIX: Correct cart image and name interpolation. -->
+      <img
+        src="${escapeHtml(item.image || CONFIG.placeholderImage)}"
+        alt="${escapeHtml(item.name)}"
+      />
 
       <div>
         <p class="cat">${escapeHtml(item.category)}</p>
@@ -535,7 +559,9 @@ function renderCart() {
   if (!container) return;
 
   if (count) count.textContent = getCartCount();
+
   if (total) total.textContent = formatPrice(getCartTotal());
+
   if (checkoutButton) {
     checkoutButton.disabled = getCartCount() === 0;
   }
@@ -546,6 +572,7 @@ function renderCart() {
         <span aria-hidden="true">♡</span>
         <p>Your bag is empty.</p>
       </div>`;
+
     return;
   }
 
@@ -560,20 +587,24 @@ let lastFocusedElement = null;
 
 function openCart() {
   const overlay = $("#cart-overlay");
+
   if (!overlay) return;
 
   lastFocusedElement = document.activeElement;
 
   renderCart();
+
   overlay.classList.add("is-open");
   document.body.classList.add("is-locked");
 
   const closeButton = $("#close-cart");
+
   if (closeButton) closeButton.focus();
 }
 
 function closeCart() {
   const overlay = $("#cart-overlay");
+
   if (!overlay || !overlay.classList.contains("is-open")) return;
 
   overlay.classList.remove("is-open");
@@ -628,8 +659,9 @@ function checkout() {
     "Address:",
   ].join("\n");
 
+  // FIX: Correct WhatsApp number and encoded message.
   const checkoutUrl =
-    `https://wa.me/CONFIG.whatsapp?text={encodeURIComponent(message)}`;
+    `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}`;
 
   window.open(checkoutUrl, "_blank", "noopener");
 }
@@ -660,6 +692,7 @@ const ACTIONS = {
   },
 
   "open-cart": () => openCart(),
+
   "close-cart": () => closeCart(),
 
   continue: () => {
@@ -676,6 +709,7 @@ const ACTIONS = {
 
   menu: () => {
     const header = $(".site-header");
+
     if (header) {
       setMenu(!header.classList.contains("nav-open"));
     }
@@ -685,6 +719,7 @@ const ACTIONS = {
 function bindEvents() {
   document.addEventListener("click", (event) => {
     const target = event.target;
+
     if (!(target instanceof Element)) return;
 
     const actionElement = target.closest("[data-action]");
@@ -769,7 +804,10 @@ function setContactLinks() {
 
 async function init() {
   const year = $("#year");
-  if (year) year.textContent = new Date().getFullYear();
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
 
   bindEvents();
   setContactLinks();
@@ -787,6 +825,7 @@ async function init() {
             product.name
         )
       : [];
+
   state.driveImages =
     data && data.products
       ? data.products
@@ -799,5 +838,3 @@ async function init() {
 }
 
 init();
-
-
