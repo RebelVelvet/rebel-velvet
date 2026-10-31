@@ -16,13 +16,17 @@
         .features-bar{background:var(--burgundy);color:var(--white);padding:35px 0}.features-container{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);text-align:center}.feature-item{padding:0 15px;border-right:1px solid rgba(255,255,255,.1)}.feature-item:last-child{border-right:none}.feature-item i{font-size:24px;color:var(--gold);margin-bottom:12px}.feature-item h4{font-family:'Cinzel',serif;font-size:15px;letter-spacing:1px;margin-bottom:5px}.feature-item p{font-size:12px;color:var(--soft-rose);opacity:.8}
         .promo-banner{background:linear-gradient(135deg,var(--burgundy) 0%,var(--burgundy-light) 100%);color:var(--white);padding:50px 30px;text-align:center;margin:50px 0}.promo-banner h2{font-family:'Cinzel',serif;font-size:32px;letter-spacing:2px;margin-bottom:10px}.promo-banner p{color:var(--soft-rose);font-size:15px;margin-bottom:20px;opacity:.9}
         .shop-section{padding:80px 30px;max-width:1300px;margin:0 auto}.section-title{text-align:center;margin-bottom:30px}.section-title p{color:var(--gold);font-family:'Cinzel',serif;font-size:14px;letter-spacing:4px;text-transform:uppercase}.section-title h2{font-family:'Cinzel',serif;font-size:36px;color:var(--burgundy);margin-top:5px}.filters{display:flex;justify-content:center;gap:15px;margin-bottom:45px;flex-wrap:wrap}.filter-btn{background:var(--white);border:1px solid var(--soft-rose);padding:11px 28px;border-radius:30px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-main);transition:.3s}.filter-btn.active,.filter-btn:hover{background:var(--burgundy);color:var(--white);border-color:var(--burgundy)}
-        .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:30px}.product-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.03);transition:.3s;text-align:center;border:1px solid rgba(0,0,0,.03);position:relative}.product-card:hover{transform:translateY(-6px);box-shadow:0 15px 35px rgba(0,0,0,.08)}.product-thumb{height:300px;width:100%;object-fit:cover;background:var(--soft-rose)}.product-info{padding:22px}.product-category{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:600}.product-name{font-size:16px;font-weight:600;color:var(--text-main);margin-bottom:10px;min-height:42px;display:flex;align-items:center;justify-content:center}.product-price-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}.product-price{font-size:17px;color:var(--burgundy);font-weight:700}.product-old-price{font-size:14px;color:var(--text-muted);text-decoration:line-through}.sale-badge{position:absolute;top:12px;left:12px;background:#d9534f;color:white;font-size:11px;font-weight:bold;padding:4px 10px;border-radius:20px;text-transform:uppercase}.add-to-cart-btn{width:100%;background:var(--soft-rose);color:var(--burgundy);border:none;padding:12px;border-radius:25px;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:.3s}.add-to-cart-btn:hover{background:var(--burgundy);color:var(--white)}
+        .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:30px}.product-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.03);transition:.3s;text-align:center;border:1px solid rgba(0,0,0,.03);position:relative;cursor:pointer}.product-card:hover{transform:translateY(-6px);box-shadow:0 15px 35px rgba(0,0,0,.08)}.product-thumb{height:300px;width:100%;object-fit:cover;background:var(--soft-rose)}.product-info{padding:22px}.product-category{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;font-weight:600}.product-name{font-size:16px;font-weight:600;color:var(--text-main);margin-bottom:10px;min-height:42px;display:flex;align-items:center;justify-content:center}.product-price-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px}.product-price{font-size:17px;color:var(--burgundy);font-weight:700}.product-old-price{font-size:14px;color:var(--text-muted);text-decoration:line-through}.sale-badge{position:absolute;top:12px;left:12px;background:#d9534f;color:white;font-size:11px;font-weight:bold;padding:4px 10px;border-radius:20px;text-transform:uppercase;z-index:2}.add-to-cart-btn{width:100%;background:var(--soft-rose);color:var(--burgundy);border:none;padding:12px;border-radius:25px;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:.3s}.add-to-cart-btn:hover{background:var(--burgundy);color:var(--white)}
+        
+        /* Modal Styles */
+        .product-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.3s;padding:20px}.product-modal.open{opacity:1;pointer-events:auto}.modal-content{background:var(--white);width:100%;max-width:850px;border-radius:20px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;position:relative;box-shadow:0 20px 50px rgba(0,0,0,0.2)}.modal-close{position:absolute;top:15px;right:15px;background:var(--soft-rose);color:var(--burgundy);width:35px;height:35px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;z-index:10;transition:.3s}.modal-close:hover{background:var(--burgundy);color:var(--white)}.modal-image-wrap{background:var(--soft-rose);display:flex;align-items:center;justify-content:center;height:100%;min-height:350px}.modal-image-wrap img{width:100%;height:100%;object-fit:cover}.modal-details{padding:40px 30px;display:flex;flex-direction:column;justify-content:center;text-align:left}.modal-category{font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-bottom:8px}.modal-title{font-family:'Cinzel',serif;font-size:26px;color:var(--burgundy);margin-bottom:15px}.modal-price-wrap{display:flex;align-items:center;gap:15px;margin-bottom:20px}.modal-price{font-size:20px;font-weight:700;color:var(--burgundy)}.modal-old-price{font-size:16px;color:var(--text-muted);text-decoration:line-through}.modal-desc{color:var(--text-muted);font-size:14px;line-height:1.7;margin-bottom:30px}
+
         .about-section{background:var(--white);padding:80px 30px;border-top:1px solid var(--soft-rose);border-bottom:1px solid var(--soft-rose)}.about-container{max-width:900px;margin:0 auto;text-align:center}.about-tagline{font-family:'Cinzel',serif;color:var(--gold);font-size:15px;letter-spacing:5px;text-transform:uppercase;margin-bottom:15px}.about-heading{font-family:'Cinzel',serif;font-size:38px;color:var(--burgundy);margin-bottom:25px}.about-text{color:var(--text-muted);font-size:16px;line-height:1.8;margin-bottom:20px;font-family:'Plus Jakarta Sans',sans-serif}.about-highlight{font-family:'Cinzel',serif;color:var(--burgundy);font-size:20px;margin-top:30px;font-weight:600;letter-spacing:1px}
         .contact-section{background:var(--soft-rose);padding:80px 30px;text-align:center}.contact-container{max-width:800px;margin:0 auto}.contact-heading{font-family:'Cinzel',serif;font-size:36px;color:var(--burgundy);margin-bottom:10px}.contact-subtitle{color:var(--gold);font-family:'Cinzel',serif;letter-spacing:3px;margin-bottom:20px}.contact-desc{color:var(--text-muted);margin-bottom:35px;line-height:1.8;font-family:'Plus Jakarta Sans',sans-serif}.social-icons-wrap{display:flex;justify-content:center;gap:25px;margin-bottom:30px}.social-icon-btn{width:55px;height:55px;border-radius:50%;background:var(--burgundy);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;transition:.3s;box-shadow:0 5px 15px rgba(74,14,23,.15)}.social-icon-btn:hover{background:var(--gold);transform:translateY(-3px)}
         .cart-drawer{position:fixed;top:0;right:-420px;width:400px;height:100%;background:var(--white);box-shadow:-5px 0 30px rgba(0,0,0,.1);z-index:2000;transition:.4s ease;display:flex;flex-direction:column}.cart-drawer.open{right:0}.cart-header{background:var(--burgundy);color:var(--white);padding:22px;display:flex;justify-content:space-between;align-items:center}.cart-body{padding:25px;flex:1;overflow-y:auto}.cart-item{display:flex;gap:15px;margin-bottom:20px;align-items:center;border-bottom:1px solid var(--soft-rose);padding-bottom:15px}.cart-item img{width:65px;height:65px;object-fit:cover;border-radius:8px}.cart-item-details{flex:1;text-align:left}.cart-footer{padding:25px;background:var(--cream);border-top:1px solid rgba(0,0,0,.05)}.whatsapp-checkout-btn{width:100%;background:#25D366;color:white;border:none;padding:14px;border-radius:30px;font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;text-transform:uppercase;letter-spacing:1px}
         .floating-wa{position:fixed;bottom:30px;right:30px;background:#25D366;color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 8px 25px rgba(0,0,0,.15);z-index:1000;text-decoration:none}footer{background:var(--burgundy);color:var(--white);text-align:center;padding:40px 20px;border-top:1px solid var(--gold)}footer p{font-size:13px;color:var(--soft-rose);opacity:.8;margin-top:10px}
         .load-message{grid-column:1/-1;text-align:center;color:var(--text-muted);padding:30px}.no-image{display:flex;align-items:center;justify-content:center;height:300px;background:var(--soft-rose);color:var(--burgundy);font-family:'Cinzel',serif;letter-spacing:2px;text-align:center;padding:20px}
-        @media(max-width:900px){.hero-container{grid-template-columns:1fr;text-align:center}.hero-desc{margin:0 auto 30px}.hero-slideshow{width:100%;max-width:320px;height:420px;margin:0 auto}.features-container{grid-template-columns:1fr 1fr;gap:20px}.feature-item{border-right:none}.cart-drawer{width:100%;right:-100%}.nav-container{padding:15px;gap:12px;flex-wrap:wrap}.nav-links{gap:12px;flex-wrap:wrap;justify-content:center}.hero-title{font-size:36px}.promo-banner h2{font-size:25px}.section-title h2{font-size:29px}}
+        @media(max-width:900px){.hero-container{grid-template-columns:1fr;text-align:center}.hero-desc{margin:0 auto 30px}.hero-slideshow{width:100%;max-width:320px;height:420px;margin:0 auto}.features-container{grid-template-columns:1fr 1fr;gap:20px}.feature-item{border-right:none}.cart-drawer{width:100%;right:-100%}.nav-container{padding:15px;gap:12px;flex-wrap:wrap}.nav-links{gap:12px;flex-wrap:wrap;justify-content:center}.hero-title{font-size:36px}.promo-banner h2{font-size:25px}.section-title h2{font-size:29px}.modal-content{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -60,6 +64,25 @@
         </div>
         <div class="products-grid" id="products-container"><p class="load-message">Loading collection...</p></div>
     </section>
+
+    <!-- Product Details Modal -->
+    <div class="product-modal" id="product-modal" onclick="closeModalOnOutside(event)">
+        <div class="modal-content" id="modal-content-box">
+            <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
+            <div class="modal-image-wrap" id="modal-img-container"></div>
+            <div class="modal-details">
+                <div class="modal-category" id="modal-category"></div>
+                <h2 class="modal-title" id="modal-title"></h2>
+                <div class="modal-price-wrap">
+                    <span class="modal-price" id="modal-price"></span>
+                    <span class="modal-old-price" id="modal-old-price"></span>
+                </div>
+                <p class="modal-desc" id="modal-desc"></p>
+                <button class="btn-primary" id="modal-add-btn" style="width:100%;text-align:center;">Add to Bag <i class="fas fa-shopping-bag" style="margin-left:8px"></i></button>
+            </div>
+        </div>
+    </div>
+
     <section class="about-section" id="about"><div class="about-container">
         <p class="about-tagline">Beauty Beyond Rules</p><h2 class="about-heading">REBEL VELVET</h2>
         <p class="about-text">At REBEL VELVET, we believe beauty begins with the way you care for yourself. We bring together skincare, self-care, and beauty essentials designed to make every routine feel like a luxurious ritual.</p>
@@ -80,7 +103,6 @@
 const CONFIG = {
     currency: "EGP",
     whatsapp: "201039788599",
-    // This is the API endpoint used by the current index.html.
     catalogApi: "https://script.google.com/macros/s/AKfycbyCFf3T_OP5KcXjgGXpmK9jqGLrP_lDrjsiXkaNXnMF67p_nctuy3qjisghfEUHmGSh/exec"
 };
 const PLACEHOLDER_IMAGE = "https://placehold.co/600x800/f3ebe6/4a0e17?text=REBEL+VELVET";
@@ -91,13 +113,13 @@ let heroTimer = null;
 
 function safeText(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({
-        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+        "&":"&", "<":"<", ">":">", '"':""", "'":"'"
     }[ch]));
 }
 function imageMarkup(src, alt, className) {
     const url = src && String(src).trim() ? String(src).trim() : "";
     if (!url) return `<div class="no-image ${className || ""}">REBEL VELVET</div>`;
-    return `<img class="${className || ""}" src="${safeText(url)}" alt="${safeText(alt || "REBEL VELVET")}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.insertAdjacentHTML('afterend','<div class=&quot;no-image&quot;>REBEL VELVET</div>')">`;
+    return `<img class="${className || ""}" src="${safeText(url)}" alt="${safeText(alt || "REBEL VELVET")}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.insertAdjacentHTML('afterend','<div class="no-image">REBEL VELVET</div>')">`;
 }
 function loadData() {
     const container = document.getElementById("products-container");
@@ -169,7 +191,7 @@ function renderProducts(products) {
         const hasSale = Number.isFinite(sale) && Number.isFinite(price) && sale >= 0 && sale < price;
         const effectivePrice = hasSale ? sale : (Number.isFinite(price) ? price : 0);
         const id = String(p.id == null ? "product-" + index : p.id);
-        return `<div class="product-card">
+        return `<div class="product-card" onclick="openProductModal('${safeText(id).replace(/'/g, "\\'")}')">
             ${hasSale ? '<span class="sale-badge">Sale</span>' : ""}
             ${imageMarkup(p.image, p.name, "product-thumb")}
             <div class="product-info">
@@ -179,11 +201,54 @@ function renderProducts(products) {
                     <span class="product-price">${effectivePrice} ${CONFIG.currency}</span>
                     ${hasSale ? `<span class="product-old-price">${price} ${CONFIG.currency}</span>` : ""}
                 </div>
-                <button class="add-to-cart-btn" onclick="addToCartByIndex(${index}, '${safeText(id).replace(/\\/g, "\\\\").replace(/'/g, "\\'")}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left:5px"></i></button>
+                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${safeText(id).replace(/'/g, "\\'")}')">Add to Bag <i class="fas fa-shopping-bag" style="margin-left:5px"></i></button>
             </div>
         </div>`;
     }).join("");
 }
+
+// Modal Functions
+function openProductModal(productId) {
+    const product = allProducts.find(p => String(p.id) === String(productId));
+    if (!product) return;
+
+    const price = Number(product.price);
+    const sale = product.salePrice === null || product.salePrice === "" || product.salePrice === undefined ? NaN : Number(product.salePrice);
+    const hasSale = Number.isFinite(sale) && Number.isFinite(price) && sale >= 0 && sale < price;
+    const effectivePrice = hasSale ? sale : (Number.isFinite(price) ? price : 0);
+
+    document.getElementById("modal-category").textContent = product.category || "Beauty";
+    document.getElementById("modal-title").textContent = product.name || "REBEL VELVET Product";
+    document.getElementById("modal-price").textContent = effectivePrice + " " + CONFIG.currency;
+    
+    const oldPriceEl = document.getElementById("modal-old-price");
+    if (hasSale) {
+        oldPriceEl.textContent = price + " " + CONFIG.currency;
+        oldPriceEl.style.display = "inline";
+    } else {
+        oldPriceEl.style.display = "none";
+    }
+
+    document.getElementById("modal-desc").textContent = product.description || "Discover high-performance beauty and skincare essentials designed to make every routine feel like a luxurious ritual.";
+    document.getElementById("modal-img-container").innerHTML = imageMarkup(product.image, product.name, "");
+
+    const addBtn = document.getElementById("modal-add-btn");
+    addBtn.onclick = function() {
+        addProductToCart(product);
+        closeModal();
+    };
+
+    document.getElementById("product-modal").classList.add("open");
+}
+function closeModal() {
+    document.getElementById("product-modal").classList.remove("open");
+}
+function closeModalOnOutside(event) {
+    if (event.target.id === "product-modal") {
+        closeModal();
+    }
+}
+
 function filterProducts(category, btn) {
     activeCategory = category;
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b === btn));
@@ -197,15 +262,6 @@ function filterFromBadge(category) {
 }
 function toggleCart() {
     document.getElementById("cart-drawer").classList.toggle("open");
-}
-function addToCartByIndex(index, id) {
-    const visibleProducts = activeCategory === "all" ? allProducts : allProducts.filter(p => String(p.category || "").trim().toLowerCase() === activeCategory.trim().toLowerCase());
-    const product = visibleProducts[index];
-    if (product) addProductToCart(product);
-    else {
-        const fallback = allProducts.find(p => String(p.id) === id);
-        if (fallback) addProductToCart(fallback);
-    }
 }
 function addToCart(productId) {
     const product = allProducts.find(p => String(p.id) === String(productId));
