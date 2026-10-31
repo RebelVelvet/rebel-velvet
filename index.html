@@ -113,13 +113,13 @@ let heroTimer = null;
 
 function safeText(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({
-        "&":"&", "<":"<", ">":">", '"':""", "'":"'"
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
     }[ch]));
 }
 function imageMarkup(src, alt, className) {
     const url = src && String(src).trim() ? String(src).trim() : "";
     if (!url) return `<div class="no-image ${className || ""}">REBEL VELVET</div>`;
-    return `<img class="${className || ""}" src="${safeText(url)}" alt="${safeText(alt || "REBEL VELVET")}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.insertAdjacentHTML('afterend','<div class="no-image">REBEL VELVET</div>')">`;
+    return `<img class="${className || ""}" src="${safeText(url)}" alt="${safeText(alt || "REBEL VELVET")}" loading="lazy" onerror="this.onerror=null;this.style.display='none';this.insertAdjacentHTML('afterend','<div class=&quot;no-image&quot;>REBEL VELVET</div>')">`;
 }
 function loadData() {
     const container = document.getElementById("products-container");
